@@ -30,11 +30,15 @@
         var typingTimer = null;
 
         function update() {
-            mirror.textContent = input.value;
+            var pos = input.selectionStart;
+            if (pos == null) {
+                pos = input.value.length;
+            }
+            mirror.textContent = input.value.slice(0, pos);
             cursor.style.left = mirror.offsetWidth + 'px';
         }
 
-        function onInput() {
+        function onActivity() {
             update();
             cursor.classList.add('typing');
             if (typingTimer) {
@@ -45,7 +49,13 @@
             }, TYPING_PAUSE_MS);
         }
 
-        input.addEventListener('input', onInput);
+        // 'input' covers typing/backspace; 'keyup' and 'click' cover moving
+        // the caret without changing the text (arrow keys, Home/End, mouse
+        // placement) -- none of those fire an 'input' event on their own.
+        input.addEventListener('input', onActivity);
+        input.addEventListener('keyup', onActivity);
+        input.addEventListener('click', onActivity);
+        input.addEventListener('focus', onActivity);
         update();
     }
 
