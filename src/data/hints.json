@@ -1,0 +1,119 @@
+[
+  {
+    "id": "start",
+    "title": "Getting started above ground",
+    "hints": [
+      "Look closely at everything near the house before you go inside — small objects here matter later, and one of them explains the local geography.",
+      "The front door won't budge, but the house has more than one way in. Walk all the way around it and examine what you find on each side.",
+      "Go around to the kitchen window at the rear of the house, open it, and enter that way."
+    ]
+  },
+  {
+    "id": "trapdoor",
+    "title": "Finding the way underground",
+    "hints": [
+      "Something in the living room is covering more than just the floor. Furniture and rugs are always worth a closer look.",
+      "Move the rug in the living room aside instead of just looking at it.",
+      "Move the rug to reveal a trap door, then open the trap door and go down. Bring a light source — the case with the lamp and sword should already be open."
+    ]
+  },
+  {
+    "id": "light",
+    "title": "Light before you go underground",
+    "hints": [
+      "The Great Underground Empire has no windows. Anything you take with you should include a way to see.",
+      "There's a brass lantern in the living room, inside furniture you can open.",
+      "Open the trophy case in the living room, take the lantern and the sword, and turn the lantern on before descending through the trap door."
+    ]
+  },
+  {
+    "id": "troll",
+    "title": "The troll blocking the passage",
+    "hints": [
+      "The troll won't let you pass peacefully, and bare hands aren't going to help.",
+      "Make sure you're carrying the sword from the trophy case before you meet him, and draw it if the game doesn't do so automatically in combat.",
+      "Fight the troll with the sword (try 'kill troll with sword' or just 'attack troll' repeatedly) until he's defeated; retreating and returning to heal is fine if you're losing."
+    ]
+  },
+  {
+    "id": "cyclops",
+    "title": "Getting past the Cyclops",
+    "hints": [
+      "Brute force doesn't work on him, and he doesn't respond to ordinary conversation either.",
+      "He reacts strongly to a very particular word — something from a much older story about someone who blinded a cyclops.",
+      "Say 'ulysses' (or 'odysseus') to the cyclops. He'll flee in terror and even knock a hole in a wall that shortcuts you toward the living room."
+    ]
+  },
+  {
+    "id": "echo-room",
+    "title": "The room with the strange echo",
+    "hints": [
+      "Ordinary commands seem to just bounce back at you strangely in one particular room. Try something other than movement or object commands.",
+      "The room itself is the puzzle, not an object in it. Consider what you'd naturally shout in a room like this.",
+      "Say 'echo' while in the Loud Room. This quiets the water noise from the nearby dam long enough for you to also read the marble engraving that helps at the endgame."
+    ]
+  },
+  {
+    "id": "dam",
+    "title": "The dam and the reservoir",
+    "hints": [
+      "There's machinery on the dam that clearly used to control the water level, but it's stuck.",
+      "Look for a small tool left behind near the control panel — you'll need it in hand, not just nearby.",
+      "Take the wrench in the Maintenance Room, go to the Dam, and turn the bolt with the wrench to raise or lower the reservoir's water level as needed. Push the yellow button in Maintenance first to light the room, and be careful about being in the reservoir when you drain or fill it."
+    ]
+  },
+  {
+    "id": "bat",
+    "title": "The bat in the coal mine area",
+    "hints": [
+      "One of the underground rooms has a creature that will interfere with you if you're not carrying the right thing.",
+      "Something pungent from the kitchen keeps unwanted flying creatures away.",
+      "Carry the garlic (from the kitchen, up on a shelf) through the bat's room and it will leave you alone."
+    ]
+  },
+  {
+    "id": "thief",
+    "title": "Dealing with the thief",
+    "hints": [
+      "A shifty character wanders the dungeon, stealing your treasures and attacking you. Fighting him early, unprepared, usually goes badly.",
+      "He's most dangerous face-to-face before you're strong enough; many players avoid him until they have a good weapon and are willing to lose a fight or two to gain experience.",
+      "Engage the thief with the sword once you're reasonably confident (repeated fights make your character tougher). When you finally defeat him in his treasure room, he drops everything he's stolen, including anything sealed inside the egg."
+    ]
+  },
+  {
+    "id": "egg",
+    "title": "The jewel-encrusted egg",
+    "hints": [
+      "The egg you find in a tree is fragile, and forcing it open yourself ruins the valuable thing inside.",
+      "You don't have the delicate touch needed to open it safely — but you know someone who does, even though he's not exactly a friend.",
+      "Give the egg, unopened, to the thief. He'll open it properly. Defeat him later to recover the egg and the golden canary inside intact."
+    ]
+  },
+  {
+    "id": "hades",
+    "title": "Entering the Land of the Dead",
+    "hints": [
+      "The entrance near the cyclops area is guarded by something that isn't physical — ordinary weapons won't help.",
+      "You'll need a specific ritual, and the tools for it are all found elsewhere in the dungeon: something to ring, something to read from, and something to light.",
+      "At the Entrance to Hades, ring the bell (it becomes red hot, so drop it immediately), light the candles, then read the black book. This exorcises the spirits and opens the way to the Land of the Dead."
+    ]
+  },
+  {
+    "id": "maze",
+    "title": "Navigating the twisty maze",
+    "hints": [
+      "All the rooms here look identical, and normal exploration will just get you lost or looped back to where you started.",
+      "Drop something distinctive in each room as a landmark so you can tell them apart on your map.",
+      "Drop small items (not treasures) in each maze room to mark it, map the exits room by room, and follow the one specific path that leads to the room with the skeleton and its key, rope, and treasure."
+    ]
+  },
+  {
+    "id": "endgame",
+    "title": "Reaching the endgame",
+    "hints": [
+      "Before you can finish the game, you need to have delivered every treasure to its proper place and read the leaflet again for a status check.",
+      "One late treasure area requires waving something you found on a giant, one-inch invisible person, and involves a rainbow.",
+      "At Aragain Falls, wave the sceptre (from the Egyptian coffin/pyramid area) to solidify the rainbow, cross it, and take the pot of gold. Once all treasures are deposited in the trophy case, go back down through the trap door to trigger the endgame."
+    ]
+  }
+]

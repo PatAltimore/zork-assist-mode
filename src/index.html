@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zork I &mdash; Assist Mode</title>
+<link rel="stylesheet" href="vendor/glkote.css">
+<link rel="stylesheet" href="vendor/dialog.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="crt-overlay" aria-hidden="true"></div>
+<div id="app">
+  <header id="app-header">
+    <h1>ZORK I <span class="subtitle">Assist Mode</span></h1>
+    <div id="header-actions">
+      <button id="save-game" type="button">Save</button>
+      <button id="load-game" type="button">Load</button>
+      <button id="new-game" type="button">New Game</button>
+      <div id="font-size-controls" class="button-group">
+        <button id="font-size-decrease" type="button" aria-label="Decrease font size">A&minus;</button>
+        <button id="font-size-increase" type="button" aria-label="Increase font size">A+</button>
+      </div>
+      <button id="font-style-toggle" type="button">Modern Font</button>
+      <button id="hint-toggle" type="button" aria-expanded="true" aria-controls="assist-panel">Hide Hints</button>
+    </div>
+  </header>
+
+  <main id="app-main">
+    <section id="game-panel" aria-label="Game console">
+      <div id="gameport">
+        <div id="windowport">
+          <noscript>
+            <p>JavaScript is required to play Zork I in your browser.</p>
+          </noscript>
+        </div>
+        <div id="loadingpane"><em>Loading Zork I&hellip;</em></div>
+        <div id="errorpane" style="display:none;"><div id="errorcontent">...</div></div>
+      </div>
+    </section>
+
+    <aside id="assist-panel" aria-label="Assist mode">
+      <div id="assist-tabs" role="tablist">
+        <button id="tab-hints" class="assist-tab active" type="button" role="tab" aria-selected="true" aria-controls="hints-view">Hints</button>
+        <button id="tab-map" class="assist-tab" type="button" role="tab" aria-selected="false" aria-controls="map-view">Map</button>
+      </div>
+
+      <div id="hints-view" role="tabpanel" aria-labelledby="tab-hints">
+        <h2>Need a hint?</h2>
+        <p class="assist-intro">Pick a topic, then reveal hints one step at a time &mdash; from a gentle nudge to a full answer. Type your commands in the game console; hints don't play moves for you.</p>
+
+        <label for="hint-topic">Topic</label>
+        <select id="hint-topic"></select>
+
+        <div id="hint-levels" role="list"></div>
+
+        <button id="hint-reveal" type="button">Reveal next hint</button>
+        <button id="hint-reset" type="button">Reset hint</button>
+
+        <p class="assist-note">Hints are original, general guidance for classic Zork I puzzles &mdash; not a step-by-step walkthrough.</p>
+      </div>
+
+      <div id="map-view" role="tabpanel" aria-labelledby="tab-map" hidden>
+        <h2>Map</h2>
+        <p class="assist-intro">Fills in as you explore. Areas the game itself can't tell apart (mazes, the river, dark caves) are shown as a single fogged region, not spoiled room-by-room.</p>
+        <div id="map-levels"></div>
+        <button id="map-clear" type="button">Forget map</button>
+      </div>
+    </aside>
+  </main>
+</div>
+
+<script src="vendor/jquery-1.12.4.min.js"></script>
+<script src="vendor/glkote.js"></script>
+<script src="vendor/glkapi.js"></script>
+<script src="vendor/dialog.js"></script>
+<script src="vendor/zvm.min.js"></script>
+<script src="vendor/gidispa-zvm.js"></script>
+<script src="js/hints.js"></script>
+<script src="js/map.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,476 @@
+@font-face {
+  font-family: 'VT323';
+  src: url('../vendor/fonts/VT323-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg: #000000;
+  --panel-bg: #001a04;
+  --phosphor: #33ff66;
+  --phosphor-dim: #1c8f3d;
+  --phosphor-bright: #b6ffcf;
+  --border: #1c8f3d;
+  --retro-font: 'VT323', 'Courier New', Courier, monospace;
+  --modern-font: Consolas, Menlo, 'Courier New', monospace;
+  --crt-font: var(--retro-font);
+}
+
+/* Modern-font mode: swap the one variable everything else reads from.
+   Still monospace -- the status line's column alignment depends on it. */
+body.font-modern {
+  --crt-font: var(--modern-font);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--phosphor);
+  font-family: var(--crt-font);
+}
+
+#crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 1px,
+      rgba(0, 0, 0, 0.25) 2px,
+      rgba(0, 0, 0, 0.25) 3px
+    );
+  mix-blend-mode: multiply;
+}
+
+#crt-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#app-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.5em 1em;
+  background: var(--panel-bg);
+  border-bottom: 2px solid var(--border);
+  flex: 0 0 auto;
+}
+
+#app-header h1 {
+  font-family: var(--crt-font);
+  font-size: 2em;
+  font-weight: normal;
+  letter-spacing: 0.12em;
+  margin: 0;
+  color: var(--phosphor-bright);
+  text-shadow: 0 0 4px var(--phosphor), 0 0 10px var(--phosphor-dim);
+}
+
+#app-header .subtitle {
+  font-size: 0.55em;
+  color: var(--phosphor);
+  font-weight: normal;
+  letter-spacing: 0.06em;
+  margin-left: 0.6em;
+  opacity: 0.85;
+}
+
+#app-header .subtitle::before {
+  content: '// ';
+}
+
+#header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6em;
+}
+
+#save-game,
+#load-game,
+#new-game,
+#font-size-decrease,
+#font-size-increase,
+#font-style-toggle,
+#hint-toggle {
+  background: transparent;
+  color: var(--phosphor-bright);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0.3em 0.8em;
+  font-family: var(--crt-font);
+  font-size: 1.1em;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-shadow: 0 0 4px var(--phosphor);
+}
+
+#save-game:hover,
+#load-game:hover,
+#new-game:hover,
+#font-size-decrease:hover,
+#font-size-increase:hover,
+#font-style-toggle:hover,
+#hint-toggle:hover {
+  background: var(--phosphor-dim);
+  color: #000;
+  text-shadow: none;
+}
+
+.button-group {
+  display: flex;
+  gap: 0;
+}
+
+.button-group button {
+  padding-left: 0.6em;
+  padding-right: 0.6em;
+}
+
+#font-size-decrease:disabled,
+#font-size-increase:disabled {
+  opacity: 0.4;
+  cursor: default;
+  background: transparent;
+  color: var(--phosphor-dim);
+  text-shadow: none;
+}
+
+.button-group button + button {
+  border-left: none;
+}
+
+#app-main {
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+
+#game-panel {
+  flex: 1 1 auto;
+  position: relative;
+  min-width: 0;
+}
+
+#gameport {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+
+/* --- Retrofit GlkOte's default (cream/serif Infocom) look into a green-phosphor terminal --- */
+
+.WindowFrame {
+  background: #000 !important;
+}
+
+.BufferWindow,
+.GridWindow {
+  font-family: var(--crt-font) !important;
+  font-size: 1.625rem !important;
+  line-height: 1.25 !important;
+  color: var(--phosphor);
+  text-shadow: 0 0 3px rgba(51, 255, 102, 0.6);
+  padding: 10px 14px !important;
+}
+
+.GridWindow {
+  background: #000 !important;
+}
+
+.Style_input,
+.Input,
+.BufferWindow .Input,
+.GridWindow .Input {
+  font-family: var(--crt-font) !important;
+  font-size: 1.625rem !important;
+  color: var(--phosphor-bright) !important;
+  text-shadow: 0 0 4px var(--phosphor);
+  caret-color: var(--phosphor-bright);
+}
+
+.Style_header,
+.Style_subheader,
+.Style_alert {
+  color: var(--phosphor-bright);
+}
+
+.Style_emphasized,
+.Style_note {
+  color: var(--phosphor-dim);
+}
+
+.Style_blockquote {
+  background: rgba(51, 255, 102, 0.08);
+}
+
+.MorePrompt {
+  background: var(--phosphor-dim) !important;
+  color: #000 !important;
+  font-family: var(--crt-font) !important;
+}
+
+.PreviousMark {
+  background: var(--phosphor) !important;
+}
+
+/* Retro scrollbar (WebKit) */
+.BufferWindow::-webkit-scrollbar,
+#assist-panel::-webkit-scrollbar {
+  width: 10px;
+}
+
+.BufferWindow::-webkit-scrollbar-track,
+#assist-panel::-webkit-scrollbar-track {
+  background: #000;
+}
+
+.BufferWindow::-webkit-scrollbar-thumb,
+#assist-panel::-webkit-scrollbar-thumb {
+  background: var(--phosphor-dim);
+}
+
+/* --- Assist sidebar --- */
+
+#assist-panel {
+  flex: 0 0 340px;
+  max-width: 340px;
+  background: var(--panel-bg);
+  border-left: 2px solid var(--border);
+  padding: 1em;
+  overflow-y: auto;
+  font-family: var(--crt-font);
+}
+
+#assist-panel.collapsed {
+  display: none;
+}
+
+#assist-tabs {
+  display: flex;
+  gap: 0.4em;
+  margin-bottom: 1em;
+}
+
+.assist-tab {
+  flex: 1 1 auto;
+  background: transparent;
+  color: var(--phosphor-dim);
+  border: 1px solid var(--border);
+  padding: 0.4em;
+  font-family: var(--crt-font);
+  font-size: 1.15em;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.assist-tab.active {
+  color: var(--phosphor-bright);
+  background: rgba(51, 255, 102, 0.12);
+  text-shadow: 0 0 4px var(--phosphor);
+}
+
+#assist-panel h2 {
+  margin-top: 0;
+  font-size: 1.5em;
+  font-weight: normal;
+  color: var(--phosphor-bright);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 4px var(--phosphor);
+}
+
+#assist-panel h2::before {
+  content: '> ';
+}
+
+#assist-panel label {
+  display: block;
+  font-size: 1.1em;
+  margin-bottom: 0.2em;
+  color: var(--phosphor-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.assist-intro,
+.assist-note {
+  font-size: 1.15em;
+  line-height: 1.35;
+  color: var(--phosphor-dim);
+}
+
+#hint-topic {
+  width: 100%;
+  padding: 0.4em;
+  margin-bottom: 1em;
+  background: #000;
+  color: var(--phosphor-bright);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  font-family: var(--crt-font);
+  font-size: 1.2em;
+}
+
+#hint-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+  margin-bottom: 0.8em;
+}
+
+.hint-level {
+  background: #000;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--phosphor);
+  border-radius: 0;
+  padding: 0.5em 0.7em;
+  font-size: 1.15em;
+  line-height: 1.3;
+  color: var(--phosphor);
+}
+
+.hint-level .hint-tier-label {
+  display: block;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--phosphor-bright);
+  margin-bottom: 0.2em;
+}
+
+.hint-level .hint-tier-label::before {
+  content: '[ ';
+}
+
+.hint-level .hint-tier-label::after {
+  content: ' ]';
+}
+
+#hint-reveal,
+#hint-reset,
+#map-clear {
+  width: 100%;
+  padding: 0.45em;
+  margin-bottom: 0.5em;
+  border-radius: 0;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-family: var(--crt-font);
+  font-size: 1.2em;
+  letter-spacing: 0.04em;
+  background: transparent;
+  color: var(--phosphor-bright);
+  text-shadow: 0 0 4px var(--phosphor);
+}
+
+#hint-reveal:hover,
+#hint-reset:hover,
+#map-clear:hover {
+  background: var(--phosphor-dim);
+  color: #000;
+  text-shadow: none;
+}
+
+#hint-reveal:disabled {
+  opacity: 0.4;
+  cursor: default;
+  background: transparent;
+  color: var(--phosphor-dim);
+  text-shadow: none;
+}
+
+/* --- Map view --- */
+
+#map-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-bottom: 0.8em;
+}
+
+.map-level h3 {
+  margin: 0 0 0.4em 0;
+  font-size: 1em;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--phosphor-dim);
+}
+
+.map-grid {
+  display: grid;
+  gap: 3px;
+}
+
+.map-room {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 3.2em;
+  padding: 0.2em;
+  border: 1px solid var(--border);
+  background: #000;
+  color: var(--phosphor);
+  font-size: 0.75em;
+  line-height: 1.1;
+  overflow: hidden;
+}
+
+.map-room.frontier {
+  border-style: dashed;
+  color: var(--phosphor-dim);
+  opacity: 0.6;
+}
+
+.map-room.current {
+  border-color: var(--phosphor-bright);
+  color: var(--phosphor-bright);
+  background: rgba(51, 255, 102, 0.18);
+  text-shadow: 0 0 4px var(--phosphor);
+  box-shadow: 0 0 6px rgba(51, 255, 102, 0.6);
+}
+
+@media (max-width: 760px) {
+  #app-main {
+    flex-direction: column;
+  }
+
+  #assist-panel {
+    flex: 0 0 auto;
+    max-width: none;
+    max-height: 45vh;
+    border-left: none;
+    border-top: 2px solid var(--border);
+  }
+
+  #game-panel {
+    flex: 1 1 auto;
+  }
+}

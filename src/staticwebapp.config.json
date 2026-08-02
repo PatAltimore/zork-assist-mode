@@ -1,0 +1,21 @@
+{
+  "mimeTypes": {
+    ".z3": "application/x-zmachine",
+    ".z5": "application/x-zmachine",
+    ".z8": "application/x-zmachine",
+    ".json": "application/json"
+  },
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": [
+      "/vendor/*",
+      "/css/*",
+      "/js/*",
+      "/data/*",
+      "/*.{png,jpg,jpeg,gif,ico,svg,webp}"
+    ]
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff"
+  }
+}
