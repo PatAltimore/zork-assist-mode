@@ -96,6 +96,10 @@ html, body {
   flex: 0 0 auto;
 }
 
+#app-header.header-hidden {
+  display: none;
+}
+
 #app-header h1 {
   font-family: var(--font);
   font-size: 2em;

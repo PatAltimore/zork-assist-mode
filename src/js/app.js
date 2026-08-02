@@ -85,22 +85,35 @@
 
     var MOBILE_QUERY = '(max-width: 760px)';
     var MOBILE_SCROLL_THRESHOLD = 12;
+    var MOBILE_BOTTOM_EDGE = 8;
+    var MOBILE_SUPPRESS_MS = 250;
 
-    function initMobileAutoHide(setCollapsed) {
+    function initMobileAutoHide(setHintsCollapsed) {
         // On narrow (mobile) screens the assist panel sits below the game
-        // text and eats into the limited vertical space, so it starts
-        // hidden there and only reappears when the player scrolls the game
-        // text back up (the natural "I want to check a hint" gesture) --
-        // scrolling back down toward the latest text hides it again. Desktop
-        // is unaffected; the panel is only ever auto-hidden below this
-        // breakpoint, and the manual Hide/Show Hints button still works at
-        // any width.
+        // text and the header sits above it, both eating into the limited
+        // vertical space available to read the adventure text. Both are
+        // driven by scrolling the game text itself, but only once you're
+        // right at its bottom edge -- i.e. caught up with the latest text --
+        // so that scrolling back through history to re-read something
+        // doesn't fight you by flipping either one open/closed on every
+        // small scroll. From that bottom edge: scrolling further down hides
+        // the hints panel and shows the header; scrolling up away from it
+        // shows the hints panel and hides the header. Desktop is unaffected,
+        // and the manual Hide/Show Hints button still works at any width.
         var gameport = document.getElementById('gameport');
+        var header = document.getElementById('app-header');
         var mobileQuery = window.matchMedia(MOBILE_QUERY);
-        var lastScrollTop = 0;
+        var lastScrollTop = null;
+        var suppressUntil = 0;
+
+        function setHeaderHidden(hidden) {
+            if (header) {
+                header.classList.toggle('header-hidden', hidden);
+            }
+        }
 
         if (mobileQuery.matches) {
-            setCollapsed(true);
+            setHintsCollapsed(true);
         }
 
         if (gameport) {
@@ -113,17 +126,52 @@
                     return;
                 }
                 var current = target.scrollTop;
-                var delta = current - lastScrollTop;
-                if (Math.abs(delta) > MOBILE_SCROLL_THRESHOLD) {
-                    setCollapsed(delta > 0);
+                if (lastScrollTop === null) {
+                    // First scroll event we've ever seen -- just record a
+                    // baseline. Without this the very first event would
+                    // diff against a bogus lastScrollTop of 0 and register
+                    // as a huge (fake) scroll.
                     lastScrollTop = current;
+                    return;
                 }
+                var delta = current - lastScrollTop;
+                var previous = lastScrollTop;
+                lastScrollTop = current;
+
+                // Ignore scroll events caused by our own hide/show just
+                // changing the game panel's height (the browser can clamp
+                // scrollTop when that happens, which would otherwise look
+                // like a user scroll and flip things right back).
+                if (Date.now() < suppressUntil) {
+                    return;
+                }
+                if (Math.abs(delta) < MOBILE_SCROLL_THRESHOLD) {
+                    return;
+                }
+
+                // Gate on the scroll edge, not just the resting position:
+                // either end of this movement being near the bottom counts,
+                // so both "scrolling away from the bottom" and "scrolling
+                // back down to it" register, while scrolling around further
+                // up in the history (neither end near the bottom) does not.
+                var maxScroll = target.scrollHeight - target.clientHeight;
+                var wasAtBottom = (maxScroll - previous) <= MOBILE_BOTTOM_EDGE;
+                var isAtBottom = (maxScroll - current) <= MOBILE_BOTTOM_EDGE;
+                if (!wasAtBottom && !isAtBottom) {
+                    return;
+                }
+
+                var scrollingDown = delta > 0;
+                setHintsCollapsed(scrollingDown);
+                setHeaderHidden(!scrollingDown);
+                suppressUntil = Date.now() + MOBILE_SUPPRESS_MS;
             }, true);
         }
 
         mobileQuery.addEventListener('change', function (ev) {
             if (!ev.matches) {
-                setCollapsed(false);
+                setHintsCollapsed(false);
+                setHeaderHidden(false);
             }
         });
     }
