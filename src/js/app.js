@@ -84,127 +84,79 @@
     }
 
     var MOBILE_QUERY = '(max-width: 760px)';
-    var MOBILE_EDGE_TOLERANCE = 20;
-    var MOBILE_SUPPRESS_MS = 250;
 
     function initMobileAutoHide(setHintsCollapsed) {
         // On narrow (mobile) screens the assist panel sits below the game
         // text and the header sits above it, both eating into the limited
-        // vertical space available to read the adventure text. Each is tied
-        // to the game text's own edge on its side: the hints panel slides in
-        // once you're caught up at the bottom (latest text) and hides as
-        // soon as you scroll away from it; the header slides in once you've
-        // scrolled all the way back to the top of the transcript and hides
-        // as soon as you scroll away from that. Scrolling around in the
-        // middle of the history touches neither. Desktop is unaffected, and
-        // the manual Hide/Show Hints button still works at any width.
+        // vertical space available to read the adventure text. Earlier
+        // versions of this tried to detect "the user scrolled" from the
+        // buffer's 'scroll' event, but that event also fires from things
+        // that have nothing to do with the user -- new game text arriving,
+        // and (worse) the browser adjusting scrollTop on its own right
+        // after our own hide/show resizes the game panel, which would
+        // immediately re-hide whatever a peek-button tap had just shown.
+        // Listening for the actual input gesture instead (wheel/touch drag)
+        // sidesteps all of that: those events only ever fire from a real
+        // user action, never as a side effect of layout changes. So: any
+        // such gesture in the game text hides both, and each has its own
+        // small "peek" tab (shown only while hidden) to bring it back on
+        // tap. Desktop is unaffected, and the manual Hide/Show Hints button
+        // still works at any width.
         var gameport = document.getElementById('gameport');
         var header = document.getElementById('app-header');
+        var headerPeek = document.getElementById('header-peek');
+        var hintsPeek = document.getElementById('hints-peek');
         var mobileQuery = window.matchMedia(MOBILE_QUERY);
-        var lastScrollTop = null;
-        var lastScrollHeight = null;
-        var suppressUntil = 0;
-        var hintsHidden = false;
-        var headerHidden = false;
 
         function setHeaderHidden(v) {
-            if (header) {
-                header.classList.toggle('header-hidden', v);
+            if (!header || header.classList.contains('header-hidden') === v) {
+                return;
+            }
+            header.classList.toggle('header-hidden', v);
+            if (headerPeek) {
+                headerPeek.classList.toggle('visible', v);
             }
         }
 
+        function setHintsHidden(v) {
+            if (hintsPeek && hintsPeek.classList.contains('visible') === v) {
+                return;
+            }
+            setHintsCollapsed(v);
+            if (hintsPeek) {
+                hintsPeek.classList.toggle('visible', v);
+            }
+        }
+
+        function hideBoth() {
+            if (!mobileQuery.matches) {
+                return;
+            }
+            setHeaderHidden(true);
+            setHintsHidden(true);
+        }
+
         if (gameport) {
-            gameport.addEventListener('scroll', function (ev) {
-                if (!mobileQuery.matches) {
-                    return;
-                }
-                var target = ev.target;
-                if (!target || typeof target.scrollTop !== 'number') {
-                    return;
-                }
-                var current = target.scrollTop;
-                var currentHeight = target.scrollHeight;
-                if (lastScrollTop === null) {
-                    // First scroll event we've ever seen -- just record a
-                    // baseline. Without this the very first event would
-                    // diff against a bogus lastScrollTop of 0 and register
-                    // as a huge (fake) scroll.
-                    lastScrollTop = current;
-                    lastScrollHeight = currentHeight;
-                    return;
-                }
-                var contentChanged = currentHeight !== lastScrollHeight;
-                var delta = current - lastScrollTop;
-                var previous = lastScrollTop;
-                lastScrollTop = current;
-                lastScrollHeight = currentHeight;
+            gameport.addEventListener('wheel', hideBoth, { passive: true, capture: true });
+            gameport.addEventListener('touchmove', hideBoth, { passive: true, capture: true });
+        }
 
-                // New game text (a turn, or the autosave restoring on load)
-                // grows the buffer and GlkOte auto-scrolls to follow it --
-                // that jump looks just like a fast user scroll but isn't
-                // one, and comparing scrollTop across two different content
-                // heights isn't meaningful anyway, so skip it entirely.
-                if (contentChanged) {
-                    return;
-                }
+        if (headerPeek) {
+            headerPeek.addEventListener('click', function () {
+                setHeaderHidden(false);
+            });
+        }
 
-                // Ignore scroll events caused by our own hide/show just
-                // changing the game panel's height (the browser can clamp
-                // scrollTop when that happens, which would otherwise look
-                // like a user scroll and flip things right back).
-                if (Date.now() < suppressUntil) {
-                    return;
-                }
-                if (delta === 0) {
-                    return;
-                }
-
-                // Gate on the scroll edge, not just the resting position:
-                // either end of this movement being near an edge counts, so
-                // both "scrolling away from it" and "scrolling back to it"
-                // register, while scrolling around further within the
-                // history (neither end near an edge) does not.
-                var maxScroll = target.scrollHeight - target.clientHeight;
-                var nearBottom = (maxScroll - previous) <= MOBILE_EDGE_TOLERANCE ||
-                    (maxScroll - current) <= MOBILE_EDGE_TOLERANCE;
-                var nearTop = previous <= MOBILE_EDGE_TOLERANCE || current <= MOBILE_EDGE_TOLERANCE;
-                if (!nearBottom && !nearTop) {
-                    return;
-                }
-
-                var scrollingDown = delta > 0;
-                var changed = false;
-
-                if (nearBottom) {
-                    var wantHintsHidden = !scrollingDown; // away from the bottom
-                    if (wantHintsHidden !== hintsHidden) {
-                        hintsHidden = wantHintsHidden;
-                        setHintsCollapsed(hintsHidden);
-                        changed = true;
-                    }
-                }
-
-                if (nearTop) {
-                    var wantHeaderHidden = scrollingDown; // away from the top
-                    if (wantHeaderHidden !== headerHidden) {
-                        headerHidden = wantHeaderHidden;
-                        setHeaderHidden(headerHidden);
-                        changed = true;
-                    }
-                }
-
-                if (changed) {
-                    suppressUntil = Date.now() + MOBILE_SUPPRESS_MS;
-                }
-            }, true);
+        if (hintsPeek) {
+            hintsPeek.addEventListener('click', function () {
+                setHintsHidden(false);
+            });
         }
 
         mobileQuery.addEventListener('change', function (ev) {
             if (!ev.matches) {
-                hintsHidden = false;
-                headerHidden = false;
-                setHintsCollapsed(false);
                 setHeaderHidden(false);
+                setHintsHidden(false);
             }
         });
     }

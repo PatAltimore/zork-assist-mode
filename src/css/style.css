@@ -100,6 +100,10 @@ html, body {
   display: none;
 }
 
+.edge-peek {
+  display: none;
+}
+
 #app-header h1 {
   font-family: var(--font);
   font-size: 2em;
@@ -752,5 +756,34 @@ html, body {
 
   #game-panel {
     flex: 1 1 auto;
+  }
+
+  .edge-peek.visible {
+    display: block;
+    width: 100%;
+    flex: 0 0 auto;
+    border: none;
+    background: var(--panel-bg);
+    color: var(--fg-dim);
+    padding: 0.35em;
+    font-family: var(--font);
+    font-size: 1em;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  #header-peek.visible {
+    border-bottom: 2px solid var(--border);
+  }
+
+  #hints-peek.visible {
+    border-top: 2px solid var(--border);
+  }
+
+  .edge-peek.visible:hover {
+    background: var(--fg-dim);
+    color: var(--bg);
   }
 }
