@@ -4,6 +4,8 @@ Play the original 1980 Infocom classic **Zork I** in your browser, compiled
 straight from the official open-source ZIL release, with an **Assist Mode**
 sidebar of graduated, multiple-choice hints for when you get stuck.
 
+Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red-tree-0c4e1f210.7.azurestaticapps.net/).
+
 - **Real game, not a clone.** The historicalsource/zork1 ZIL source is
   compiled with [ZILF](https://foss.heptapod.net/zilf/zilf) into an actual
   Z-machine story file and played with the same engine family
