@@ -88,19 +88,15 @@
     function initMobileAutoHide(setHintsCollapsed) {
         // On narrow (mobile) screens the assist panel sits below the game
         // text and the header sits above it, both eating into the limited
-        // vertical space available to read the adventure text. A previous
-        // version also hid both on any wheel/touch scroll gesture in the
-        // game text, but that turned out to misbehave around the on-screen
-        // keyboard on real devices, so scroll no longer touches this at
-        // all. What's left: focusing the command line (the keyboard coming
-        // up) hides both automatically and brings them back on blur, since
-        // that's exactly when the least screen is left for the text you're
-        // replying to -- and each also has its own small tab (always
-        // present on mobile, right where the element would be) that's a
-        // plain manual show/hide toggle, independent of anything else.
-        // Desktop is unaffected, and the header's own Hide/Show Hints
-        // button still works at any width.
-        var gameport = document.getElementById('gameport');
+        // vertical space available to read the adventure text. Earlier
+        // versions tried to hide these automatically -- on scroll, then on
+        // focusing the command line for the on-screen keyboard -- but both
+        // caused more problems than they solved on real devices (fighting
+        // with the keyboard, iOS viewport quirks). This is now purely
+        // manual: each has its own small tab, always present on mobile
+        // right where the element would be, that just toggles it. Desktop
+        // is unaffected, and the header's own Hide/Show Hints button still
+        // works at any width.
         var header = document.getElementById('app-header');
         var headerPeek = document.getElementById('header-peek');
         var hintsPeek = document.getElementById('hints-peek');
@@ -125,29 +121,6 @@
                 hintsPeek.textContent = v ? '▴ Hints' : '▾ Hide Hints';
                 hintsPeek.setAttribute('aria-label', v ? 'Show hints panel' : 'Hide hints panel');
             }
-        }
-
-        if (gameport) {
-            // Tapping the command line to type brings up the on-screen
-            // keyboard, which covers a big chunk of the screen and leaves
-            // very little room to see the text you're responding to --
-            // hide both while it's up so as much scrollback as possible
-            // stays visible above the keyboard, and bring them back once
-            // you tap away (focusin/focusout bubble, unlike focus/blur, so
-            // this works without capture even though GlkOte's input is
-            // created after this listener is attached).
-            gameport.addEventListener('focusin', function (ev) {
-                if (mobileQuery.matches && ev.target && ev.target.tagName === 'INPUT') {
-                    setHeaderHidden(true);
-                    setHintsHidden(true);
-                }
-            });
-            gameport.addEventListener('focusout', function (ev) {
-                if (mobileQuery.matches && ev.target && ev.target.tagName === 'INPUT') {
-                    setHeaderHidden(false);
-                    setHintsHidden(false);
-                }
-            });
         }
 
         if (headerPeek) {
