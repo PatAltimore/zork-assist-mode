@@ -165,7 +165,7 @@
 
         function apply() {
             document.body.classList.toggle('theme-modern', modern);
-            toggle.textContent = modern ? 'Retro CRT' : 'Modern Terminal';
+            toggle.textContent = modern ? 'Retro' : 'Modern';
         }
         apply();
 

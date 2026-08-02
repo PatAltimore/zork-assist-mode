@@ -45,11 +45,15 @@ sidebar of graduated, multiple-choice hints for when you get stuck.
 - **Code tab**: links out to [Code Museum](https://blue-rock-0e6a0831e.7.azurestaticapps.net/#/zork),
   an annotated-source-code site, contextual to the room you're in and the
   hint topic you've picked, plus a general "how the engine works" list.
-  Code Museum documents the *original* 1977 MIT MDL mainframe source (not
-  the ZIL/Infocom port this game runs — different routine names, same
-  rooms and puzzles), so the mapping in `src/data/code-museum-links.json`
-  is hand-curated rather than derived automatically; extend it as more
-  bookmarks get added on the Code Museum side.
+  Code Museum documents the *original* 1977 MIT MDL mainframe source, which
+  was later split into the Zork I/II/III trilogy — different routine names
+  than this ZIL port, and some of its files (the volcano, the bank, the
+  robot, the riddle door) cover puzzles that never made it into Zork I at
+  all. The mapping in `src/data/code-museum-links.json` (36 bookmarks
+  across 13 source files) is hand-curated, with every entry checked against
+  this repo's own ZIL source to confirm it's genuinely Zork I content; a
+  handful of topics (the echo room, Hades) don't have a matching section
+  yet. Extend the JSON as more bookmarks get added on the Code Museum side.
 - **Fully static** — no backend, no database, no API keys. Deploys to Azure
   Static Web Apps' **Free** tier at no cost.
 

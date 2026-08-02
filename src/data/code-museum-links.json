@@ -2,7 +2,7 @@
   "base": "https://blue-rock-0e6a0831e.7.azurestaticapps.net/#/zork",
   "siteLabel": "Code Museum",
   "overviewPath": "",
-  "note": "Code Museum documents the original 1977 MIT MDL (Muddle) mainframe source, recovered from MIT's Tapes of Tech Square -- not the ZIL/Infocom port this game runs. Routine and file names differ between the two, but the rooms and puzzles are the same game.",
+  "note": "Code Museum documents the original 1977 MIT MDL (Muddle) mainframe source, recovered from MIT's Tapes of Tech Society -- not the ZIL/Infocom port this game runs. The mainframe version was later split into the Zork I/II/III trilogy, so some of its files cover puzzles (the volcano, the bank, the robot, the riddle door) that never made it into Zork I. Every link below was checked against this repo's own ZIL source to confirm it's really Zork I content, not a II/III puzzle.",
   "bookmarks": {
     "gwim": {
       "title": "GWIM: Get What I Mean",
@@ -19,11 +19,32 @@
       "path": "/np/sparse-parsing-subroutine",
       "blurb": "How the parser copes with incomplete input."
     },
+    "orphaned-command-resolution": {
+      "title": "Resolving Orphaned Commands",
+      "path": "/np/orphaned-command-resolution",
+      "blurb": "What happens when a command refers to something already handled."
+    },
     "dynamic-room-descriptions": {
       "title": "Dynamic Room Descriptions Based on State",
       "path": "/act1-37/dynamic-room-descriptions",
       "blurb": "Why a room's text changes as the world state changes."
     },
+    "room-definition": {
+      "title": "How Zork's Rooms Came to Life",
+      "path": "/defs/room-definition",
+      "blurb": "The core ROOM data structure every location in the game is built from."
+    },
+    "flagword-room-bits": {
+      "title": "The Flags That Defined Zork's Geography",
+      "path": "/defs/flagword-room-bits",
+      "blurb": "The bit-flags controlling whether a room is lit, sacred, on the map, etc."
+    },
+    "find-room-and-find-obj": {
+      "title": "The Functions That Built Zork's World",
+      "path": "/defs/find-room-and-find-obj",
+      "blurb": "How the game looks up a room or object by name."
+    },
+
     "pitch-black-grue": {
       "title": "Room Descriptions: Pitch Black and the Grue",
       "path": "/rooms/room-info-subroutine",
@@ -39,16 +60,32 @@
       "path": "/dung/lamp-clock-interrupt-setup",
       "blurb": "How the lamp's battery countdown is wired up."
     },
-    "mirror-room-mechanics": {
-      "title": "Mirror Room: Reflections and Destruction",
-      "path": "/act1/define-mirror-room-reflection-mechanics",
-      "blurb": "How the mirror room's teleport mechanic is defined."
+    "grue-darkness": {
+      "title": "The Grue: Fear of the Dark",
+      "path": "/act2/grue-description-darkness",
+      "blurb": "The grue's iconic darkness-death text."
     },
-    "mirror-room-hackery": {
-      "title": "Breaking and Swapping the Mirror Room",
-      "path": "/act1-37/mirror-room-hackery",
-      "blurb": "The logic for breaking the mirror and swapping which room it sends you to."
+    "match-lighting": {
+      "title": "Match Lighting and Resource Management",
+      "path": "/act1/match-lighting-and-resource-management",
+      "blurb": "Matches burn out fast -- how their short timer is implemented."
     },
+    "candle-lighting": {
+      "title": "Candle Lighting and Dynamic Object States",
+      "path": "/act1/candle-lighting-and-dynamic-object-states",
+      "blurb": "How a lit candle's remaining burn time is tracked."
+    },
+    "light-intensity-lifecycle": {
+      "title": "Light Intensity and Object Lifecycle",
+      "path": "/act1/light-intensity-and-object-lifecycle",
+      "blurb": "How a light source's fuel counts down and eventually dies."
+    },
+    "cave2-candle-extinguish": {
+      "title": "The Windy Cave That Blows Out Candles",
+      "path": "/act1-37/cave2-room-candle-extinguish",
+      "blurb": "Why some drafty rooms snuff out an open flame."
+    },
+
     "robber-npc-logic": {
       "title": "The Robber: A Dynamic NPC with Complex Logic",
       "path": "/act1/robber-character-dynamic-npc",
@@ -59,19 +96,151 @@
       "path": "/dung/robber-demon",
       "blurb": "The background routine that moves the thief around the dungeon."
     },
-    "grue-darkness": {
-      "title": "The Grue: Fear of the Dark",
-      "path": "/act2/grue-description-darkness",
-      "blurb": "The grue's iconic darkness-death text."
+    "treasure-room": {
+      "title": "Treasure Room: Rewards for Exploration",
+      "path": "/dung/treasure-room",
+      "blurb": "The thief's lair, and how his hoard is described."
+    },
+
+    "mirror-room-mechanics": {
+      "title": "Mirror Room: Reflections and Destruction",
+      "path": "/act1/define-mirror-room-reflection-mechanics",
+      "blurb": "How the mirror room's teleport mechanic is defined."
+    },
+    "mirror-room-hackery": {
+      "title": "Breaking and Swapping the Mirror Room",
+      "path": "/act1-37/mirror-room-hackery",
+      "blurb": "The logic for breaking the mirror and swapping which room it sends you to."
+    },
+    "mirror-room-network": {
+      "title": "The Mirror Rooms: A Network of Reflections",
+      "path": "/dung/mirror-room-network",
+      "blurb": "How the two linked mirror rooms are defined as a pair."
+    },
+
+    "cyclops-encounter": {
+      "title": "Cyclops Encounter: Dynamic Responses to Player Actions",
+      "path": "/act1/cyclops-encounter-dynamic-responses",
+      "blurb": "How the cyclops reacts differently depending on what you try."
+    },
+    "cyclops-room-desc": {
+      "title": "Cyclops Room: A Monster Encounter",
+      "path": "/dung/cyclops-room",
+      "blurb": "The room definition for where the cyclops blocks your way."
+    },
+
+    "dam-control-panel": {
+      "title": "Flood Control Dam #3: A Scenic Puzzle",
+      "path": "/act1/define-dam-room-control-panel",
+      "blurb": "The dam room's definition and its control panel."
+    },
+    "dam-turning-mechanics": {
+      "title": "Turning Mechanics and Tool Restrictions",
+      "path": "/act1/turning-mechanics-and-tool-restrictions",
+      "blurb": "Why you need the wrench specifically to turn the bolt."
+    },
+    "dam-lobby-desc": {
+      "title": "Dam Lobby: Humor and World-Building",
+      "path": "/dung/dam-lobby-description",
+      "blurb": "The room description for the dam's control lobby."
+    },
+
+    "vampire-bat-transition": {
+      "title": "How a Vampire Bat Moves You Around",
+      "path": "/act2/vampire-bat-room-transition",
+      "blurb": "The routine that snatches you and drops you in a random mine room."
+    },
+    "coal-gas-explosion": {
+      "title": "The Puzzle That Ends With BOOOOOOOOOOOM",
+      "path": "/act2/coal-gas-explosion-boom-room",
+      "blurb": "Why bringing an open flame into the gas-filled room is fatal."
+    },
+    "coal-mine-rooms": {
+      "title": "Coal Mine Rooms: Atmosphere and Danger",
+      "path": "/dung/coal-mine-rooms",
+      "blurb": "How the mine's twisty, dark passages are defined."
+    },
+
+    "leaf-pile-burning": {
+      "title": "Burning Leaves: A Risky Interaction",
+      "path": "/act1/define-leaf-pile-burning-consequences",
+      "blurb": "What burning the leaf pile does -- and risks."
+    },
+    "locking-unlocking-grates": {
+      "title": "Locking and Unlocking Grates",
+      "path": "/act1/locking-and-unlocking-grates",
+      "blurb": "The mechanism behind the maze's grate shortcut."
+    },
+
+    "sword-glow": {
+      "title": "Sword Glow and Environmental Feedback",
+      "path": "/act1/sword-glow-and-environmental-feedback",
+      "blurb": "How the elvish sword senses and warns you of nearby danger."
+    },
+
+    "boat-instructions": {
+      "title": "Warranty: 76 Milliseconds of Confidence",
+      "path": "/dung/frobozz-magic-boat-instructions",
+      "blurb": "The inflatable boat's joke warranty label, verbatim from the source."
+    },
+    "verbs-and-synonyms": {
+      "title": "How Zork Taught Computers to Understand You",
+      "path": "/dung/verbs-and-synonyms",
+      "blurb": "The vocabulary table mapping words like 'take' and 'grab' to one verb."
+    },
+    "kitchen-window": {
+      "title": "Opening and Closing the Kitchen Window",
+      "path": "/act1/define-window-function-interaction",
+      "blurb": "The only unlocked way into the house, and how it's implemented."
     }
   },
-  "general": ["gwim", "fwim", "sparse-parsing", "dynamic-room-descriptions"],
+
+  "general": [
+    "gwim",
+    "fwim",
+    "sparse-parsing",
+    "orphaned-command-resolution",
+    "dynamic-room-descriptions",
+    "room-definition",
+    "flagword-room-bits",
+    "find-room-and-find-obj",
+    "verbs-and-synonyms"
+  ],
+
   "byRoom": {
-    "GROUP-MIRROR-ROOM": ["mirror-room-mechanics", "mirror-room-hackery"],
-    "TREASURE-ROOM": ["robber-npc-logic", "robber-demon"]
+    "LIVING-ROOM": ["dynamic-room-descriptions"],
+    "KITCHEN": ["kitchen-window"],
+    "GROUP-MIRROR-ROOM": ["mirror-room-mechanics", "mirror-room-hackery", "mirror-room-network"],
+    "TREASURE-ROOM": ["robber-npc-logic", "robber-demon", "treasure-room"],
+    "CYCLOPS-ROOM": ["cyclops-encounter", "cyclops-room-desc"],
+    "DAM-ROOM": ["dam-control-panel", "dam-turning-mechanics"],
+    "DAM-LOBBY": ["dam-lobby-desc"],
+    "BAT-ROOM": ["vampire-bat-transition"],
+    "GAS-ROOM": ["coal-gas-explosion"],
+    "GROUP-COAL-MINE": ["coal-mine-rooms"],
+    "GROUP-CLEARING": ["leaf-pile-burning"],
+    "GRATING-ROOM": ["locking-unlocking-grates"],
+    "TROLL-ROOM": ["sword-glow"]
   },
+
   "byHintTopic": {
-    "light": ["pitch-black-grue", "clock-demon", "lamp-clock-interrupt", "grue-darkness"],
-    "thief": ["robber-npc-logic", "robber-demon"]
+    "trapdoor": ["dynamic-room-descriptions"],
+    "light": [
+      "pitch-black-grue",
+      "clock-demon",
+      "lamp-clock-interrupt",
+      "grue-darkness",
+      "match-lighting",
+      "candle-lighting",
+      "light-intensity-lifecycle",
+      "cave2-candle-extinguish"
+    ],
+    "troll": ["sword-glow"],
+    "cyclops": ["cyclops-encounter", "cyclops-room-desc"],
+    "dam": ["dam-control-panel", "dam-turning-mechanics", "dam-lobby-desc"],
+    "bat": ["vampire-bat-transition", "coal-gas-explosion", "coal-mine-rooms"],
+    "thief": ["robber-npc-logic", "robber-demon", "treasure-room"],
+    "maze": ["leaf-pile-burning", "locking-unlocking-grates"],
+    "endgame": ["boat-instructions"]
   }
 }
