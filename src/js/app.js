@@ -69,10 +69,62 @@
         if (!toggle || !panel) {
             return;
         }
-        toggle.addEventListener('click', function () {
-            var collapsed = panel.classList.toggle('collapsed');
+
+        function setCollapsed(collapsed) {
+            panel.classList.toggle('collapsed', collapsed);
             toggle.textContent = collapsed ? 'Show Hints' : 'Hide Hints';
             toggle.setAttribute('aria-expanded', String(!collapsed));
+        }
+
+        toggle.addEventListener('click', function () {
+            setCollapsed(!panel.classList.contains('collapsed'));
+        });
+
+        initMobileAutoHide(setCollapsed);
+    }
+
+    var MOBILE_QUERY = '(max-width: 760px)';
+    var MOBILE_SCROLL_THRESHOLD = 12;
+
+    function initMobileAutoHide(setCollapsed) {
+        // On narrow (mobile) screens the assist panel sits below the game
+        // text and eats into the limited vertical space, so it starts
+        // hidden there and only reappears when the player scrolls the game
+        // text back up (the natural "I want to check a hint" gesture) --
+        // scrolling back down toward the latest text hides it again. Desktop
+        // is unaffected; the panel is only ever auto-hidden below this
+        // breakpoint, and the manual Hide/Show Hints button still works at
+        // any width.
+        var gameport = document.getElementById('gameport');
+        var mobileQuery = window.matchMedia(MOBILE_QUERY);
+        var lastScrollTop = 0;
+
+        if (mobileQuery.matches) {
+            setCollapsed(true);
+        }
+
+        if (gameport) {
+            gameport.addEventListener('scroll', function (ev) {
+                if (!mobileQuery.matches) {
+                    return;
+                }
+                var target = ev.target;
+                if (!target || typeof target.scrollTop !== 'number') {
+                    return;
+                }
+                var current = target.scrollTop;
+                var delta = current - lastScrollTop;
+                if (Math.abs(delta) > MOBILE_SCROLL_THRESHOLD) {
+                    setCollapsed(delta > 0);
+                    lastScrollTop = current;
+                }
+            }, true);
+        }
+
+        mobileQuery.addEventListener('change', function (ev) {
+            if (!ev.matches) {
+                setCollapsed(false);
+            }
         });
     }
 
