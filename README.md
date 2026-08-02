@@ -25,6 +25,16 @@ sidebar of graduated, multiple-choice hints for when you get stuck.
   as typing the commands yourself), **A−**/**A+** to resize the text, and a
   font toggle between the retro CRT typeface and a cleaner modern monospace
   font — all persisted via `localStorage`.
+- **`undo`**: type it in the game console to step back one turn (repeatable
+  for multiple turns). Zork I is compiled for Z-machine v3, which has no
+  native UNDO opcode (that arrived in v5), so this is implemented in
+  `src/js/undo.js` by snapshotting the VM's own memory after every turn and
+  rolling back on request, then auto-submitting a `look` so the game's own
+  code redraws the status line and room description. That auto-`look` is a
+  real turn like any other, so — one trade-off worth knowing — the turn
+  counter won't visibly decrease the way you might expect from undo, even
+  though room/inventory/flags are genuinely rolled back; see the comments in
+  `src/js/undo.js` for the full reasoning.
 - **Fully static** — no backend, no database, no API keys. Deploys to Azure
   Static Web Apps' **Free** tier at no cost.
 

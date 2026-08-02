@@ -49,6 +49,12 @@
                     do_vm_autosave: true,
                     clear_vm_autosave: startFresh
                 };
+                // Exposed for js/undo.js, which needs direct access to the
+                // VM's own save_file/restore_file (Quetzal) and to Glk for
+                // printing its own messages -- kept as a small shared
+                // handle rather than restructuring app.js around events.
+                window.ZorkAssistVM = vm;
+                window.ZorkAssistGlk = Glk;
                 vm.prepare(new Uint8Array(buffer), options);
                 Glk.init(options);
             })
