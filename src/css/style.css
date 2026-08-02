@@ -758,7 +758,10 @@ html, body {
     flex: 1 1 auto;
   }
 
-  .edge-peek.visible {
+  /* Always present on mobile (not just while hidden) -- a plain manual
+     show/hide toggle for the header and hints panel, independent of the
+     focus-driven auto-hide above. */
+  .edge-peek {
     display: block;
     width: 100%;
     flex: 0 0 auto;
@@ -774,15 +777,15 @@ html, body {
     text-align: center;
   }
 
-  #header-peek.visible {
+  #header-peek {
     border-bottom: 2px solid var(--border);
   }
 
-  #hints-peek.visible {
+  #hints-peek {
     border-top: 2px solid var(--border);
   }
 
-  .edge-peek.visible:hover {
+  .edge-peek:hover {
     background: var(--fg-dim);
     color: var(--bg);
   }

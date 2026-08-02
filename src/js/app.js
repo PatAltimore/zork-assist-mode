@@ -88,62 +88,46 @@
     function initMobileAutoHide(setHintsCollapsed) {
         // On narrow (mobile) screens the assist panel sits below the game
         // text and the header sits above it, both eating into the limited
-        // vertical space available to read the adventure text. Earlier
-        // versions of this tried to detect "the user scrolled" from the
-        // buffer's 'scroll' event, but that event also fires from things
-        // that have nothing to do with the user -- new game text arriving,
-        // and (worse) the browser adjusting scrollTop on its own right
-        // after our own hide/show resizes the game panel, which would
-        // immediately re-hide whatever a peek-button tap had just shown.
-        // Listening for the actual input gesture instead (wheel/touch drag)
-        // sidesteps all of that: those events only ever fire from a real
-        // user action, never as a side effect of layout changes. So: any
-        // such gesture in the game text hides both, and each has its own
-        // small "peek" tab (shown only while hidden) to bring it back on
-        // tap. The on-screen keyboard is the other big space-eater --
-        // focusing the command line hides both automatically too (and
-        // brings them back on blur), since that's exactly when the least
-        // screen is left for the text you're replying to. Desktop is
-        // unaffected, and the manual Hide/Show Hints button still works at
-        // any width.
+        // vertical space available to read the adventure text. A previous
+        // version also hid both on any wheel/touch scroll gesture in the
+        // game text, but that turned out to misbehave around the on-screen
+        // keyboard on real devices, so scroll no longer touches this at
+        // all. What's left: focusing the command line (the keyboard coming
+        // up) hides both automatically and brings them back on blur, since
+        // that's exactly when the least screen is left for the text you're
+        // replying to -- and each also has its own small tab (always
+        // present on mobile, right where the element would be) that's a
+        // plain manual show/hide toggle, independent of anything else.
+        // Desktop is unaffected, and the header's own Hide/Show Hints
+        // button still works at any width.
         var gameport = document.getElementById('gameport');
         var header = document.getElementById('app-header');
         var headerPeek = document.getElementById('header-peek');
         var hintsPeek = document.getElementById('hints-peek');
         var mobileQuery = window.matchMedia(MOBILE_QUERY);
+        var hintsHidden = false;
 
         function setHeaderHidden(v) {
-            if (!header || header.classList.contains('header-hidden') === v) {
+            if (!header) {
                 return;
             }
             header.classList.toggle('header-hidden', v);
             if (headerPeek) {
-                headerPeek.classList.toggle('visible', v);
+                headerPeek.textContent = v ? '▾ Menu' : '▴ Hide Menu';
+                headerPeek.setAttribute('aria-label', v ? 'Show header' : 'Hide header');
             }
         }
 
         function setHintsHidden(v) {
-            if (hintsPeek && hintsPeek.classList.contains('visible') === v) {
-                return;
-            }
+            hintsHidden = v;
             setHintsCollapsed(v);
             if (hintsPeek) {
-                hintsPeek.classList.toggle('visible', v);
+                hintsPeek.textContent = v ? '▴ Hints' : '▾ Hide Hints';
+                hintsPeek.setAttribute('aria-label', v ? 'Show hints panel' : 'Hide hints panel');
             }
-        }
-
-        function hideBoth() {
-            if (!mobileQuery.matches) {
-                return;
-            }
-            setHeaderHidden(true);
-            setHintsHidden(true);
         }
 
         if (gameport) {
-            gameport.addEventListener('wheel', hideBoth, { passive: true, capture: true });
-            gameport.addEventListener('touchmove', hideBoth, { passive: true, capture: true });
-
             // Tapping the command line to type brings up the on-screen
             // keyboard, which covers a big chunk of the screen and leaves
             // very little room to see the text you're responding to --
@@ -168,13 +152,13 @@
 
         if (headerPeek) {
             headerPeek.addEventListener('click', function () {
-                setHeaderHidden(false);
+                setHeaderHidden(!header.classList.contains('header-hidden'));
             });
         }
 
         if (hintsPeek) {
             hintsPeek.addEventListener('click', function () {
-                setHintsHidden(false);
+                setHintsHidden(!hintsHidden);
             });
         }
 
