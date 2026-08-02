@@ -23,8 +23,10 @@ sidebar of graduated, multiple-choice hints for when you get stuck.
   yourself. A **New Game** button clears it and starts over.
 - **Header controls**: **Save**/**Load** buttons for named save slots (same
   as typing the commands yourself), **A−**/**A+** to resize the text, and a
-  font toggle between the retro CRT typeface and a cleaner modern monospace
-  font — all persisted via `localStorage`.
+  **Modern Terminal**/**Retro CRT** toggle that switches the whole look
+  between a green-phosphor CRT (scanlines, glow) and a flat modern terminal
+  palette — both use the same clean monospace font. All persisted via
+  `localStorage`.
 - **`undo`**: type it in the game console to step back one turn (repeatable
   for multiple turns). Zork I is compiled for Z-machine v3, which has no
   native UNDO opcode (that arrived in v5), so this is implemented in
@@ -43,7 +45,7 @@ sidebar of graduated, multiple-choice hints for when you get stuck.
 ```
 src/                     Everything deployed to Azure Static Web Apps
   index.html             Page shell: game console + assist sidebar (Hints/Map tabs)
-  css/style.css          Retro CRT terminal theme
+  css/style.css          Terminal theme (retro CRT / modern), toggleable
   js/app.js              Boots the Z-machine engine, loads the story file
   js/hints.js            Assist-mode hint sidebar logic
   js/map.js              Fog-of-war auto-map: tracks visited rooms, renders grid

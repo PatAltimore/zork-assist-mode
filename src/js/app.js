@@ -5,7 +5,7 @@
     var MAP_VISITED_KEY = 'zork-assist-map-visited-v1';
     var MAP_CURRENT_KEY = 'zork-assist-map-current-v1';
     var FONT_SIZE_KEY = 'zork-assist-font-size-px';
-    var FONT_STYLE_KEY = 'zork-assist-font-style';
+    var THEME_KEY = 'zork-assist-theme';
 
     var DEFAULT_FONT_SIZE = 16;
     var MIN_FONT_SIZE = 12;
@@ -150,29 +150,29 @@
         });
     }
 
-    function initFontStyleToggle() {
-        var toggle = document.getElementById('font-style-toggle');
+    function initThemeToggle() {
+        var toggle = document.getElementById('theme-toggle');
         if (!toggle) {
             return;
         }
 
         var modern = false;
         try {
-            modern = localStorage.getItem(FONT_STYLE_KEY) === 'modern';
+            modern = localStorage.getItem(THEME_KEY) === 'modern';
         } catch (e) {
-            // Ignore -- default to retro.
+            // Ignore -- default to the retro CRT look.
         }
 
         function apply() {
-            document.body.classList.toggle('font-modern', modern);
-            toggle.textContent = modern ? 'Retro Font' : 'Modern Font';
+            document.body.classList.toggle('theme-modern', modern);
+            toggle.textContent = modern ? 'Retro CRT' : 'Modern Terminal';
         }
         apply();
 
         toggle.addEventListener('click', function () {
             modern = !modern;
             try {
-                localStorage.setItem(FONT_STYLE_KEY, modern ? 'modern' : 'retro');
+                localStorage.setItem(THEME_KEY, modern ? 'modern' : 'crt');
             } catch (e) {
                 // Ignore -- just won't persist across reloads.
             }
@@ -209,7 +209,7 @@
             initHintToggle();
             initSaveLoadButtons();
             initFontSizeButtons();
-            initFontStyleToggle();
+            initThemeToggle();
             initNewGameButton();
         });
     } else {
@@ -217,7 +217,7 @@
         initHintToggle();
         initSaveLoadButtons();
         initFontSizeButtons();
-        initFontStyleToggle();
+        initThemeToggle();
         initNewGameButton();
     }
 })();

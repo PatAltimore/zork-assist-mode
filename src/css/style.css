@@ -1,27 +1,44 @@
-@font-face {
-  font-family: 'VT323';
-  src: url('../vendor/fonts/VT323-Regular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
+  /* Retro CRT theme (default) */
   --bg: #000000;
   --panel-bg: #001a04;
-  --phosphor: #33ff66;
-  --phosphor-dim: #1c8f3d;
-  --phosphor-bright: #b6ffcf;
+  --fg: #33ff66;
+  --fg-dim: #1c8f3d;
+  --fg-bright: #b6ffcf;
   --border: #1c8f3d;
-  --retro-font: 'VT323', 'Courier New', Courier, monospace;
-  --modern-font: Consolas, Menlo, 'Courier New', monospace;
-  --crt-font: var(--retro-font);
+
+  --text-glow: 0 0 4px var(--fg);
+  --title-glow: 0 0 4px var(--fg), 0 0 10px var(--fg-dim);
+  --body-glow: 0 0 3px rgba(51, 255, 102, 0.6);
+  --blockquote-bg: rgba(51, 255, 102, 0.08);
+  --active-tab-bg: rgba(51, 255, 102, 0.12);
+  --current-room-bg: rgba(51, 255, 102, 0.18);
+  --current-room-glow: 0 0 6px rgba(51, 255, 102, 0.6);
+
+  --font: Consolas, Menlo, 'Courier New', monospace;
 }
 
-/* Modern-font mode: swap the one variable everything else reads from.
-   Still monospace -- the status line's column alignment depends on it. */
-body.font-modern {
-  --crt-font: var(--modern-font);
+/* Modern Windows Terminal theme: swap the palette everything else reads
+   from -- flat gray-on-black, no glow, no scanlines. */
+body.theme-modern {
+  --bg: #0c0c0c;
+  --panel-bg: #161616;
+  --fg: #cccccc;
+  --fg-dim: #8a8a8a;
+  --fg-bright: #ffffff;
+  --border: #3a3a3a;
+
+  --text-glow: none;
+  --title-glow: none;
+  --body-glow: none;
+  --blockquote-bg: rgba(255, 255, 255, 0.06);
+  --active-tab-bg: rgba(255, 255, 255, 0.10);
+  --current-room-bg: rgba(255, 255, 255, 0.14);
+  --current-room-glow: none;
+}
+
+body.theme-modern #crt-overlay {
+  display: none;
 }
 
 * {
@@ -36,8 +53,8 @@ html, body {
   height: 100%;
   margin: 0;
   background: var(--bg);
-  color: var(--phosphor);
-  font-family: var(--crt-font);
+  color: var(--fg);
+  font-family: var(--font);
 }
 
 #crt-overlay {
@@ -80,18 +97,18 @@ html, body {
 }
 
 #app-header h1 {
-  font-family: var(--crt-font);
+  font-family: var(--font);
   font-size: 2em;
   font-weight: normal;
   letter-spacing: 0.12em;
   margin: 0;
-  color: var(--phosphor-bright);
-  text-shadow: 0 0 4px var(--phosphor), 0 0 10px var(--phosphor-dim);
+  color: var(--fg-bright);
+  text-shadow: var(--title-glow);
 }
 
 #app-header .subtitle {
   font-size: 0.55em;
-  color: var(--phosphor);
+  color: var(--fg);
   font-weight: normal;
   letter-spacing: 0.06em;
   margin-left: 0.6em;
@@ -114,18 +131,18 @@ html, body {
 #new-game,
 #font-size-decrease,
 #font-size-increase,
-#font-style-toggle,
+#theme-toggle,
 #hint-toggle {
   background: transparent;
-  color: var(--phosphor-bright);
+  color: var(--fg-bright);
   border: 1px solid var(--border);
   border-radius: 0;
   padding: 0.3em 0.8em;
-  font-family: var(--crt-font);
+  font-family: var(--font);
   font-size: 1.1em;
   letter-spacing: 0.05em;
   cursor: pointer;
-  text-shadow: 0 0 4px var(--phosphor);
+  text-shadow: var(--text-glow);
 }
 
 #save-game:hover,
@@ -133,10 +150,10 @@ html, body {
 #new-game:hover,
 #font-size-decrease:hover,
 #font-size-increase:hover,
-#font-style-toggle:hover,
+#theme-toggle:hover,
 #hint-toggle:hover {
-  background: var(--phosphor-dim);
-  color: #000;
+  background: var(--fg-dim);
+  color: var(--bg);
   text-shadow: none;
 }
 
@@ -155,7 +172,7 @@ html, body {
   opacity: 0.4;
   cursor: default;
   background: transparent;
-  color: var(--phosphor-dim);
+  color: var(--fg-dim);
   text-shadow: none;
 }
 
@@ -179,66 +196,67 @@ html, body {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #000;
+  background: var(--bg);
 }
 
-/* --- Retrofit GlkOte's default (cream/serif Infocom) look into a green-phosphor terminal --- */
+/* --- Retrofit GlkOte's default (cream/serif Infocom) look into the
+       current theme's terminal palette --- */
 
 .WindowFrame {
-  background: #000 !important;
+  background: var(--bg) !important;
 }
 
 .BufferWindow,
 .GridWindow {
-  font-family: var(--crt-font) !important;
+  font-family: var(--font) !important;
   font-size: 1.625rem !important;
   line-height: 1.25 !important;
-  color: var(--phosphor);
-  text-shadow: 0 0 3px rgba(51, 255, 102, 0.6);
+  color: var(--fg);
+  text-shadow: var(--body-glow);
   padding: 10px 14px !important;
 }
 
 .GridWindow {
-  background: #000 !important;
+  background: var(--bg) !important;
 }
 
 .Style_input,
 .Input,
 .BufferWindow .Input,
 .GridWindow .Input {
-  font-family: var(--crt-font) !important;
+  font-family: var(--font) !important;
   font-size: 1.625rem !important;
-  color: var(--phosphor-bright) !important;
-  text-shadow: 0 0 4px var(--phosphor);
-  caret-color: var(--phosphor-bright);
+  color: var(--fg-bright) !important;
+  text-shadow: var(--text-glow);
+  caret-color: var(--fg-bright);
 }
 
 .Style_header,
 .Style_subheader,
 .Style_alert {
-  color: var(--phosphor-bright);
+  color: var(--fg-bright);
 }
 
 .Style_emphasized,
 .Style_note {
-  color: var(--phosphor-dim);
+  color: var(--fg-dim);
 }
 
 .Style_blockquote {
-  background: rgba(51, 255, 102, 0.08);
+  background: var(--blockquote-bg);
 }
 
 .MorePrompt {
-  background: var(--phosphor-dim) !important;
-  color: #000 !important;
-  font-family: var(--crt-font) !important;
+  background: var(--fg-dim) !important;
+  color: var(--bg) !important;
+  font-family: var(--font) !important;
 }
 
 .PreviousMark {
-  background: var(--phosphor) !important;
+  background: var(--fg) !important;
 }
 
-/* Retro scrollbar (WebKit) */
+/* Scrollbar (WebKit) */
 .BufferWindow::-webkit-scrollbar,
 #assist-panel::-webkit-scrollbar {
   width: 10px;
@@ -246,12 +264,12 @@ html, body {
 
 .BufferWindow::-webkit-scrollbar-track,
 #assist-panel::-webkit-scrollbar-track {
-  background: #000;
+  background: var(--bg);
 }
 
 .BufferWindow::-webkit-scrollbar-thumb,
 #assist-panel::-webkit-scrollbar-thumb {
-  background: var(--phosphor-dim);
+  background: var(--fg-dim);
 }
 
 /* --- Assist sidebar --- */
@@ -263,7 +281,7 @@ html, body {
   border-left: 2px solid var(--border);
   padding: 1em;
   overflow-y: auto;
-  font-family: var(--crt-font);
+  font-family: var(--font);
 }
 
 #assist-panel.collapsed {
@@ -279,10 +297,10 @@ html, body {
 .assist-tab {
   flex: 1 1 auto;
   background: transparent;
-  color: var(--phosphor-dim);
+  color: var(--fg-dim);
   border: 1px solid var(--border);
   padding: 0.4em;
-  font-family: var(--crt-font);
+  font-family: var(--font);
   font-size: 1.15em;
   letter-spacing: 0.05em;
   cursor: pointer;
@@ -290,19 +308,19 @@ html, body {
 }
 
 .assist-tab.active {
-  color: var(--phosphor-bright);
-  background: rgba(51, 255, 102, 0.12);
-  text-shadow: 0 0 4px var(--phosphor);
+  color: var(--fg-bright);
+  background: var(--active-tab-bg);
+  text-shadow: var(--text-glow);
 }
 
 #assist-panel h2 {
   margin-top: 0;
   font-size: 1.5em;
   font-weight: normal;
-  color: var(--phosphor-bright);
+  color: var(--fg-bright);
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  text-shadow: 0 0 4px var(--phosphor);
+  text-shadow: var(--text-glow);
 }
 
 #assist-panel h2::before {
@@ -313,7 +331,7 @@ html, body {
   display: block;
   font-size: 1.1em;
   margin-bottom: 0.2em;
-  color: var(--phosphor-dim);
+  color: var(--fg-dim);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -322,18 +340,18 @@ html, body {
 .assist-note {
   font-size: 1.15em;
   line-height: 1.35;
-  color: var(--phosphor-dim);
+  color: var(--fg-dim);
 }
 
 #hint-topic {
   width: 100%;
   padding: 0.4em;
   margin-bottom: 1em;
-  background: #000;
-  color: var(--phosphor-bright);
+  background: var(--bg);
+  color: var(--fg-bright);
   border: 1px solid var(--border);
   border-radius: 0;
-  font-family: var(--crt-font);
+  font-family: var(--font);
   font-size: 1.2em;
 }
 
@@ -345,14 +363,14 @@ html, body {
 }
 
 .hint-level {
-  background: #000;
+  background: var(--bg);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--phosphor);
+  border-left: 3px solid var(--fg);
   border-radius: 0;
   padding: 0.5em 0.7em;
   font-size: 1.15em;
   line-height: 1.3;
-  color: var(--phosphor);
+  color: var(--fg);
 }
 
 .hint-level .hint-tier-label {
@@ -360,7 +378,7 @@ html, body {
   font-size: 0.85em;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--phosphor-bright);
+  color: var(--fg-bright);
   margin-bottom: 0.2em;
 }
 
@@ -381,19 +399,19 @@ html, body {
   border-radius: 0;
   border: 1px solid var(--border);
   cursor: pointer;
-  font-family: var(--crt-font);
+  font-family: var(--font);
   font-size: 1.2em;
   letter-spacing: 0.04em;
   background: transparent;
-  color: var(--phosphor-bright);
-  text-shadow: 0 0 4px var(--phosphor);
+  color: var(--fg-bright);
+  text-shadow: var(--text-glow);
 }
 
 #hint-reveal:hover,
 #hint-reset:hover,
 #map-clear:hover {
-  background: var(--phosphor-dim);
-  color: #000;
+  background: var(--fg-dim);
+  color: var(--bg);
   text-shadow: none;
 }
 
@@ -401,7 +419,7 @@ html, body {
   opacity: 0.4;
   cursor: default;
   background: transparent;
-  color: var(--phosphor-dim);
+  color: var(--fg-dim);
   text-shadow: none;
 }
 
@@ -420,7 +438,7 @@ html, body {
   font-weight: normal;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--phosphor-dim);
+  color: var(--fg-dim);
 }
 
 .map-grid {
@@ -436,8 +454,8 @@ html, body {
   min-height: 3.2em;
   padding: 0.2em;
   border: 1px solid var(--border);
-  background: #000;
-  color: var(--phosphor);
+  background: var(--bg);
+  color: var(--fg);
   font-size: 0.75em;
   line-height: 1.1;
   overflow: hidden;
@@ -445,16 +463,16 @@ html, body {
 
 .map-room.frontier {
   border-style: dashed;
-  color: var(--phosphor-dim);
+  color: var(--fg-dim);
   opacity: 0.6;
 }
 
 .map-room.current {
-  border-color: var(--phosphor-bright);
-  color: var(--phosphor-bright);
-  background: rgba(51, 255, 102, 0.18);
-  text-shadow: 0 0 4px var(--phosphor);
-  box-shadow: 0 0 6px rgba(51, 255, 102, 0.6);
+  border-color: var(--fg-bright);
+  color: var(--fg-bright);
+  background: var(--current-room-bg);
+  text-shadow: var(--text-glow);
+  box-shadow: var(--current-room-glow);
 }
 
 @media (max-width: 760px) {

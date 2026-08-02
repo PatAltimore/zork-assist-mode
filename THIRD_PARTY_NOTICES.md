@@ -9,7 +9,6 @@ original license; see the linked notice/license file for full text.
 | ifvms.js (ZVM Z-machine engine) | `src/vendor/zvm.min.js` | BSD | From [curiousdannii/ifvms.js](https://github.com/curiousdannii/ifvms.js). See `src/vendor/LICENSE-ifvms.txt`. |
 | GlkOte, GlkApi, Dialog | `src/vendor/glkote.js`, `glkapi.js`, `dialog.js`, `glkote.css`, `dialog.css` | MIT (Copyright 2008-2025 Andrew Plotkin) | From [erkyrath/glkote](https://github.com/erkyrath/glkote). See `src/vendor/LICENSE-glkote.txt`. |
 | jQuery 1.12.4 | `src/vendor/jquery-1.12.4.min.js` | MIT | Required by GlkOte's DOM handling. |
-| VT323 font | `src/vendor/fonts/VT323-Regular.ttf` | SIL Open Font License 1.1 | Retro terminal typeface, from [Google Fonts](https://github.com/google/fonts/tree/main/ofl/vt323). See `src/vendor/fonts/OFL.txt`. |
 
 ## Build-time tooling (not redistributed)
 
