@@ -84,8 +84,7 @@
     }
 
     var MOBILE_QUERY = '(max-width: 760px)';
-    var MOBILE_SCROLL_THRESHOLD = 12;
-    var MOBILE_EDGE_TOLERANCE = 8;
+    var MOBILE_EDGE_TOLERANCE = 20;
     var MOBILE_SUPPRESS_MS = 250;
 
     function initMobileAutoHide(setHintsCollapsed) {
@@ -156,7 +155,7 @@
                 if (Date.now() < suppressUntil) {
                     return;
                 }
-                if (Math.abs(delta) < MOBILE_SCROLL_THRESHOLD) {
+                if (delta === 0) {
                     return;
                 }
 
