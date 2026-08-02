@@ -301,23 +301,25 @@
     }
 
     function initTabs() {
-        var tabHints = document.getElementById('tab-hints');
-        var tabMap = document.getElementById('tab-map');
-        var viewHints = document.getElementById('hints-view');
-        var viewMap = document.getElementById('map-view');
+        // Generic over however many .assist-tab buttons exist -- each one's
+        // aria-controls points at the panel it activates.
+        var tabs = Array.prototype.slice.call(document.querySelectorAll('.assist-tab'));
 
-        function activate(tab) {
-            var showMap = tab === 'map';
-            tabHints.classList.toggle('active', !showMap);
-            tabMap.classList.toggle('active', showMap);
-            tabHints.setAttribute('aria-selected', String(!showMap));
-            tabMap.setAttribute('aria-selected', String(showMap));
-            viewHints.hidden = showMap;
-            viewMap.hidden = !showMap;
+        function activate(target) {
+            tabs.forEach(function (tab) {
+                var isActive = tab === target;
+                tab.classList.toggle('active', isActive);
+                tab.setAttribute('aria-selected', String(isActive));
+                var panel = document.getElementById(tab.getAttribute('aria-controls'));
+                if (panel) {
+                    panel.hidden = !isActive;
+                }
+            });
         }
 
-        tabHints.addEventListener('click', function () { activate('hints'); });
-        tabMap.addEventListener('click', function () { activate('map'); });
+        tabs.forEach(function (tab) {
+            tab.addEventListener('click', function () { activate(tab); });
+        });
     }
 
     if (clearButton) {

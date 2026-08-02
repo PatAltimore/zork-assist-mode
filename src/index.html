@@ -43,6 +43,7 @@
       <div id="assist-tabs" role="tablist">
         <button id="tab-hints" class="assist-tab active" type="button" role="tab" aria-selected="true" aria-controls="hints-view">Hints</button>
         <button id="tab-map" class="assist-tab" type="button" role="tab" aria-selected="false" aria-controls="map-view">Map</button>
+        <button id="tab-code" class="assist-tab" type="button" role="tab" aria-selected="false" aria-controls="code-view">Code</button>
       </div>
 
       <div id="hints-view" role="tabpanel" aria-labelledby="tab-hints">
@@ -67,6 +68,23 @@
         <div id="map-levels"></div>
         <button id="map-clear" type="button">Forget map</button>
       </div>
+
+      <div id="code-view" role="tabpanel" aria-labelledby="tab-code" hidden>
+        <h2>Explore the Code</h2>
+        <p class="assist-intro">See how Zork's original 1977 MDL source (recovered from MIT, hosted on <a href="https://blue-rock-0e6a0831e.7.azurestaticapps.net/#/zork" target="_blank" rel="noopener noreferrer">Code Museum</a>) implements what you're encountering. That's the original mainframe version &mdash; routine names differ from this ZIL port, but the rooms and puzzles are the same game.</p>
+
+        <div id="code-room-section" hidden>
+          <label>Here: <span id="code-room-name"></span></label>
+          <ul id="code-room-links" class="code-links"></ul>
+        </div>
+
+        <label for="code-topic">By puzzle topic</label>
+        <select id="code-topic"></select>
+        <ul id="code-topic-links" class="code-links"></ul>
+
+        <h3>How the engine works</h3>
+        <ul id="code-general-links" class="code-links"></ul>
+      </div>
     </aside>
   </main>
 </div>
@@ -79,6 +97,7 @@
 <script src="vendor/gidispa-zvm.js"></script>
 <script src="js/hints.js"></script>
 <script src="js/map.js"></script>
+<script src="js/codemuseum.js"></script>
 <script src="js/app.js"></script>
 <script src="js/undo.js"></script>
 </body>

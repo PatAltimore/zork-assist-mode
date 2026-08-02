@@ -1,0 +1,77 @@
+{
+  "base": "https://blue-rock-0e6a0831e.7.azurestaticapps.net/#/zork",
+  "siteLabel": "Code Museum",
+  "overviewPath": "",
+  "note": "Code Museum documents the original 1977 MIT MDL (Muddle) mainframe source, recovered from MIT's Tapes of Tech Square -- not the ZIL/Infocom port this game runs. Routine and file names differ between the two, but the rooms and puzzles are the same game.",
+  "bookmarks": {
+    "gwim": {
+      "title": "GWIM: Get What I Mean",
+      "path": "/np/gwim-get-what-i-mean",
+      "blurb": "How the parser infers an object you didn't explicitly name."
+    },
+    "fwim": {
+      "title": "FWIM: Finding What I Mean",
+      "path": "/np/fwim-find-what-i-mean",
+      "blurb": "Resolving ambiguous or orphaned commands."
+    },
+    "sparse-parsing": {
+      "title": "Sparse Parsing: Handling Ambiguity",
+      "path": "/np/sparse-parsing-subroutine",
+      "blurb": "How the parser copes with incomplete input."
+    },
+    "dynamic-room-descriptions": {
+      "title": "Dynamic Room Descriptions Based on State",
+      "path": "/act1-37/dynamic-room-descriptions",
+      "blurb": "Why a room's text changes as the world state changes."
+    },
+    "pitch-black-grue": {
+      "title": "Room Descriptions: Pitch Black and the Grue",
+      "path": "/rooms/room-info-subroutine",
+      "blurb": "How the game decides a room is dark and describes it that way."
+    },
+    "clock-demon": {
+      "title": "Managing Timed Events with Demons",
+      "path": "/rooms/clock-demon-event-handler",
+      "blurb": "The 'demon' system behind lamp dimming and other timers."
+    },
+    "lamp-clock-interrupt": {
+      "title": "Setting Up Light Interrupts for Immersion",
+      "path": "/dung/lamp-clock-interrupt-setup",
+      "blurb": "How the lamp's battery countdown is wired up."
+    },
+    "mirror-room-mechanics": {
+      "title": "Mirror Room: Reflections and Destruction",
+      "path": "/act1/define-mirror-room-reflection-mechanics",
+      "blurb": "How the mirror room's teleport mechanic is defined."
+    },
+    "mirror-room-hackery": {
+      "title": "Breaking and Swapping the Mirror Room",
+      "path": "/act1-37/mirror-room-hackery",
+      "blurb": "The logic for breaking the mirror and swapping which room it sends you to."
+    },
+    "robber-npc-logic": {
+      "title": "The Robber: A Dynamic NPC with Complex Logic",
+      "path": "/act1/robber-character-dynamic-npc",
+      "blurb": "How the thief's behavior and item-stealing are implemented."
+    },
+    "robber-demon": {
+      "title": "The Robber Demon: Dynamic NPCs",
+      "path": "/dung/robber-demon",
+      "blurb": "The background routine that moves the thief around the dungeon."
+    },
+    "grue-darkness": {
+      "title": "The Grue: Fear of the Dark",
+      "path": "/act2/grue-description-darkness",
+      "blurb": "The grue's iconic darkness-death text."
+    }
+  },
+  "general": ["gwim", "fwim", "sparse-parsing", "dynamic-room-descriptions"],
+  "byRoom": {
+    "GROUP-MIRROR-ROOM": ["mirror-room-mechanics", "mirror-room-hackery"],
+    "TREASURE-ROOM": ["robber-npc-logic", "robber-demon"]
+  },
+  "byHintTopic": {
+    "light": ["pitch-black-grue", "clock-demon", "lamp-clock-interrupt", "grue-darkness"],
+    "thief": ["robber-npc-logic", "robber-demon"]
+  }
+}

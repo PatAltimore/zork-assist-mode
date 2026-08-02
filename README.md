@@ -42,6 +42,14 @@ sidebar of graduated, multiple-choice hints for when you get stuck.
   counter won't visibly decrease the way you might expect from undo, even
   though room/inventory/flags are genuinely rolled back; see the comments in
   `src/js/undo.js` for the full reasoning.
+- **Code tab**: links out to [Code Museum](https://blue-rock-0e6a0831e.7.azurestaticapps.net/#/zork),
+  an annotated-source-code site, contextual to the room you're in and the
+  hint topic you've picked, plus a general "how the engine works" list.
+  Code Museum documents the *original* 1977 MIT MDL mainframe source (not
+  the ZIL/Infocom port this game runs — different routine names, same
+  rooms and puzzles), so the mapping in `src/data/code-museum-links.json`
+  is hand-curated rather than derived automatically; extend it as more
+  bookmarks get added on the Code Museum side.
 - **Fully static** — no backend, no database, no API keys. Deploys to Azure
   Static Web Apps' **Free** tier at no cost.
 
@@ -49,14 +57,16 @@ sidebar of graduated, multiple-choice hints for when you get stuck.
 
 ```
 src/                     Everything deployed to Azure Static Web Apps
-  index.html             Page shell: game console + assist sidebar (Hints/Map tabs)
+  index.html             Page shell: game console + assist sidebar (Hints/Map/Code tabs)
   css/style.css          Terminal theme (retro CRT / modern), toggleable
   js/app.js              Boots the Z-machine engine, loads the story file
   js/hints.js            Assist-mode hint sidebar logic
   js/map.js              Fog-of-war auto-map: tracks visited rooms, renders grid
+  js/codemuseum.js       Code tab: room/topic-contextual links to Code Museum
   data/zork1.z3           Compiled Zork I story file
   data/hints.json         Curated hint database
   data/map.json           Room/exit graph, generated from the ZIL source (see tools/)
+  data/code-museum-links.json  Hand-curated room/topic -> Code Museum bookmark map
   vendor/                 Third-party engine files (see THIRD_PARTY_NOTICES.md)
   vendor/gidispa-zvm.js   Original shim enabling save/restore for the ZVM engine
   staticwebapp.config.json  Azure SWA routing/MIME config
