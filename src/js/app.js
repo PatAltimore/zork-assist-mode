@@ -85,35 +85,33 @@
 
     var MOBILE_QUERY = '(max-width: 760px)';
     var MOBILE_SCROLL_THRESHOLD = 12;
-    var MOBILE_BOTTOM_EDGE = 8;
+    var MOBILE_EDGE_TOLERANCE = 8;
     var MOBILE_SUPPRESS_MS = 250;
 
     function initMobileAutoHide(setHintsCollapsed) {
         // On narrow (mobile) screens the assist panel sits below the game
         // text and the header sits above it, both eating into the limited
-        // vertical space available to read the adventure text. Both are
-        // driven by scrolling the game text itself, but only once you're
-        // right at its bottom edge -- i.e. caught up with the latest text --
-        // so that scrolling back through history to re-read something
-        // doesn't fight you by flipping either one open/closed on every
-        // small scroll. From that bottom edge: scrolling further down hides
-        // the hints panel and shows the header; scrolling up away from it
-        // shows the hints panel and hides the header. Desktop is unaffected,
-        // and the manual Hide/Show Hints button still works at any width.
+        // vertical space available to read the adventure text. Each is tied
+        // to the game text's own edge on its side: the hints panel slides in
+        // once you're caught up at the bottom (latest text) and hides as
+        // soon as you scroll away from it; the header slides in once you've
+        // scrolled all the way back to the top of the transcript and hides
+        // as soon as you scroll away from that. Scrolling around in the
+        // middle of the history touches neither. Desktop is unaffected, and
+        // the manual Hide/Show Hints button still works at any width.
         var gameport = document.getElementById('gameport');
         var header = document.getElementById('app-header');
         var mobileQuery = window.matchMedia(MOBILE_QUERY);
         var lastScrollTop = null;
+        var lastScrollHeight = null;
         var suppressUntil = 0;
+        var hintsHidden = false;
+        var headerHidden = false;
 
-        function setHeaderHidden(hidden) {
+        function setHeaderHidden(v) {
             if (header) {
-                header.classList.toggle('header-hidden', hidden);
+                header.classList.toggle('header-hidden', v);
             }
-        }
-
-        if (mobileQuery.matches) {
-            setHintsCollapsed(true);
         }
 
         if (gameport) {
@@ -126,17 +124,30 @@
                     return;
                 }
                 var current = target.scrollTop;
+                var currentHeight = target.scrollHeight;
                 if (lastScrollTop === null) {
                     // First scroll event we've ever seen -- just record a
                     // baseline. Without this the very first event would
                     // diff against a bogus lastScrollTop of 0 and register
                     // as a huge (fake) scroll.
                     lastScrollTop = current;
+                    lastScrollHeight = currentHeight;
                     return;
                 }
+                var contentChanged = currentHeight !== lastScrollHeight;
                 var delta = current - lastScrollTop;
                 var previous = lastScrollTop;
                 lastScrollTop = current;
+                lastScrollHeight = currentHeight;
+
+                // New game text (a turn, or the autosave restoring on load)
+                // grows the buffer and GlkOte auto-scrolls to follow it --
+                // that jump looks just like a fast user scroll but isn't
+                // one, and comparing scrollTop across two different content
+                // heights isn't meaningful anyway, so skip it entirely.
+                if (contentChanged) {
+                    return;
+                }
 
                 // Ignore scroll events caused by our own hide/show just
                 // changing the game panel's height (the browser can clamp
@@ -150,26 +161,49 @@
                 }
 
                 // Gate on the scroll edge, not just the resting position:
-                // either end of this movement being near the bottom counts,
-                // so both "scrolling away from the bottom" and "scrolling
-                // back down to it" register, while scrolling around further
-                // up in the history (neither end near the bottom) does not.
+                // either end of this movement being near an edge counts, so
+                // both "scrolling away from it" and "scrolling back to it"
+                // register, while scrolling around further within the
+                // history (neither end near an edge) does not.
                 var maxScroll = target.scrollHeight - target.clientHeight;
-                var wasAtBottom = (maxScroll - previous) <= MOBILE_BOTTOM_EDGE;
-                var isAtBottom = (maxScroll - current) <= MOBILE_BOTTOM_EDGE;
-                if (!wasAtBottom && !isAtBottom) {
+                var nearBottom = (maxScroll - previous) <= MOBILE_EDGE_TOLERANCE ||
+                    (maxScroll - current) <= MOBILE_EDGE_TOLERANCE;
+                var nearTop = previous <= MOBILE_EDGE_TOLERANCE || current <= MOBILE_EDGE_TOLERANCE;
+                if (!nearBottom && !nearTop) {
                     return;
                 }
 
                 var scrollingDown = delta > 0;
-                setHintsCollapsed(scrollingDown);
-                setHeaderHidden(!scrollingDown);
-                suppressUntil = Date.now() + MOBILE_SUPPRESS_MS;
+                var changed = false;
+
+                if (nearBottom) {
+                    var wantHintsHidden = !scrollingDown; // away from the bottom
+                    if (wantHintsHidden !== hintsHidden) {
+                        hintsHidden = wantHintsHidden;
+                        setHintsCollapsed(hintsHidden);
+                        changed = true;
+                    }
+                }
+
+                if (nearTop) {
+                    var wantHeaderHidden = scrollingDown; // away from the top
+                    if (wantHeaderHidden !== headerHidden) {
+                        headerHidden = wantHeaderHidden;
+                        setHeaderHidden(headerHidden);
+                        changed = true;
+                    }
+                }
+
+                if (changed) {
+                    suppressUntil = Date.now() + MOBILE_SUPPRESS_MS;
+                }
             }, true);
         }
 
         mobileQuery.addEventListener('change', function (ev) {
             if (!ev.matches) {
+                hintsHidden = false;
+                headerHidden = false;
                 setHintsCollapsed(false);
                 setHeaderHidden(false);
             }
