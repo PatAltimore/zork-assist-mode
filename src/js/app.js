@@ -100,8 +100,12 @@
         // user action, never as a side effect of layout changes. So: any
         // such gesture in the game text hides both, and each has its own
         // small "peek" tab (shown only while hidden) to bring it back on
-        // tap. Desktop is unaffected, and the manual Hide/Show Hints button
-        // still works at any width.
+        // tap. The on-screen keyboard is the other big space-eater --
+        // focusing the command line hides both automatically too (and
+        // brings them back on blur), since that's exactly when the least
+        // screen is left for the text you're replying to. Desktop is
+        // unaffected, and the manual Hide/Show Hints button still works at
+        // any width.
         var gameport = document.getElementById('gameport');
         var header = document.getElementById('app-header');
         var headerPeek = document.getElementById('header-peek');
@@ -139,6 +143,27 @@
         if (gameport) {
             gameport.addEventListener('wheel', hideBoth, { passive: true, capture: true });
             gameport.addEventListener('touchmove', hideBoth, { passive: true, capture: true });
+
+            // Tapping the command line to type brings up the on-screen
+            // keyboard, which covers a big chunk of the screen and leaves
+            // very little room to see the text you're responding to --
+            // hide both while it's up so as much scrollback as possible
+            // stays visible above the keyboard, and bring them back once
+            // you tap away (focusin/focusout bubble, unlike focus/blur, so
+            // this works without capture even though GlkOte's input is
+            // created after this listener is attached).
+            gameport.addEventListener('focusin', function (ev) {
+                if (mobileQuery.matches && ev.target && ev.target.tagName === 'INPUT') {
+                    setHeaderHidden(true);
+                    setHintsHidden(true);
+                }
+            });
+            gameport.addEventListener('focusout', function (ev) {
+                if (mobileQuery.matches && ev.target && ev.target.tagName === 'INPUT') {
+                    setHeaderHidden(false);
+                    setHintsHidden(false);
+                }
+            });
         }
 
         if (headerPeek) {
