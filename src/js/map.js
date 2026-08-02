@@ -38,6 +38,36 @@
             roomB.exits.some(function (e) { return e.target === idA; });
     }
 
+    // Is the exit relationship between two connected rooms one-way? Used to
+    // draw an arrowhead on the connector line instead of a plain bar --
+    // Zork's real geography has a handful of these (the coal mine slide,
+    // the trapdoor, etc).
+    function connectorDirectionClass(fromId, toId) {
+        var fromRoom = mapData.rooms[fromId];
+        var toRoom = mapData.rooms[toId];
+        var forward = fromRoom.exits.some(function (e) { return e.target === toId; });
+        var backward = toRoom.exits.some(function (e) { return e.target === fromId; });
+        if (forward && backward) return '';
+        if (forward) return ' one-way one-way-forward';
+        if (backward) return ' one-way one-way-backward';
+        return '';
+    }
+
+    // Exits whose target isn't the room's immediate N/S/E/W grid neighbor --
+    // genuine shortcuts/loops (or a diagonal step) that the straight grid
+    // connectors below can't draw as a line without crossing other rooms.
+    // Surfaced as small corner badges instead so they're not silently lost.
+    function extraExitDirs(room) {
+        return sortDirs(new Set(room.exits.filter(function (e) {
+            var target = mapData.rooms[e.target];
+            if (!target || target.level !== room.level) {
+                return false; // level change -- already shown via Up/Down, not a grid line either way
+            }
+            var dx = target.x - room.x, dy = target.y - room.y;
+            return Math.abs(dx) + Math.abs(dy) !== 1;
+        }).map(function (e) { return e.dir; })));
+    }
+
     function buildTracks(count) {
         var tracks = [];
         for (var i = 0; i < count; i++) {
@@ -222,6 +252,22 @@
                 } else {
                     cell.textContent = room.name;
                     cell.title = room.blob ? room.name + ' (an area the game itself can\'t pin down further)' : room.name;
+
+                    if (!room.blob) {
+                        var extraDirs = extraExitDirs(room);
+                        if (extraDirs.length > 0) {
+                            var extraWrap = document.createElement('span');
+                            extraWrap.className = 'map-room-extra';
+                            extraDirs.forEach(function (d) {
+                                var tag = document.createElement('span');
+                                tag.className = 'extra-exit-badge';
+                                tag.textContent = DIR_LABELS[d] || d;
+                                tag.title = 'Also connects this way to somewhere not shown as a line here -- see Exits Here.';
+                                extraWrap.appendChild(tag);
+                            });
+                            cell.appendChild(extraWrap);
+                        }
+                    }
                 }
                 grid.appendChild(cell);
 
@@ -231,7 +277,8 @@
                 if (eastId && connected(id, eastId)) {
                     var hLine = document.createElement('div');
                     hLine.className = 'map-connector horizontal' +
-                        (isFrontier || !visited.has(eastId) ? ' frontier-link' : '');
+                        (isFrontier || !visited.has(eastId) ? ' frontier-link' : '') +
+                        connectorDirectionClass(id, eastId);
                     hLine.style.gridColumn = String(2 * (room.x - minX) + 2);
                     hLine.style.gridRow = String(2 * (room.y - minY) + 1);
                     grid.appendChild(hLine);
@@ -241,7 +288,8 @@
                 if (southId && connected(id, southId)) {
                     var vLine = document.createElement('div');
                     vLine.className = 'map-connector vertical' +
-                        (isFrontier || !visited.has(southId) ? ' frontier-link' : '');
+                        (isFrontier || !visited.has(southId) ? ' frontier-link' : '') +
+                        connectorDirectionClass(id, southId);
                     vLine.style.gridColumn = String(2 * (room.x - minX) + 1);
                     vLine.style.gridRow = String(2 * (room.y - minY) + 2);
                     grid.appendChild(vLine);

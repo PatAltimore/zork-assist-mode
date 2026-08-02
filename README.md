@@ -24,6 +24,12 @@ Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red
   direction that leads there (e.g. "N ?") instead of a bare "?", and a line
   is drawn between any two grid-adjacent cells with a real exit between
   them (dashed/dim toward unexplored cells, solid between visited ones).
+  Zork's real geography also has genuine one-way passages and shortcuts
+  that don't fit a clean compass grid (the coal mine slide, the trapdoor,
+  the Round Room/Mirror Room network) -- an arrowhead on a connector line
+  marks a one-way passage, and a small dashed corner tag on a room marks
+  an exit that leads somewhere not shown as a line here (see "Exits here"
+  for the full list).
 - **Continue where you left off**: the game itself autosaves after every turn
   to `localStorage` (score, inventory, room, everything) and silently resumes
   on your next visit to the same browser/PC — no need to type "save"/"restore"

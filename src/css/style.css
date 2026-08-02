@@ -488,6 +488,11 @@ html, body {
 
 .map-connector {
   position: relative;
+  --connector-color: var(--fg-dim);
+}
+
+.map-connector.frontier-link {
+  --connector-color: var(--border);
 }
 
 .map-connector.horizontal::after {
@@ -497,7 +502,7 @@ html, body {
   left: 0;
   right: 0;
   height: 2px;
-  background: var(--fg-dim);
+  background: var(--connector-color);
   transform: translateY(-50%);
 }
 
@@ -508,16 +513,61 @@ html, body {
   top: 0;
   bottom: 0;
   width: 2px;
-  background: var(--fg-dim);
+  background: var(--connector-color);
   transform: translateX(-50%);
 }
 
 .map-connector.frontier-link::after {
-  background: var(--border);
   opacity: 0.7;
 }
 
+/* One-way passages (e.g. the coal mine slide, the trapdoor) get an
+   arrowhead instead of a plain bar, pointing the direction you can
+   actually walk. */
+.map-connector.horizontal.one-way::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  transform: translateY(-50%);
+}
+
+.map-connector.horizontal.one-way-forward::before {
+  right: 0;
+  border-left: 6px solid var(--connector-color);
+}
+
+.map-connector.horizontal.one-way-backward::before {
+  left: 0;
+  border-right: 6px solid var(--connector-color);
+}
+
+.map-connector.vertical.one-way::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  transform: translateX(-50%);
+}
+
+.map-connector.vertical.one-way-forward::before {
+  bottom: 0;
+  border-top: 6px solid var(--connector-color);
+}
+
+.map-connector.vertical.one-way-backward::before {
+  top: 0;
+  border-bottom: 6px solid var(--connector-color);
+}
+
 .map-room {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -530,6 +580,27 @@ html, body {
   font-size: 0.75em;
   line-height: 1.1;
   overflow: hidden;
+}
+
+.map-room-extra {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px;
+  max-width: calc(100% - 4px);
+}
+
+.extra-exit-badge {
+  font-size: 0.7em;
+  line-height: 1;
+  padding: 1px 3px;
+  border: 1px dashed var(--fg-dim);
+  color: var(--fg-dim);
+  background: var(--bg);
+  cursor: help;
 }
 
 .map-room.frontier {
