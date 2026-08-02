@@ -231,6 +231,42 @@ html, body {
   caret-color: var(--fg-bright);
 }
 
+.Input.has-block-cursor {
+  caret-color: transparent;
+}
+
+.fake-cursor-mirror {
+  position: absolute;
+  left: 0;
+  top: 0;
+  visibility: hidden;
+  white-space: pre;
+  font-family: var(--font) !important;
+  font-size: 1.625rem !important;
+}
+
+.fake-block-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0.55em;
+  height: 1.15em;
+  font-size: 1.625rem;
+  background: var(--fg-bright);
+  pointer-events: none;
+  animation: block-cursor-blink 1s linear infinite;
+}
+
+.fake-block-cursor.typing {
+  animation: none;
+  opacity: 1;
+}
+
+@keyframes block-cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
 .Style_header,
 .Style_subheader,
 .Style_alert {
