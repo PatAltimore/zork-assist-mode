@@ -425,6 +425,38 @@ html, body {
 
 /* --- Map view --- */
 
+#map-current-exits {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3em;
+  margin-bottom: 1em;
+  min-height: 1.6em;
+}
+
+.map-exits-label {
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.85em;
+  margin-right: 0.2em;
+}
+
+.map-exit-badge {
+  display: inline-block;
+  border: 1px solid var(--border);
+  padding: 0.1em 0.5em;
+  font-size: 0.95em;
+  font-weight: bold;
+  color: var(--fg-bright);
+}
+
+.map-exits-note {
+  color: var(--fg-dim);
+  font-style: italic;
+  font-size: 0.9em;
+}
+
 #map-levels {
   display: flex;
   flex-direction: column;
@@ -462,9 +494,22 @@ html, body {
 }
 
 .map-room.frontier {
+  flex-direction: column;
   border-style: dashed;
   color: var(--fg-dim);
-  opacity: 0.6;
+  opacity: 0.75;
+}
+
+.map-room.frontier .dir-label {
+  display: block;
+  font-weight: bold;
+  font-size: 1.15em;
+  color: var(--fg);
+}
+
+.map-room.frontier .q-mark {
+  display: block;
+  opacity: 0.7;
 }
 
 .map-room.current {

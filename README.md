@@ -16,7 +16,10 @@ sidebar of graduated, multiple-choice hints for when you get stuck.
 - **Auto-map**: a fog-of-war map fills in as you explore, built from the
   game's real room/exit graph. Areas the game's own text can't distinguish
   (mazes, the river, dark caves) are shown as one fogged region rather than
-  spoiled room-by-room. Persists across reloads via `localStorage`.
+  spoiled room-by-room. Persists across reloads via `localStorage`. An
+  "Exits here" line lists every command the current room actually accepts
+  (N, S, E, W, U, D, etc.), and unexplored neighbor cells are labeled with
+  the direction that leads there (e.g. "N ?") instead of a bare "?".
 - **Continue where you left off**: the game itself autosaves after every turn
   to `localStorage` (score, inventory, room, everything) and silently resumes
   on your next visit to the same browser/PC — no need to type "save"/"restore"

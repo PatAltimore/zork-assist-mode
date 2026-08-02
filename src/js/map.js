@@ -11,6 +11,18 @@
 
     var levelsEl = document.getElementById('map-levels');
     var clearButton = document.getElementById('map-clear');
+    var currentExitsEl = document.getElementById('map-current-exits');
+
+    var DIR_LABELS = {
+        NORTH: 'N', SOUTH: 'S', EAST: 'E', WEST: 'W',
+        NE: 'NE', NW: 'NW', SE: 'SE', SW: 'SW',
+        UP: 'Up', DOWN: 'Down', IN: 'In', OUT: 'Out', ENTER: 'Enter', LAND: 'Land'
+    };
+    var DIR_ORDER = ['NORTH', 'NE', 'EAST', 'SE', 'SOUTH', 'SW', 'WEST', 'NW', 'UP', 'DOWN', 'IN', 'OUT', 'ENTER', 'LAND'];
+
+    function sortDirs(dirSet) {
+        return DIR_ORDER.filter(function (d) { return dirSet.has(d); });
+    }
 
     function loadState() {
         try {
@@ -44,24 +56,69 @@
 
     function frontierFor(level) {
         // Rooms not yet visited, but directly reachable from a visited room
-        // on this level -- shown as an unlabeled "?" so players see there's
-        // more to find without spoiling what it is.
-        var frontier = new Set();
+        // on this level -- shown as "N ?" / "E ?" etc (the direction you'd
+        // type to head that way) so players see there's more to find, and
+        // which way, without spoiling what's actually there.
+        var dirsByFrontier = {}; // id -> Set of raw direction strings
         visited.forEach(function (id) {
             var room = mapData.rooms[id];
             if (!room) return;
             room.exits.forEach(function (exit) {
                 var target = mapData.rooms[exit.target];
                 if (target && target.level === level && !visited.has(exit.target)) {
-                    frontier.add(exit.target);
+                    if (!dirsByFrontier[exit.target]) {
+                        dirsByFrontier[exit.target] = new Set();
+                    }
+                    dirsByFrontier[exit.target].add(exit.dir);
                 }
             });
         });
-        return frontier;
+        return dirsByFrontier;
+    }
+
+    function renderCurrentExits() {
+        if (!currentExitsEl) {
+            return;
+        }
+        currentExitsEl.innerHTML = '';
+        if (!mapData || !currentId || !mapData.rooms[currentId]) {
+            return;
+        }
+
+        var room = mapData.rooms[currentId];
+        var label = document.createElement('span');
+        label.className = 'map-exits-label';
+        label.textContent = 'Exits here:';
+        currentExitsEl.appendChild(label);
+
+        if (room.blob) {
+            var note = document.createElement('span');
+            note.className = 'map-exits-note';
+            note.textContent = "varies room to room here -- go by what the game tells you.";
+            currentExitsEl.appendChild(note);
+            return;
+        }
+
+        var dirs = sortDirs(new Set(room.exits.map(function (e) { return e.dir; })));
+        if (dirs.length === 0) {
+            var none = document.createElement('span');
+            none.className = 'map-exits-note';
+            none.textContent = 'none known yet.';
+            currentExitsEl.appendChild(none);
+            return;
+        }
+        dirs.forEach(function (d) {
+            var badge = document.createElement('span');
+            badge.className = 'map-exit-badge';
+            badge.textContent = DIR_LABELS[d] || d;
+            currentExitsEl.appendChild(badge);
+        });
     }
 
     function render() {
         levelsEl.innerHTML = '';
+        renderCurrentExits();
+
         if (!mapData) {
             return;
         }
@@ -83,10 +140,11 @@
         var sortedLevels = Object.keys(levelsUsed).map(Number).sort(function (a, b) { return b - a; });
 
         sortedLevels.forEach(function (level) {
-            var frontier = frontierFor(level);
+            var frontierDirs = frontierFor(level);
+            var frontierIds = Object.keys(frontierDirs);
             var cellIds = Array.from(visited).filter(function (id) {
                 return mapData.rooms[id] && mapData.rooms[id].level === level;
-            }).concat(Array.from(frontier));
+            }).concat(frontierIds);
 
             if (cellIds.length === 0) return;
 
@@ -110,12 +168,24 @@
             cellIds.forEach(function (id) {
                 var room = mapData.rooms[id];
                 var cell = document.createElement('div');
-                var isFrontier = frontier.has(id) && !visited.has(id);
+                var isFrontier = !visited.has(id);
                 cell.className = 'map-room' + (isFrontier ? ' frontier' : '') + (id === currentId ? ' current' : '');
                 cell.style.gridColumn = (room.x - minX + 1);
                 cell.style.gridRow = (room.y - minY + 1);
-                cell.textContent = isFrontier ? '?' : room.name;
-                if (!isFrontier) {
+
+                if (isFrontier) {
+                    var dirLabel = document.createElement('span');
+                    dirLabel.className = 'dir-label';
+                    dirLabel.textContent = sortDirs(frontierDirs[id]).map(function (d) {
+                        return DIR_LABELS[d] || d;
+                    }).join('/');
+                    var qMark = document.createElement('span');
+                    qMark.className = 'q-mark';
+                    qMark.textContent = '?';
+                    cell.appendChild(dirLabel);
+                    cell.appendChild(qMark);
+                } else {
+                    cell.textContent = room.name;
                     cell.title = room.blob ? room.name + ' (an area the game itself can\'t pin down further)' : room.name;
                 }
                 grid.appendChild(cell);
