@@ -1,5 +1,32 @@
 [
   {
+    "id": "goals",
+    "title": "What you're actually trying to do",
+    "hints": [
+      "There's no on-screen checklist, but the game does have a concrete win condition, and it's tied to a number you can already see at the top of the screen.",
+      "Exploring for its own sake won't finish the game — you need to find the dungeon's treasures and get each one to a very specific piece of furniture back at the house.",
+      "The objective is to explore the Great Underground Empire, recover all its treasures, and bring each one home to the living room's trophy case — simply carrying a treasure isn't enough, it has to be cased. Do that thoroughly enough and the game itself reveals the final step needed to win (see 'Getting the most out of your treasures' and 'Reaching the endgame' for the specifics)."
+    ]
+  },
+  {
+    "id": "essential-items",
+    "title": "Items you shouldn't leave without",
+    "hints": [
+      "Several ordinary-looking objects turn out to be required, not optional, once you're underground — most are easy to miss if you're only hunting for treasures.",
+      "A weapon, a light source, something with a strong smell, and a few small tools for very specific machines are all worth grabbing early, even before you know exactly why.",
+      "Keep the sword and lamp (from the trophy case) on you at all times underground. Also collect: the garlic (kitchen shelf, keeps the bat away), the knife and rope (attic), the bell, candles and matches (for the Hades ritual — candles double as emergency light), the wrench (Maintenance Room, for the dam), and the screwdriver (for the coal mine's machine). The lamp's battery is finite (it starts dimming after roughly 100 turns of use), so turn it off whenever you're somewhere already lit, and pick up the ivory torch later as a renewable backup light source."
+    ]
+  },
+  {
+    "id": "combat-basics",
+    "title": "How fighting works",
+    "hints": [
+      "Combat isn't a coin flip — your own condition and the weapon in your hand both matter more than you might expect.",
+      "Getting hurt only weakens you temporarily (you recover over the next several turns), and your overall fighting ability actually depends on how much you've accomplished in the game so far. Retreating from a losing fight is always an option.",
+      "Your effective combat strength rises with your score, so treasure-hunting before a big fight genuinely helps. Wounds heal automatically after a few turns — type 'diagnose' anytime to check your condition and how close to death you are. The sword is the troll's classic match and the knife is the thief's; the cyclops can't be fought with a weapon at all. If you're losing to the thief, handing him a treasure momentarily distracts him, giving you a bit of breathing room."
+    ]
+  },
+  {
     "id": "start",
     "title": "Getting started above ground",
     "hints": [
@@ -24,6 +51,15 @@
       "The Great Underground Empire has no windows. Anything you take with you should include a way to see.",
       "There's a brass lantern in the living room, inside furniture you can open.",
       "Open the trophy case in the living room, take the lantern and the sword, and turn the lantern on before descending through the trap door."
+    ]
+  },
+  {
+    "id": "attic-knife",
+    "title": "The knife and rope upstairs",
+    "hints": [
+      "The house has one more floor you probably haven't explored, reachable from the room with the stove — though it's pitch dark up there.",
+      "Bring your lit lamp and go up from the Kitchen. Two items worth taking are waiting: one on a table, one coiled in a corner.",
+      "Go up from the Kitchen (lamp lit — the Attic is dark) and take the nasty knife from the table and the large coil of rope from the corner, then head back down. The rope is what lets you descend safely from the Dome Room later on."
     ]
   },
   {
@@ -72,6 +108,15 @@
     ]
   },
   {
+    "id": "coal-machine",
+    "title": "Turning coal into a diamond",
+    "hints": [
+      "The coal mine's machine looks built to transform whatever you feed it, but it won't run without the right tool in hand.",
+      "You'll need to be holding a screwdriver to work the switch, and you'll need something to put inside first.",
+      "In the Machine Room: open the lid, put the piece of coal inside, close the lid, then turn the switch with the screwdriver. Drop the screwdriver, open the lid again, and take the diamond that's replaced the coal."
+    ]
+  },
+  {
     "id": "thief",
     "title": "Dealing with the thief",
     "hints": [
@@ -90,12 +135,75 @@
     ]
   },
   {
+    "id": "scoring",
+    "title": "Getting the most out of your treasures",
+    "hints": [
+      "Simply finding a treasure only earns part of its value — the rest is waiting for you back at the house.",
+      "Treasures score extra points the moment they're actually placed inside a specific piece of furniture in the Living Room, not just carried around in your pack.",
+      "Bring every treasure home and put it in the trophy case — each one scores bonus points beyond its 'found' value on top of what you got for finding it. Zork I has 19 treasures worth a maximum of 350 points combined, and you need essentially all of them cased to unlock the ending."
+    ]
+  },
+  {
     "id": "hades",
     "title": "Entering the Land of the Dead",
     "hints": [
       "The entrance near the cyclops area is guarded by something that isn't physical — ordinary weapons won't help.",
       "You'll need a specific ritual, and the tools for it are all found elsewhere in the dungeon: something to ring, something to read from, and something to light.",
       "At the Entrance to Hades, ring the bell (it becomes red hot, so drop it immediately), light the candles, then read the black book. This exorcises the spirits and opens the way to the Land of the Dead."
+    ]
+  },
+  {
+    "id": "dome-rope",
+    "title": "Getting down from the Dome Room",
+    "hints": [
+      "One large, round room overlooks a long drop to a room below, with no visible stairs down.",
+      "You'll need something long to lower yourself with, tied off to something sturdy that's already there.",
+      "In the Dome Room, tie the rope (from the attic) to the railing, then climb down the rope to reach the Torch Room below."
+    ]
+  },
+  {
+    "id": "coffin",
+    "title": "The Egyptian Room's coffin",
+    "hints": [
+      "Deep in a temple complex is a room decorated like a tomb, holding something valuable and something far too heavy to haul around.",
+      "The gold coffin itself won't fit down every passage nearby, but what's sitting inside it isn't attached.",
+      "In the Egyptian Room, take the coffin, open it, and take the sceptre from inside. Leave the coffin behind before heading further down through the Temple's Altar — the passage there refuses to let you carry the coffin through. (Praying at the Altar is also a free, instant trip back to the forest if you ever need an escape.)"
+    ]
+  },
+  {
+    "id": "mirror-room",
+    "title": "The mirror rooms",
+    "hints": [
+      "Two identical rooms, far apart in the dungeon, both happen to have an enormous mirror covering a wall — that's unlikely to be a coincidence.",
+      "Try interacting with the mirror itself, not just looking into it.",
+      "Rub the mirror in either Mirror Room to instantly teleport to the other one — a fast shortcut between the reservoir/river area and the temple/coal-mine area. Don't damage the mirror, or you'll strand yourself and lose the shortcut for good."
+    ]
+  },
+  {
+    "id": "river",
+    "title": "Crossing the Frigid River safely",
+    "hints": [
+      "A wide, swift river blocks part of the dungeon, and swimming, wading, or leaping across it all end badly.",
+      "You'll need something that floats, inflated with the right tool — and you must empty your hands of anything sharp before you climb aboard.",
+      "Inflate the plastic boat with the air pump (both near the Dam Base), drop any weapons or sharp objects first (boarding with one punctures the boat), get in, and say 'launch'. The current carries you downstream on its own — just watch for a red buoy floating by and grab it before you land."
+    ]
+  },
+  {
+    "id": "buoy",
+    "title": "The buoy floating in the river",
+    "hints": [
+      "Something small and red drifts past while you're out on the water — probably worth grabbing before it's out of reach.",
+      "It's not just a marker; it's built to hold something inside.",
+      "Take the red buoy while riding the river in the boat, then open it once you're safely ashore to find an emerald inside."
+    ]
+  },
+  {
+    "id": "rainbow",
+    "title": "Crossing the rainbow for the pot of gold",
+    "hints": [
+      "The rainbow over Aragain Falls looks purely decorative — until you're holding the right treasure.",
+      "Something you found inside a coffin does more than just look nice when you wave it in the right spot.",
+      "At Aragain Falls (or the End of Rainbow), wave the sceptre to make the rainbow solid enough to walk on. Cross it to reach the End of Rainbow and take the pot of gold. Don't wave the sceptre again while standing on the rainbow itself — that dissolves it right out from under you."
     ]
   },
   {
@@ -111,9 +219,9 @@
     "id": "endgame",
     "title": "Reaching the endgame",
     "hints": [
-      "Before you can finish the game, you need to have delivered every treasure to its proper place and read the leaflet again for a status check.",
-      "One late treasure area requires waving something you found on a giant, one-inch invisible person, and involves a rainbow.",
-      "At Aragain Falls, wave the sceptre (from the Egyptian coffin/pyramid area) to solidify the rainbow, cross it, and take the pot of gold. Once all treasures are deposited in the trophy case, go back down through the trap door to trigger the endgame."
+      "Finishing the game isn't triggered by reaching a place — it's triggered by something you've been building the whole time. Leaving even one treasure uncased will stop you short.",
+      "Once your trophy case truly holds (almost) everything of value and your score has topped out, the game lets you know something's changed. Pay attention next time you're back above ground.",
+      "Deposit every treasure in the trophy case until your score reaches the maximum (350). A voice whispers that the final secret lies with your treasures, and a new path opens southwest from West of House. Follow it to the Stone Barrow and go in (or west) to win the game."
     ]
   }
 ]
