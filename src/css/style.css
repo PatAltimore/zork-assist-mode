@@ -475,7 +475,37 @@ html, body {
 
 .map-grid {
   display: grid;
-  gap: 3px;
+}
+
+.map-connector {
+  position: relative;
+}
+
+.map-connector.horizontal::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--fg-dim);
+  transform: translateY(-50%);
+}
+
+.map-connector.vertical::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--fg-dim);
+  transform: translateX(-50%);
+}
+
+.map-connector.frontier-link::after {
+  background: var(--border);
+  opacity: 0.7;
 }
 
 .map-room {

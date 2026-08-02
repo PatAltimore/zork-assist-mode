@@ -24,6 +24,29 @@
         return DIR_ORDER.filter(function (d) { return dirSet.has(d); });
     }
 
+    // Is there a real exit between these two rooms (either direction)? Used
+    // to decide whether to draw a connector line -- deliberately direction-
+    // agnostic, since Zork's own map has cases where an exit's *declared*
+    // compass direction doesn't match where the room ended up on the grid
+    // (see BUILD.md/tools/build-map.js); what matters here is just "can you
+    // walk between these two adjacent cells".
+    function connected(idA, idB) {
+        var roomA = mapData.rooms[idA];
+        var roomB = mapData.rooms[idB];
+        if (!roomA || !roomB) return false;
+        return roomA.exits.some(function (e) { return e.target === idB; }) ||
+            roomB.exits.some(function (e) { return e.target === idA; });
+    }
+
+    function buildTracks(count) {
+        var tracks = [];
+        for (var i = 0; i < count; i++) {
+            if (i > 0) tracks.push('0.6em');
+            tracks.push('1fr');
+        }
+        return tracks.join(' ');
+    }
+
     function loadState() {
         try {
             var raw = localStorage.getItem(VISITED_KEY);
@@ -160,18 +183,30 @@
             heading.textContent = levelLabel(level);
             section.appendChild(heading);
 
+            var cols = maxX - minX + 1;
+            var rows = maxY - minY + 1;
+
             var grid = document.createElement('div');
             grid.className = 'map-grid';
-            grid.style.gridTemplateColumns = 'repeat(' + (maxX - minX + 1) + ', 1fr)';
-            grid.style.gridTemplateRows = 'repeat(' + (maxY - minY + 1) + ', 1fr)';
+            grid.style.gridTemplateColumns = buildTracks(cols);
+            grid.style.gridTemplateRows = buildTracks(rows);
+
+            // Doubled coordinates: rooms sit on odd tracks (1, 3, 5, ...),
+            // connector lines sit on the even tracks between them -- so a
+            // room at logical (x,y) lands on grid track (2*(x-minX)+1).
+            var posToId = {};
+            cellIds.forEach(function (id) {
+                var room = mapData.rooms[id];
+                posToId[room.x + ',' + room.y] = id;
+            });
 
             cellIds.forEach(function (id) {
                 var room = mapData.rooms[id];
                 var cell = document.createElement('div');
                 var isFrontier = !visited.has(id);
                 cell.className = 'map-room' + (isFrontier ? ' frontier' : '') + (id === currentId ? ' current' : '');
-                cell.style.gridColumn = (room.x - minX + 1);
-                cell.style.gridRow = (room.y - minY + 1);
+                cell.style.gridColumn = String(2 * (room.x - minX) + 1);
+                cell.style.gridRow = String(2 * (room.y - minY) + 1);
 
                 if (isFrontier) {
                     var dirLabel = document.createElement('span');
@@ -189,6 +224,28 @@
                     cell.title = room.blob ? room.name + ' (an area the game itself can\'t pin down further)' : room.name;
                 }
                 grid.appendChild(cell);
+
+                // Draw a connector to the east/south neighbor only (each
+                // adjacent pair gets visited exactly once this way).
+                var eastId = posToId[(room.x + 1) + ',' + room.y];
+                if (eastId && connected(id, eastId)) {
+                    var hLine = document.createElement('div');
+                    hLine.className = 'map-connector horizontal' +
+                        (isFrontier || !visited.has(eastId) ? ' frontier-link' : '');
+                    hLine.style.gridColumn = String(2 * (room.x - minX) + 2);
+                    hLine.style.gridRow = String(2 * (room.y - minY) + 1);
+                    grid.appendChild(hLine);
+                }
+
+                var southId = posToId[room.x + ',' + (room.y + 1)];
+                if (southId && connected(id, southId)) {
+                    var vLine = document.createElement('div');
+                    vLine.className = 'map-connector vertical' +
+                        (isFrontier || !visited.has(southId) ? ' frontier-link' : '');
+                    vLine.style.gridColumn = String(2 * (room.x - minX) + 1);
+                    vLine.style.gridRow = String(2 * (room.y - minY) + 2);
+                    grid.appendChild(vLine);
+                }
             });
 
             section.appendChild(grid);

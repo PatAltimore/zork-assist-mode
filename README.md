@@ -18,8 +18,10 @@ sidebar of graduated, multiple-choice hints for when you get stuck.
   (mazes, the river, dark caves) are shown as one fogged region rather than
   spoiled room-by-room. Persists across reloads via `localStorage`. An
   "Exits here" line lists every command the current room actually accepts
-  (N, S, E, W, U, D, etc.), and unexplored neighbor cells are labeled with
-  the direction that leads there (e.g. "N ?") instead of a bare "?".
+  (N, S, E, W, U, D, etc.), unexplored neighbor cells are labeled with the
+  direction that leads there (e.g. "N ?") instead of a bare "?", and a line
+  is drawn between any two grid-adjacent cells with a real exit between
+  them (dashed/dim toward unexplored cells, solid between visited ones).
 - **Continue where you left off**: the game itself autosaves after every turn
   to `localStorage` (score, inventory, room, everything) and silently resumes
   on your next visit to the same browser/PC — no need to type "save"/"restore"
