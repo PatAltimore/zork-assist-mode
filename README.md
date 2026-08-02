@@ -11,9 +11,7 @@ Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red
   Z-machine story file and played with the same engine family
   ([ifvms.js](https://github.com/curiousdannii/ifvms.js) +
   [GlkOte](https://github.com/erkyrath/glkote)) used by Parchment/Lectrote.
-- **Type your own commands** in the game console, exactly like the original,
-  complete with a blinking block cursor (`src/js/cursor.js`) instead of a
-  thin text caret.
+- **Type your own commands** in the game console, exactly like the original.
 - **Assist Mode**: pick a topic from the dropdown (the troll, the thief, the
   maze, the dam, the endgame, etc.) and reveal hints one tier at a time —
   nudge → stronger hint → answer — instead of a spoiler dump.
