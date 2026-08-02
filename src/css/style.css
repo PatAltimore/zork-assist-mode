@@ -51,6 +51,12 @@ html {
 
 html, body {
   height: 100%;
+  /* iOS Safari's address bar hides/shows as you scroll, which 100%/100vh
+     don't track -- they stay pinned to whichever viewport size was current
+     on load, leaving a dead gap the size of the toolbar. 100dvh tracks the
+     actual visible viewport instead; browsers without dvh support just
+     ignore this line and keep the 100% above. */
+  height: 100dvh;
   margin: 0;
   background: var(--bg);
   color: var(--fg);
@@ -84,6 +90,7 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100%;
+  height: 100dvh;
 }
 
 #app-header {
@@ -782,7 +789,7 @@ html, body {
   }
 
   #hints-peek {
-    border-top: 2px solid var(--border);
+    border-bottom: 2px solid var(--border);
   }
 
   .edge-peek:hover {
