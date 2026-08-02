@@ -120,28 +120,32 @@ open the site — same browser, same device. A few things worth knowing:
 
 ## Deploying to Azure Static Web Apps (Free tier)
 
-This repo ships a GitHub Actions workflow
-(`.github/workflows/azure-static-web-apps.yml`) but **does not deploy
-anything by itself** — you connect it to your own Azure subscription:
+This repo is already deployed via
+[`.github/workflows/azure-static-web-apps-red-tree-0c4e1f210.yml`](.github/workflows/azure-static-web-apps-red-tree-0c4e1f210.yml),
+committed automatically by the Azure Portal when the Static Web App resource
+was created (Free plan, source GitHub, app location `src`, no API/output
+location). It uses a deployment token stored as the
+`AZURE_STATIC_WEB_APPS_API_TOKEN_RED_TREE_0C4E1F210` repo secret — every push
+to `main` builds and deploys automatically, and pull requests get their own
+free staging environment, cleaned up when the PR closes.
 
-1. Push this repo to GitHub.
+To set this up from scratch on a fork or a new resource:
+
+1. Push the repo to GitHub.
 2. In the [Azure Portal](https://portal.azure.com), create a **Static Web
    App** resource:
    - **Plan type: Free** (this app needs nothing beyond what Free offers —
      no custom API, generous bandwidth for a personal project).
-   - Source: GitHub, pick this repo/branch.
+   - Source: GitHub, pick your repo/branch.
    - Build presets: **Custom**, with:
      - App location: `src`
      - Api location: *(leave blank)*
      - Output location: *(leave blank)*
-   - The portal will automatically commit a workflow file and add an
-     `AZURE_STATIC_WEB_APPS_API_TOKEN_...` secret to your GitHub repo. If its
-     name differs from `AZURE_STATIC_WEB_APPS_API_TOKEN`, either rename the
-     secret or update the workflow file to match — then delete the portal's
-     auto-generated duplicate workflow file so only one deploy workflow runs.
-3. Push to `main` — the existing workflow (or the portal's) builds and
-   deploys automatically. Pull requests get their own free staging
-   environment, cleaned up when the PR closes.
+   - The portal commits its own workflow file and adds a matching
+     `AZURE_STATIC_WEB_APPS_API_TOKEN_...` secret automatically — that's the
+     only workflow file you need; delete any other deploy workflow so only
+     one runs per push.
+3. Push to `main` and confirm the run succeeds in the Actions tab.
 
 Alternative: create the resource yourself via the Azure CLI
 (`az staticwebapp create --sku Free ...`) and wire up the deployment token as
