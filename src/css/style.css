@@ -51,12 +51,6 @@ html {
 
 html, body {
   height: 100%;
-  /* iOS Safari's address bar hides/shows as you scroll, which 100%/100vh
-     don't track -- they stay pinned to whichever viewport size was current
-     on load, leaving a dead gap the size of the toolbar. 100dvh tracks the
-     actual visible viewport instead; browsers without dvh support just
-     ignore this line and keep the 100% above. */
-  height: 100dvh;
   margin: 0;
   background: var(--bg);
   color: var(--fg);
@@ -90,7 +84,6 @@ html, body {
   display: flex;
   flex-direction: column;
   height: 100%;
-  height: 100dvh;
 }
 
 #app-header {
@@ -726,48 +719,22 @@ html, body {
     max-height: 45vh;
     border-left: none;
     border-top: 2px solid var(--border);
-    transition: max-height 0.25s ease, padding-top 0.25s ease,
-      padding-bottom 0.25s ease, border-top-width 0.25s ease, opacity 0.2s ease;
   }
 
-  /* The auto-hide-on-scroll feature (js/app.js) toggles these same
-     .collapsed/.header-hidden classes the desktop Hide/Show Hints button
-     uses, but here on mobile they pan smoothly instead of vanishing
-     instantly -- overriding the base display:none is what lets the
-     max-height transition actually play. */
-  #assist-panel.collapsed {
-    display: block;
-    max-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-top-width: 0;
-    opacity: 0;
-    overflow: hidden;
-  }
-
-  #app-header {
-    max-height: 220px;
-    overflow: hidden;
-    transition: max-height 0.25s ease, padding-top 0.25s ease,
-      padding-bottom 0.25s ease, border-bottom-width 0.25s ease, opacity 0.2s ease;
-  }
-
-  #app-header.header-hidden {
-    display: flex;
-    max-height: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    border-bottom-width: 0;
-    opacity: 0;
-  }
+  /* Hiding/showing the header and hints panel on mobile uses the exact
+     same display:none toggle as the desktop Hide/Show Hints button
+     (defined earlier for #assist-panel.collapsed / #app-header.header-hidden)
+     -- no separate mobile-only mechanism, animation, or viewport-unit
+     trickery. That was tried and made real devices (iPhone, Kindle Fire)
+     behave worse, especially around the on-screen keyboard, so this is
+     deliberately as plain as possible. */
 
   #game-panel {
     flex: 1 1 auto;
   }
 
   /* Always present on mobile (not just while hidden) -- a plain manual
-     show/hide toggle for the header and hints panel, independent of the
-     focus-driven auto-hide above. */
+     show/hide toggle for the header and hints panel. */
   .edge-peek {
     display: block;
     width: 100%;
