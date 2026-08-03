@@ -720,4 +720,30 @@ html, body {
   #game-panel {
     flex: 1 1 auto;
   }
+
+  /* GlkOte's own vendored code (vendor/glkote.js, evhan_viewport_resize)
+     already handles the iOS on-screen keyboard by resizing #gameport
+     directly -- but its own comment says it assumes gameport "either
+     takes up the full window or has fixed top and bottom margins," and
+     specifically calls out a header/navbar sitting above it as the
+     problem case ("any top margin ... will be hidden once the keyboard
+     is up"). Taking the header out of the flex flow entirely and
+     overlaying it on top (instead of it being a sibling that shares
+     space with gameport) gives gameport a simple, stable top margin
+     instead. Note this has to be gameport's own `top` offset, not
+     padding: GlkOte positions its internal window frames (the status
+     line, the buffer) with their own absolute top:0, which resolves
+     against gameport's *padding* box and would render underneath a
+     padding-based reservation, not below it. */
+  #app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+  }
+
+  #gameport {
+    top: 230px;
+  }
 }
