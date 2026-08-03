@@ -51,6 +51,15 @@ html {
 
 html, body {
   height: 100%;
+  /* iOS Safari's own "scroll the focused input above the keyboard"
+     behavior operates on the page itself, not just our internal scroll
+     containers -- if the page is scrollable at all, it can shift this
+     entire fixed app shell out of alignment with the visual viewport,
+     which looks exactly like "everything jumped to the top, history is
+     gone" no matter what we do to .BufferWindow's own scrollTop. Locking
+     the page itself down to non-scrollable forces all scrolling to stay
+     inside the containers that are actually meant to scroll. */
+  overflow: hidden;
   margin: 0;
   background: var(--bg);
   color: var(--fg);

@@ -231,6 +231,15 @@
         }
 
         function scrollToBottom() {
+            // Belt-and-suspenders alongside the html/body overflow:hidden
+            // rule in style.css -- iOS Safari's own "scroll the focused
+            // input above the keyboard" behavior operates on the page
+            // itself, separately from .BufferWindow's own scrollTop, and
+            // some WebKit versions still manage a fractional page scroll
+            // even when the page is nominally non-scrollable. Reset both.
+            if (window.scrollX || window.scrollY) {
+                window.scrollTo(0, 0);
+            }
             var buf = document.querySelector('.BufferWindow');
             if (buf) {
                 buf.scrollTop = buf.scrollHeight;
@@ -246,6 +255,12 @@
                 scrollToBottom();
                 setTimeout(scrollToBottom, 50);
                 setTimeout(scrollToBottom, 350);
+            }
+        });
+
+        window.addEventListener('scroll', function () {
+            if (mobileQuery.matches && isInputFocused()) {
+                scrollToBottom();
             }
         });
 
