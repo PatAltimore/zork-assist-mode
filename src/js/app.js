@@ -143,6 +143,88 @@
         });
     }
 
+    function initKeyboardViewportFix() {
+        // The actual bug reports (iPhone: history disappears, the prompt
+        // scrolls out of view after a command; Kindle Silk: only a few
+        // lines show above a big dead area) both come from the same root
+        // cause -- the on-screen keyboard covers part of the screen without
+        // our height:100% layout knowing to shrink, so the game panel keeps
+        // claiming space that isn't actually visible, and whatever the
+        // browser's own "scroll the focused input into view" heuristic
+        // decides often lands somewhere unhelpful. window.visualViewport
+        // reports the space that's actually visible (keyboard excluded) on
+        // both iOS Safari and Chromium-based browsers like Silk, so we use
+        // it to size #app for real, and separately force the game text
+        // back to its own bottom (where the prompt is) whenever the
+        // keyboard is likely up.
+        var app = document.getElementById('app');
+        var gameport = document.getElementById('gameport');
+        var mobileQuery = window.matchMedia(MOBILE_QUERY);
+        if (!app) {
+            return;
+        }
+
+        function syncHeight() {
+            if (!mobileQuery.matches) {
+                app.style.height = '';
+                return;
+            }
+            var vv = window.visualViewport;
+            app.style.height = (vv ? vv.height : window.innerHeight) + 'px';
+        }
+
+        syncHeight();
+        window.addEventListener('resize', syncHeight);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', syncHeight);
+        }
+
+        if (!gameport) {
+            return;
+        }
+
+        function isInputFocused() {
+            var active = document.activeElement;
+            return !!(active && active.tagName === 'INPUT' && gameport.contains(active));
+        }
+
+        function scrollToBottom() {
+            var buf = document.querySelector('.BufferWindow');
+            if (buf) {
+                buf.scrollTop = buf.scrollHeight;
+            }
+        }
+
+        gameport.addEventListener('focusin', function (ev) {
+            if (mobileQuery.matches && ev.target && ev.target.tagName === 'INPUT') {
+                // The keyboard's own appearance animation, and the
+                // browser's competing scroll-into-view attempt, both take
+                // a moment -- correct the scroll position a few times as
+                // things settle rather than trusting a single attempt.
+                scrollToBottom();
+                setTimeout(scrollToBottom, 50);
+                setTimeout(scrollToBottom, 350);
+            }
+        });
+
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', function () {
+                if (mobileQuery.matches && isInputFocused()) {
+                    scrollToBottom();
+                }
+            });
+        }
+
+        // The game's response to your last command can print while the
+        // keyboard is still up -- keep the prompt in view as it arrives.
+        var observer = new MutationObserver(function () {
+            if (mobileQuery.matches && isInputFocused()) {
+                scrollToBottom();
+            }
+        });
+        observer.observe(gameport, { childList: true, subtree: true, characterData: true });
+    }
+
     function sendGameCommand(cmd) {
         var input = document.querySelector('#windowport input.Input');
         if (!input) {
@@ -278,6 +360,7 @@
             initFontSizeButtons();
             initThemeToggle();
             initNewGameButton();
+            initKeyboardViewportFix();
         });
     } else {
         boot();
@@ -286,5 +369,6 @@
         initFontSizeButtons();
         initThemeToggle();
         initNewGameButton();
+        initKeyboardViewportFix();
     }
 })();
