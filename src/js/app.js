@@ -88,18 +88,19 @@
     function initMobileAutoHide(setHintsCollapsed) {
         // On narrow (mobile) screens the assist panel sits below the game
         // text and the header sits above it, both eating into the limited
-        // vertical space available to read the adventure text. Earlier
-        // versions tried to hide these automatically -- on scroll, then on
-        // focusing the command line for the on-screen keyboard -- but both
-        // caused more problems than they solved on real devices (fighting
-        // with the keyboard, iOS viewport quirks). This is now purely
-        // manual: each has its own small tab, always present on mobile
-        // right where the element would be, that just toggles it. The one
-        // exception is the hints panel specifically auto-hiding right when
-        // a command is submitted, since Silk (Kindle Fire) has rendering
-        // trouble with that exact combination -- see the keypress listener
-        // below. Desktop is unaffected, and the header's own Hide/Show
-        // Hints button still works at any width.
+        // vertical space available to read the adventure text. An earlier
+        // version tried to hide these on every scroll gesture, which caused
+        // more problems than it solved on real devices, so that's gone --
+        // showing them again is manual only, via each one's small tab,
+        // always present on mobile right where the element would be. Hiding
+        // is still automatic in two specific, deterministic spots: the
+        // instant the command line is focused (the keyboard is about to
+        // cover a big chunk of the screen, so free up space for the game
+        // text before you even start typing), and, belt-and-suspenders,
+        // right when a command is submitted (Silk/Kindle Fire has rendering
+        // trouble if the hints panel is still open at that moment). Desktop
+        // is unaffected, and the header's own Hide/Show Hints button still
+        // works at any width.
         var header = document.getElementById('app-header');
         var headerPeek = document.getElementById('header-peek');
         var hintsPeek = document.getElementById('hints-peek');
@@ -138,14 +139,29 @@
             });
         }
 
-        // Silk (Kindle Fire) has rendering trouble specifically when a
-        // command is submitted while the hints panel is open -- hide it
-        // automatically the moment a command is entered, so that
-        // combination never occurs. Matches js/undo.js's own pattern:
-        // a capturing keypress listener on #windowport, checked for
-        // Enter/keyCode 13 from the game's own input field.
         var windowport = document.getElementById('windowport');
         if (windowport) {
+            // The keyboard covers a big chunk of the screen the instant the
+            // input is focused -- if the header and hints panel are still
+            // showing at that point, there's often barely a line of the
+            // game text left to see while actually composing a command.
+            // Hide both right away so the available space is maximized
+            // for as long as the keyboard is up. Showing them again stays
+            // manual (the tabs), on purpose -- auto-*showing* on blur is
+            // what caused problems before.
+            windowport.addEventListener('focusin', function (ev) {
+                if (mobileQuery.matches && ev.target && ev.target.matches && ev.target.matches('input.Input')) {
+                    setHeaderHidden(true);
+                    setHintsHidden(true);
+                }
+            });
+
+            // Silk (Kindle Fire) has rendering trouble specifically when a
+            // command is submitted while the hints panel is open -- this
+            // is a belt-and-suspenders check in case it got reopened
+            // between focusing and submitting. Matches js/undo.js's own
+            // pattern: a capturing keypress listener on #windowport,
+            // checked for Enter/keyCode 13 from the game's own input field.
             windowport.addEventListener('keypress', function (ev) {
                 if (!mobileQuery.matches || hintsHidden) {
                     return;
