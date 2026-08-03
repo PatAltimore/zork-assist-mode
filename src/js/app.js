@@ -116,6 +116,11 @@
             if (hintsPeek) {
                 hintsPeek.textContent = collapsed ? '▴ Hints' : '▾ Hide Hints';
                 hintsPeek.setAttribute('aria-label', collapsed ? 'Show hints panel' : 'Hide hints panel');
+                // Only float (pin to the real visual viewport, see
+                // .floating in style.css) while collapsed -- when the
+                // panel is open it's back in normal document flow, right
+                // above the panel where it visually belongs.
+                hintsPeek.classList.toggle('floating', collapsed);
             }
             correctGameportAfterToggle();
         }

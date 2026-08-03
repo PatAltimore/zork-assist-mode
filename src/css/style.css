@@ -760,4 +760,21 @@ html, body {
     background: var(--fg-dim);
     color: var(--bg);
   }
+
+  /* While the hints panel is collapsed, its reopen tab sits at the very
+     bottom of the game text in normal document flow -- which is
+     positioned assuming the full, keyboard-less layout height (nothing
+     resizes #game-panel itself for the keyboard; only GlkOte's own
+     internal gameport does, deliberately, so it doesn't fight GlkOte's
+     resize math -- see js/app.js). When the keyboard is actually up and
+     covering the bottom of the real screen, that leaves the tab clipped
+     underneath it. Pinning it to the real visual viewport instead, only
+     while collapsed, keeps it reachable regardless of the keyboard. */
+  #hints-peek.floating {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+  }
 }
