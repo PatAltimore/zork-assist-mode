@@ -12,8 +12,6 @@
     var MAX_FONT_SIZE = 24;
     var FONT_SIZE_STEP = 2;
 
-    var MOBILE_QUERY = '(max-width: 760px)';
-
     function showError(message) {
         var pane = document.getElementById('loadingpane');
         if (pane) {
@@ -63,48 +61,6 @@
             .catch(function (err) {
                 showError('Could not load the game data (' + err.message + '). Try reloading the page.');
             });
-    }
-
-    // Our own outer page layout (#app and everything positioned within it
-    // -- the header, the show/hide tabs, the assist panel) is sized
-    // entirely through CSS height:100% chains rooted in html/body. That's
-    // a completely separate concern from GlkOte's own internal gameport
-    // resizing below: GlkOte only ever touches gameport's own box, never
-    // #app's. But on iOS, height:100% doesn't reliably track what's
-    // *currently* visible through a full keyboard-open -> keyboard-close
-    // -> address-bar-reappears cycle, which can leave our own elements
-    // (like the collapsed hints panel's tab) positioned against a stale,
-    // taller-than-reality page height -- pushed down behind the browser's
-    // own chrome, untappable, until a reload recalculates everything from
-    // scratch. Actively syncing #app's own pixel height to
-    // visualViewport.height (the space actually visible right now) fixes
-    // that directly, without touching scroll position at all, so it
-    // doesn't compete with GlkOte's own scroll handling the way an
-    // earlier, more invasive attempt at this did.
-    function initViewportHeightSync() {
-        var app = document.getElementById('app');
-        var mobileQuery = window.matchMedia(MOBILE_QUERY);
-        if (!app) {
-            return;
-        }
-
-        function syncHeight() {
-            if (!mobileQuery.matches) {
-                app.style.height = '';
-                return;
-            }
-            var vv = window.visualViewport;
-            app.style.height = (vv ? vv.height : window.innerHeight) + 'px';
-            if (window.GlkOte && typeof window.GlkOte.recompute_gameport_margins === 'function') {
-                window.GlkOte.recompute_gameport_margins();
-            }
-        }
-
-        syncHeight();
-        window.addEventListener('resize', syncHeight);
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', syncHeight);
-        }
     }
 
     // Two corrections needed every time the header or hints panel is
@@ -333,7 +289,6 @@
             initFontSizeButtons();
             initThemeToggle();
             initNewGameButton();
-            initViewportHeightSync();
         });
     } else {
         boot();
@@ -342,6 +297,5 @@
         initFontSizeButtons();
         initThemeToggle();
         initNewGameButton();
-        initViewportHeightSync();
     }
 })();
