@@ -63,6 +63,23 @@
             });
     }
 
+    // iOS Safari/Edge (WebKit) can leave the game text's own touch-scrolling
+    // "stuck" after its container is resized -- which is exactly what
+    // happens when hiding the header and/or hints panel lets the game
+    // panel grow. This is a one-time corrective nudge fired only at the
+    // moment we cause that resize, not an ongoing scroll listener: briefly
+    // toggling overflow off and back on is a well-known way to make WebKit
+    // recompute the scrollable region instead of trusting a stale one.
+    function nudgeBufferScroll() {
+        var buf = document.querySelector('.BufferWindow');
+        if (!buf) {
+            return;
+        }
+        buf.style.overflow = 'hidden';
+        void buf.offsetHeight; // force a reflow before restoring
+        buf.style.overflow = '';
+    }
+
     function initHintToggle() {
         var toggle = document.getElementById('hint-toggle');
         var panel = document.getElementById('assist-panel');
@@ -84,6 +101,7 @@
                 hintsPeek.textContent = collapsed ? '▴ Hints' : '▾ Hide Hints';
                 hintsPeek.setAttribute('aria-label', collapsed ? 'Show hints panel' : 'Hide hints panel');
             }
+            nudgeBufferScroll();
         }
 
         toggle.addEventListener('click', function () {
@@ -116,6 +134,7 @@
             header.classList.toggle('header-hidden', hidden);
             headerPeek.textContent = hidden ? '▾ Menu' : '▴ Hide Menu';
             headerPeek.setAttribute('aria-label', hidden ? 'Show header' : 'Hide header');
+            nudgeBufferScroll();
         });
     }
 

@@ -222,6 +222,7 @@ html, body {
   color: var(--fg);
   text-shadow: var(--body-glow);
   padding: 10px 14px !important;
+  -webkit-overflow-scrolling: touch;
 }
 
 .GridWindow {
