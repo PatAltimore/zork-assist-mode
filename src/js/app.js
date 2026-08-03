@@ -96,6 +96,50 @@
         }
     }
 
+    // Safety net for GlkOte's own on-screen-keyboard handling
+    // (vendor/glkote.js, evhan_viewport_resize), which sets #gameport's
+    // top/height directly to carve out the space above the keyboard. That
+    // math can end up stale -- e.g. if the keyboard closes right after the
+    // hints panel was toggled while it was still open -- leaving gameport
+    // stuck smaller than the screen even once the keyboard is fully gone,
+    // which shows up as a dead black band at the bottom that isn't part of
+    // any scrollable content. Rather than trying to out-guess GlkOte's
+    // calculation for every case, this just checks the one thing that's
+    // unambiguous: whether there's currently any real gap between the
+    // window and the visible viewport at all. If there isn't (no keyboard
+    // up), gameport should simply fill its container -- so clear whatever
+    // inline top/height GlkOte left behind and let our own CSS (inset: 0)
+    // take back over, instead of trusting its last calculation.
+    function initGameportKeyboardSafetyNet() {
+        if (!window.visualViewport) {
+            return;
+        }
+        var gameport = document.getElementById('gameport');
+        if (!gameport) {
+            return;
+        }
+        var mobileQuery = window.matchMedia('(max-width: 760px)');
+
+        window.visualViewport.addEventListener('resize', function () {
+            // Deferred so this runs after GlkOte's own (synchronous)
+            // handler for the same event has already had its say --
+            // we're a correction on top of it, not a competing one.
+            setTimeout(function () {
+                if (!mobileQuery.matches) {
+                    return;
+                }
+                var gap = window.innerHeight - window.visualViewport.height;
+                if (gap < 50) {
+                    gameport.style.top = '';
+                    gameport.style.height = '';
+                    if (window.GlkOte && typeof window.GlkOte.recompute_gameport_margins === 'function') {
+                        window.GlkOte.recompute_gameport_margins();
+                    }
+                }
+            }, 50);
+        });
+    }
+
     function initHintToggle() {
         var toggle = document.getElementById('hint-toggle');
         var panel = document.getElementById('assist-panel');
@@ -294,6 +338,7 @@
             initFontSizeButtons();
             initThemeToggle();
             initNewGameButton();
+            initGameportKeyboardSafetyNet();
         });
     } else {
         boot();
@@ -302,5 +347,6 @@
         initFontSizeButtons();
         initThemeToggle();
         initNewGameButton();
+        initGameportKeyboardSafetyNet();
     }
 })();
