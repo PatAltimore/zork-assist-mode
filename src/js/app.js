@@ -94,9 +94,12 @@
         // caused more problems than they solved on real devices (fighting
         // with the keyboard, iOS viewport quirks). This is now purely
         // manual: each has its own small tab, always present on mobile
-        // right where the element would be, that just toggles it. Desktop
-        // is unaffected, and the header's own Hide/Show Hints button still
-        // works at any width.
+        // right where the element would be, that just toggles it. The one
+        // exception is the hints panel specifically auto-hiding right when
+        // a command is submitted, since Silk (Kindle Fire) has rendering
+        // trouble with that exact combination -- see the keypress listener
+        // below. Desktop is unaffected, and the header's own Hide/Show
+        // Hints button still works at any width.
         var header = document.getElementById('app-header');
         var headerPeek = document.getElementById('header-peek');
         var hintsPeek = document.getElementById('hints-peek');
@@ -133,6 +136,29 @@
             hintsPeek.addEventListener('click', function () {
                 setHintsHidden(!hintsHidden);
             });
+        }
+
+        // Silk (Kindle Fire) has rendering trouble specifically when a
+        // command is submitted while the hints panel is open -- hide it
+        // automatically the moment a command is entered, so that
+        // combination never occurs. Matches js/undo.js's own pattern:
+        // a capturing keypress listener on #windowport, checked for
+        // Enter/keyCode 13 from the game's own input field.
+        var windowport = document.getElementById('windowport');
+        if (windowport) {
+            windowport.addEventListener('keypress', function (ev) {
+                if (!mobileQuery.matches || hintsHidden) {
+                    return;
+                }
+                if (ev.keyCode !== 13 && ev.which !== 13) {
+                    return;
+                }
+                var target = ev.target;
+                if (!target || !target.matches || !target.matches('input.Input')) {
+                    return;
+                }
+                setHintsHidden(true);
+            }, true);
         }
 
         mobileQuery.addEventListener('change', function (ev) {
