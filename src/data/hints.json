@@ -211,8 +211,8 @@
     "title": "Navigating the twisty maze",
     "hints": [
       "All the rooms here look identical, and normal exploration will just get you lost or looped back to where you started.",
-      "Drop something distinctive in each room as a landmark so you can tell them apart on your map.",
-      "Drop small items (not treasures) in each maze room to mark it, map the exits room by room, and follow the one specific path that leads to the room with the skeleton and its key, rope, and treasure."
+      "Dropping something distinctive in each room to map it by trial and error works, but you don't have to -- this particular maze has one specific, fixed way through it from the Troll Room, regardless of how turned around the identical descriptions make you feel.",
+      "From the Troll Room, go west, south, east, then up -- that fixed four-move path always leads to the room with the skeleton, no mapping required. There you'll find a leather bag of coins (a treasure), a rusty knife, and a skeleton key; the burned-out lantern lying there is junk, skip it. From that room, go southwest, up, east, up, then northeast to reach a grating; unlock it with the skeleton key, open it, and go up to pop out in a clearing above ground -- a shortcut that lets you skip the maze entirely on future trips in or out."
     ]
   },
   {
