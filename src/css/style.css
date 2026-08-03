@@ -51,15 +51,6 @@ html {
 
 html, body {
   height: 100%;
-  /* iOS Safari's own "scroll the focused input above the keyboard"
-     behavior operates on the page itself, not just our internal scroll
-     containers -- if the page is scrollable at all, it can shift this
-     entire fixed app shell out of alignment with the visual viewport,
-     which looks exactly like "everything jumped to the top, history is
-     gone" no matter what we do to .BufferWindow's own scrollTop. Locking
-     the page itself down to non-scrollable forces all scrolling to stay
-     inside the containers that are actually meant to scroll. */
-  overflow: hidden;
   margin: 0;
   background: var(--bg);
   color: var(--fg);
@@ -106,10 +97,6 @@ html, body {
 }
 
 #app-header.header-hidden {
-  display: none;
-}
-
-.edge-peek {
   display: none;
 }
 
@@ -730,46 +717,7 @@ html, body {
     border-top: 2px solid var(--border);
   }
 
-  /* Hiding/showing the header and hints panel on mobile uses the exact
-     same display:none toggle as the desktop Hide/Show Hints button
-     (defined earlier for #assist-panel.collapsed / #app-header.header-hidden)
-     -- no separate mobile-only mechanism, animation, or viewport-unit
-     trickery. That was tried and made real devices (iPhone, Kindle Fire)
-     behave worse, especially around the on-screen keyboard, so this is
-     deliberately as plain as possible. */
-
   #game-panel {
     flex: 1 1 auto;
-  }
-
-  /* Always present on mobile (not just while hidden) -- a plain manual
-     show/hide toggle for the header and hints panel. */
-  .edge-peek {
-    display: block;
-    width: 100%;
-    flex: 0 0 auto;
-    border: none;
-    background: var(--panel-bg);
-    color: var(--fg-dim);
-    padding: 0.35em;
-    font-family: var(--font);
-    font-size: 1em;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-align: center;
-  }
-
-  #header-peek {
-    border-bottom: 2px solid var(--border);
-  }
-
-  #hints-peek {
-    border-bottom: 2px solid var(--border);
-  }
-
-  .edge-peek:hover {
-    background: var(--fg-dim);
-    color: var(--bg);
   }
 }
