@@ -100,6 +100,10 @@ html, body {
   display: none;
 }
 
+.edge-peek {
+  display: none;
+}
+
 #app-header h1 {
   font-family: var(--font);
   font-size: 2em;
@@ -721,29 +725,38 @@ html, body {
     flex: 1 1 auto;
   }
 
-  /* GlkOte's own vendored code (vendor/glkote.js, evhan_viewport_resize)
-     already handles the iOS on-screen keyboard by resizing #gameport
-     directly -- but its own comment says it assumes gameport "either
-     takes up the full window or has fixed top and bottom margins," and
-     specifically calls out a header/navbar sitting above it as the
-     problem case ("any top margin ... will be hidden once the keyboard
-     is up"). Taking the header out of the flex flow entirely and
-     overlaying it on top (instead of it being a sibling that shares
-     space with gameport) gives gameport a simple, stable top margin
-     instead. Note this has to be gameport's own `top` offset, not
-     padding: GlkOte positions its internal window frames (the status
-     line, the buffer) with their own absolute top:0, which resolves
-     against gameport's *padding* box and would render underneath a
-     padding-based reservation, not below it. */
-  #app-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 20;
+  /* Plain manual show/hide toggle for the header and hints panel -- no
+     scroll/focus/viewport handling of any kind. Several attempts at
+     automatic and semi-automatic behavior around the on-screen keyboard
+     all made real devices (iPhone, Kindle Fire) behave worse, so this is
+     deliberately as simple as possible: two tabs, always present, that
+     just toggle visibility on tap. */
+  .edge-peek {
+    display: block;
+    width: 100%;
+    flex: 0 0 auto;
+    border: none;
+    background: var(--panel-bg);
+    color: var(--fg-dim);
+    padding: 0.35em;
+    font-family: var(--font);
+    font-size: 1em;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-align: center;
   }
 
-  #gameport {
-    top: 230px;
+  #header-peek {
+    border-bottom: 2px solid var(--border);
+  }
+
+  #hints-peek {
+    border-bottom: 2px solid var(--border);
+  }
+
+  .edge-peek:hover {
+    background: var(--fg-dim);
+    color: var(--bg);
   }
 }

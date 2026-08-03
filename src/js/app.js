@@ -69,15 +69,53 @@
         if (!toggle || !panel) {
             return;
         }
+        // Present on mobile only (see .edge-peek in style.css) -- a second,
+        // always-reachable manual toggle for the hints panel, since the
+        // header (and the button above) can itself be hidden via its own
+        // peek tab. Routing both through this one setCollapsed keeps them
+        // from ever disagreeing about the current state.
+        var hintsPeek = document.getElementById('hints-peek');
 
         function setCollapsed(collapsed) {
             panel.classList.toggle('collapsed', collapsed);
             toggle.textContent = collapsed ? 'Show Hints' : 'Hide Hints';
             toggle.setAttribute('aria-expanded', String(!collapsed));
+            if (hintsPeek) {
+                hintsPeek.textContent = collapsed ? '▴ Hints' : '▾ Hide Hints';
+                hintsPeek.setAttribute('aria-label', collapsed ? 'Show hints panel' : 'Hide hints panel');
+            }
         }
 
         toggle.addEventListener('click', function () {
             setCollapsed(!panel.classList.contains('collapsed'));
+        });
+
+        if (hintsPeek) {
+            hintsPeek.addEventListener('click', function () {
+                setCollapsed(!panel.classList.contains('collapsed'));
+            });
+        }
+
+        initHeaderPeek();
+    }
+
+    // Plain manual show/hide for the header on mobile -- no scroll, focus,
+    // or viewport handling of any kind. Several rounds of trying to
+    // automate this around the on-screen keyboard all made real devices
+    // (iPhone, Kindle Fire) behave worse than doing nothing, so this is
+    // deliberately just a tab, always present on mobile, that toggles
+    // visibility on tap and nothing else.
+    function initHeaderPeek() {
+        var header = document.getElementById('app-header');
+        var headerPeek = document.getElementById('header-peek');
+        if (!headerPeek || !header) {
+            return;
+        }
+        headerPeek.addEventListener('click', function () {
+            var hidden = !header.classList.contains('header-hidden');
+            header.classList.toggle('header-hidden', hidden);
+            headerPeek.textContent = hidden ? '▾ Menu' : '▴ Hide Menu';
+            headerPeek.setAttribute('aria-label', hidden ? 'Show header' : 'Hide header');
         });
     }
 
