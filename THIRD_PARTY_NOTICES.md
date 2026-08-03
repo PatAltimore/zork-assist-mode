@@ -7,7 +7,7 @@ original license; see the linked notice/license file for full text.
 |---|---|---|---|
 | Zork I (ZIL source & compiled story file) | `game-source/`, `src/data/zork1.z3` | MIT (Copyright 2025 Microsoft) | Original source at [historicalsource/zork1](https://github.com/historicalsource/zork1); compiled unmodified with ZILF. See `game-source/LICENSE`. |
 | ifvms.js (ZVM Z-machine engine) | `src/vendor/zvm.min.js` | BSD | From [curiousdannii/ifvms.js](https://github.com/curiousdannii/ifvms.js). See `src/vendor/LICENSE-ifvms.txt`. |
-| GlkOte, GlkApi, Dialog | `src/vendor/glkote.js`, `glkapi.js`, `dialog.js`, `glkote.css`, `dialog.css` | MIT (Copyright 2008-2025 Andrew Plotkin) | From [erkyrath/glkote](https://github.com/erkyrath/glkote). See `src/vendor/LICENSE-glkote.txt`. |
+| GlkOte, GlkApi, Dialog | `src/vendor/glkote.js`, `glkapi.js`, `dialog.js`, `glkote.css`, `dialog.css` | MIT (Copyright 2008-2025 Andrew Plotkin) | From [erkyrath/glkote](https://github.com/erkyrath/glkote). See `src/vendor/LICENSE-glkote.txt`. **Locally modified**: `glkote.js` pulls the one-time `orig_gameport_margins` calculation in `glkote_init()` out into a standalone `recompute_gameport_margins()` function, exposed on the public `GlkOte` object. GlkOte assumes gameport's position/size relative to the window never changes after startup; this project's header/hints-panel show-hide toggles violate that, so `src/js/app.js` calls `GlkOte.recompute_gameport_margins()` right after each toggle to keep GlkOte's own on-screen-keyboard handling working correctly. |
 | jQuery 1.12.4 | `src/vendor/jquery-1.12.4.min.js` | MIT | Required by GlkOte's DOM handling. |
 
 ## Build-time tooling (not redistributed)

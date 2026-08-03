@@ -85,6 +85,35 @@ let debug_out_handler = null;
 let Dialog = null; /* imported API object (the file select/open layer) */
 let Blorb = null; /* imported API object (the resource layer) */
 
+/* Record the original top and bottom margins (from window-edge) of the
+   gameport, and of the element gameport is positioned relative to. These
+   are needed for mobile keyboard resizing (see evhan_viewport_resize()).
+
+   This was originally computed once inline in glkote_init() and never
+   updated again for the life of the page. That's fine as long as nothing
+   ever changes gameport's position/size relative to the window after
+   startup -- but a host page that lets the user show/hide chrome around
+   gameport (a header, a sidebar) invalidates it every time they do, after
+   which evhan_viewport_resize()'s own math silently uses stale numbers.
+   Pulled out into its own (exported) function so a host page can call
+   GlkOte.recompute_gameport_margins() right after any such layout change,
+   instead of the assumption silently going stale for the rest of the
+   session.
+   [Local modification -- see THIRD_PARTY_NOTICES.md] */
+function recompute_gameport_margins() {
+    const gameport = $('#'+gameport_id, dom_context);
+    if (!gameport.length)
+        return;
+    const gameparent = gameport.offsetParent();
+    orig_gameport_margins = {
+        top: gameport.offset().top,
+        bottom: $(window).height() - (gameport.offset().top + gameport.outerHeight()),
+        parenttop: gameparent.offset().top,
+        /* We won't need parentbottom. If we did, we'd have to be careful
+           of the case where gameparent is <html>. */
+    };
+}
+
 /* Some handy constants */
 /* A non-breaking space character. */
 const NBSP = '\xa0';
@@ -222,15 +251,7 @@ function glkote_init(iface) {
     /* Record the original top and bottom margins (from window-edge) of
        the gameport. Also of the element that gameport is relative to.
        These will be needed for mobile keyboard resizing. */
-    const gameport = $('#'+gameport_id, dom_context);
-    const gameparent = gameport.offsetParent();
-    orig_gameport_margins = {
-        top: gameport.offset().top,
-        bottom: $(window).height() - (gameport.offset().top + gameport.outerHeight()),
-        parenttop: gameparent.offset().top,
-        /* We won't need parentbottom. If we did, we'd have to be careful
-           of the case where gameparent is <html>. */
-    };
+    recompute_gameport_margins();
 
     /* We can get callbacks on any *boolean* change in the resolution level.
        Not, unfortunately, on all changes. */
@@ -3250,7 +3271,9 @@ return {
     save_allstate : glkote_save_allstate,
     log:      glkote_log,
     warning:  glkote_warning,
-    error:    glkote_error
+    error:    glkote_error,
+    /* Local addition -- see THIRD_PARTY_NOTICES.md */
+    recompute_gameport_margins: recompute_gameport_margins
 };
 
 };

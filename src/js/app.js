@@ -63,21 +63,37 @@
             });
     }
 
-    // iOS Safari/Edge (WebKit) can leave the game text's own touch-scrolling
-    // "stuck" after its container is resized -- which is exactly what
-    // happens when hiding the header and/or hints panel lets the game
-    // panel grow. This is a one-time corrective nudge fired only at the
-    // moment we cause that resize, not an ongoing scroll listener: briefly
-    // toggling overflow off and back on is a well-known way to make WebKit
-    // recompute the scrollable region instead of trusting a stale one.
-    function nudgeBufferScroll() {
+    // Two corrections needed every time the header or hints panel is
+    // shown/hidden, since both change #gameport's actual size on screen:
+    //
+    // 1. iOS Safari/Edge (WebKit) can leave the game text's own
+    //    touch-scrolling "stuck" after its container is resized. Briefly
+    //    toggling overflow off and back on is a well-known way to make
+    //    WebKit recompute the scrollable region instead of trusting a
+    //    stale one.
+    // 2. GlkOte's own on-screen-keyboard handling (vendor/glkote.js,
+    //    evhan_viewport_resize) measures gameport's margins exactly once
+    //    at startup and never again, on the assumption that a host page
+    //    never moves gameport around. Toggling our header/hints panel
+    //    breaks that assumption, so GlkOte's keyboard math goes stale --
+    //    which shows up as a chunk of dead space where gameport didn't
+    //    grow back to fill the screen after the keyboard closes. We
+    //    patched a small recompute function into our vendored copy (see
+    //    THIRD_PARTY_NOTICES.md) specifically so we can re-arm it here,
+    //    right when we're the ones causing the resize.
+    //
+    // Neither of these is an ongoing scroll/resize listener -- just a
+    // one-time correction fired at the exact moment we change the layout.
+    function correctGameportAfterToggle() {
         var buf = document.querySelector('.BufferWindow');
-        if (!buf) {
-            return;
+        if (buf) {
+            buf.style.overflow = 'hidden';
+            void buf.offsetHeight; // force a reflow before restoring
+            buf.style.overflow = '';
         }
-        buf.style.overflow = 'hidden';
-        void buf.offsetHeight; // force a reflow before restoring
-        buf.style.overflow = '';
+        if (window.GlkOte && typeof window.GlkOte.recompute_gameport_margins === 'function') {
+            window.GlkOte.recompute_gameport_margins();
+        }
     }
 
     function initHintToggle() {
@@ -101,7 +117,7 @@
                 hintsPeek.textContent = collapsed ? '▴ Hints' : '▾ Hide Hints';
                 hintsPeek.setAttribute('aria-label', collapsed ? 'Show hints panel' : 'Hide hints panel');
             }
-            nudgeBufferScroll();
+            correctGameportAfterToggle();
         }
 
         toggle.addEventListener('click', function () {
@@ -134,7 +150,7 @@
             header.classList.toggle('header-hidden', hidden);
             headerPeek.textContent = hidden ? '▾ Menu' : '▴ Hide Menu';
             headerPeek.setAttribute('aria-label', hidden ? 'Show header' : 'Hide header');
-            nudgeBufferScroll();
+            correctGameportAfterToggle();
         });
     }
 
