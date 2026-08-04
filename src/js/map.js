@@ -24,6 +24,27 @@
         return DIR_ORDER.filter(function (d) { return dirSet.has(d); });
     }
 
+    // The Z-machine's own status-line opcode (not this page) formats the
+    // room name to fit whatever width the game window currently has, so on
+    // a narrow/mobile screen a long name like "North of House" can arrive
+    // here already cut down to "North of Ho". An exact-match lookup would
+    // just silently fail in that case, so fall back to treating it as a
+    // truncated prefix -- but only when exactly one known room name starts
+    // with it, so a genuinely ambiguous or garbled reading still resolves
+    // to nothing rather than the wrong room.
+    function resolveRoomId(name) {
+        if (!name) {
+            return null;
+        }
+        if (nameToId[name]) {
+            return nameToId[name];
+        }
+        var candidates = Object.keys(nameToId).filter(function (fullName) {
+            return fullName.indexOf(name) === 0;
+        });
+        return candidates.length === 1 ? nameToId[candidates[0]] : null;
+    }
+
     // Is there a real exit between these two rooms (either direction)? Used
     // to decide whether to draw a connector line -- deliberately direction-
     // agnostic, since Zork's own map has cases where an exit's *declared*
@@ -56,16 +77,21 @@
     // Exits whose target isn't the room's immediate N/S/E/W grid neighbor --
     // genuine shortcuts/loops (or a diagonal step) that the straight grid
     // connectors below can't draw as a line without crossing other rooms.
-    // Surfaced as small corner badges instead so they're not silently lost.
+    // Surfaced instead as a "Hidden exits" row under Exits Here (see
+    // renderCurrentExits) so they're not silently lost.
     function extraExitDirs(room) {
-        return sortDirs(new Set(room.exits.filter(function (e) {
+        var byDir = {};
+        room.exits.forEach(function (e) {
             var target = mapData.rooms[e.target];
             if (!target || target.level !== room.level) {
-                return false; // level change -- already shown via Up/Down, not a grid line either way
+                return; // level change -- already shown via Up/Down, not a grid line either way
             }
             var dx = target.x - room.x, dy = target.y - room.y;
-            return Math.abs(dx) + Math.abs(dy) !== 1;
-        }).map(function (e) { return e.dir; })));
+            if (Math.abs(dx) + Math.abs(dy) !== 1 && !byDir[e.dir]) {
+                byDir[e.dir] = e;
+            }
+        });
+        return sortDirs(new Set(Object.keys(byDir))).map(function (d) { return byDir[d]; });
     }
 
     function buildTracks(count) {
@@ -129,6 +155,43 @@
         return dirsByFrontier;
     }
 
+    // A badge for one exit: the direction, and where it leads -- the
+    // destination room name if you've already been there, or a plain "?"
+    // if you haven't (so this doesn't spoil unexplored rooms).
+    function exitBadge(dir, exit) {
+        var target = mapData.rooms[exit.target];
+
+        var badge = document.createElement('span');
+        badge.className = 'map-exit-badge';
+
+        var dirPart = document.createElement('span');
+        dirPart.className = 'map-exit-dir';
+        dirPart.textContent = DIR_LABELS[dir] || dir;
+        badge.appendChild(dirPart);
+
+        var destPart = document.createElement('span');
+        destPart.className = 'map-exit-dest';
+        if (target && visited.has(exit.target)) {
+            destPart.textContent = target.blob ? target.name + ' (varies)' : target.name;
+        } else {
+            destPart.textContent = '?';
+            destPart.classList.add('map-exit-dest-unknown');
+            badge.title = 'Not yet visited -- go ' + (DIR_LABELS[dir] || dir) + ' to find out what\'s here.';
+        }
+        badge.appendChild(destPart);
+        return badge;
+    }
+
+    function exitsRow(labelText) {
+        var row = document.createElement('div');
+        row.className = 'map-exits-row';
+        var label = document.createElement('span');
+        label.className = 'map-exits-label';
+        label.textContent = labelText;
+        row.appendChild(label);
+        return row;
+    }
+
     function renderCurrentExits() {
         if (!currentExitsEl) {
             return;
@@ -139,33 +202,47 @@
         }
 
         var room = mapData.rooms[currentId];
-        var label = document.createElement('span');
-        label.className = 'map-exits-label';
-        label.textContent = 'Exits here:';
-        currentExitsEl.appendChild(label);
+        var mainRow = exitsRow('Exits here:');
+        currentExitsEl.appendChild(mainRow);
 
         if (room.blob) {
             var note = document.createElement('span');
             note.className = 'map-exits-note';
             note.textContent = "varies room to room here -- go by what the game tells you.";
-            currentExitsEl.appendChild(note);
+            mainRow.appendChild(note);
             return;
         }
 
-        var dirs = sortDirs(new Set(room.exits.map(function (e) { return e.dir; })));
-        if (dirs.length === 0) {
+        if (room.exits.length === 0) {
             var none = document.createElement('span');
             none.className = 'map-exits-note';
             none.textContent = 'none known yet.';
-            currentExitsEl.appendChild(none);
+            mainRow.appendChild(none);
             return;
         }
-        dirs.forEach(function (d) {
-            var badge = document.createElement('span');
-            badge.className = 'map-exit-badge';
-            badge.textContent = DIR_LABELS[d] || d;
-            currentExitsEl.appendChild(badge);
+
+        var dirToExit = {};
+        room.exits.forEach(function (e) {
+            if (!dirToExit[e.dir]) {
+                dirToExit[e.dir] = e;
+            }
         });
+        sortDirs(new Set(Object.keys(dirToExit))).forEach(function (d) {
+            mainRow.appendChild(exitBadge(d, dirToExit[d]));
+        });
+
+        // A second row for exits that loop or shortcut somewhere not
+        // adjacent to this room on the grid -- there's no straight line to
+        // draw for these, so without calling them out separately here
+        // they'd be invisible on the map entirely.
+        var extraExits = extraExitDirs(room);
+        if (extraExits.length > 0) {
+            var hiddenRow = exitsRow('Hidden exits (not drawn as lines):');
+            extraExits.forEach(function (e) {
+                hiddenRow.appendChild(exitBadge(e.dir, e));
+            });
+            currentExitsEl.appendChild(hiddenRow);
+        }
     }
 
     function render() {
@@ -239,35 +316,21 @@
                 cell.style.gridRow = String(2 * (room.y - minY) + 1);
 
                 if (isFrontier) {
+                    var frontierDirLabels = sortDirs(frontierDirs[id]).map(function (d) {
+                        return DIR_LABELS[d] || d;
+                    });
                     var dirLabel = document.createElement('span');
                     dirLabel.className = 'dir-label';
-                    dirLabel.textContent = sortDirs(frontierDirs[id]).map(function (d) {
-                        return DIR_LABELS[d] || d;
-                    }).join('/');
+                    dirLabel.textContent = frontierDirLabels.join('/');
                     var qMark = document.createElement('span');
                     qMark.className = 'q-mark';
                     qMark.textContent = '?';
+                    cell.title = 'Not visited yet -- go ' + frontierDirLabels.join(' or ') + ' from where you are to find out what\'s here.';
                     cell.appendChild(dirLabel);
                     cell.appendChild(qMark);
                 } else {
                     cell.textContent = room.name;
                     cell.title = room.blob ? room.name + ' (an area the game itself can\'t pin down further)' : room.name;
-
-                    if (!room.blob) {
-                        var extraDirs = extraExitDirs(room);
-                        if (extraDirs.length > 0) {
-                            var extraWrap = document.createElement('span');
-                            extraWrap.className = 'map-room-extra';
-                            extraDirs.forEach(function (d) {
-                                var tag = document.createElement('span');
-                                tag.className = 'extra-exit-badge';
-                                tag.textContent = DIR_LABELS[d] || d;
-                                tag.title = 'Also connects this way to somewhere not shown as a line here -- see Exits Here.';
-                                extraWrap.appendChild(tag);
-                            });
-                            cell.appendChild(extraWrap);
-                        }
-                    }
                 }
                 grid.appendChild(cell);
 
@@ -329,7 +392,7 @@
         if (!name) {
             return;
         }
-        var id = nameToId[name];
+        var id = resolveRoomId(name);
         if (!id || id === currentId) {
             return;
         }

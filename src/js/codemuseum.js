@@ -96,6 +96,21 @@
         return (line.textContent || '').replace(/\s*Score:.*$/i, '').trim();
     }
 
+    // The Z-machine's own status-line opcode sizes the room name to fit the
+    // current window, so on a narrow screen it can arrive here already cut
+    // down to a prefix (e.g. "North of Ho"). Fall back to matching that
+    // prefix, but only when it's unambiguous -- see map.js's identical
+    // resolveRoomId, which this mirrors since the two files don't share a
+    // module system.
+    function resolveRoomId(name) {
+        if (!name) return null;
+        if (nameToRoomId[name]) return nameToRoomId[name];
+        var candidates = Object.keys(nameToRoomId).filter(function (fullName) {
+            return fullName.indexOf(name) === 0;
+        });
+        return candidates.length === 1 ? nameToRoomId[candidates[0]] : null;
+    }
+
     var lastRoomName = null;
     var checkTimer = null;
     function scheduleRoomCheck() {
@@ -105,7 +120,7 @@
             var name = getStatusRoomName();
             if (!name || name === lastRoomName) return;
             lastRoomName = name;
-            renderRoom(nameToRoomId[name]);
+            renderRoom(resolveRoomId(name));
         }, 80);
     }
 
@@ -137,7 +152,7 @@
         populateTopicSelect();
         renderGeneral();
         renderTopic();
-        renderRoom(nameToRoomId[getStatusRoomName()]);
+        renderRoom(resolveRoomId(getStatusRoomName()));
         initObserver();
     }).catch(function (err) {
         generalLinksEl.textContent = 'Could not load Code Museum links (' + err.message + ').';

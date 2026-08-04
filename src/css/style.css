@@ -484,11 +484,17 @@ html, body {
 
 #map-current-exits {
   display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+  margin-bottom: 1em;
+  min-height: 1.6em;
+}
+
+.map-exits-row {
+  display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.3em;
-  margin-bottom: 1em;
-  min-height: 1.6em;
 }
 
 .map-exits-label {
@@ -500,12 +506,33 @@ html, body {
 }
 
 .map-exit-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
   border: 1px solid var(--border);
-  padding: 0.1em 0.5em;
+  padding: 0.15em 0.5em;
   font-size: 0.95em;
+}
+
+.map-exit-dir {
   font-weight: bold;
   color: var(--fg-bright);
+}
+
+.map-exit-dir::after {
+  content: '\2192';
+  margin-left: 0.4em;
+  color: var(--fg-dim);
+  font-weight: normal;
+}
+
+.map-exit-dest {
+  color: var(--fg);
+}
+
+.map-exit-dest-unknown {
+  color: var(--fg-dim);
+  font-style: italic;
 }
 
 .map-exits-note {
@@ -628,27 +655,6 @@ html, body {
   font-size: 0.75em;
   line-height: 1.1;
   overflow: hidden;
-}
-
-.map-room-extra {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: 2px;
-  max-width: calc(100% - 4px);
-}
-
-.extra-exit-badge {
-  font-size: 0.7em;
-  line-height: 1;
-  padding: 1px 3px;
-  border: 1px dashed var(--fg-dim);
-  color: var(--fg-dim);
-  background: var(--bg);
-  cursor: help;
 }
 
 .map-room.frontier {
