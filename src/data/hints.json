@@ -36,6 +36,15 @@
     ]
   },
   {
+    "id": "forest",
+    "title": "Not getting lost in the forest",
+    "hints": [
+      "The forest around the house isn't actually a maze -- it's small and its layout never changes -- but several different rooms print the exact same \"Forest\" description, and two entirely separate rooms are both just called \"Clearing,\" so it's very easy to feel turned around even though you aren't.",
+      "The forest is really a loop wrapped around the house: the west, north, and south sides of the house each open directly into it, and the east side opens onto a clearing that continues toward a canyon. All of these connect to each other, so heading back toward any side of the house you recognize will get you out. The one real dead end is pushing further into impassable mountains -- once you're facing those, every direction just leads back to the same spot, so don't keep pushing past them looking for a way through.",
+      "Concretely: West of House leads into the forest, and from there you can reach a path (with a climbable tree worth investigating) to the north, or work your way south and around to the south side of the house. East of House leads to a different clearing than the one you may find deeper in the forest -- don't confuse the two if a hint mentions burning something at 'the clearing.' If you're ever unsure where you are, walking toward the house is always safe, since every forest room is only one or two moves from a side of it."
+    ]
+  },
+  {
     "id": "trapdoor",
     "title": "Finding the way underground",
     "hints": [
