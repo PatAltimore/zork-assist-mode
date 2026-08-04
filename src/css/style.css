@@ -369,6 +369,49 @@ html, body {
   font-size: 1.2em;
 }
 
+.fake-select-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5em;
+  text-align: left;
+  cursor: pointer;
+}
+
+.fake-select-arrow {
+  color: var(--fg-dim);
+  flex: 0 0 auto;
+}
+
+.fake-select-list {
+  position: fixed;
+  z-index: 30;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto;
+  background: var(--bg);
+  color: var(--fg-bright);
+  border: 1px solid var(--border);
+  font-family: var(--font);
+  font-size: 1.2em;
+}
+
+.fake-select-option {
+  padding: 0.4em 0.6em;
+  cursor: pointer;
+}
+
+.fake-select-option.highlighted,
+.fake-select-option:hover {
+  background: var(--fg-dim);
+  color: var(--bg);
+}
+
+.fake-select-option.selected {
+  border-left: 3px solid var(--fg-bright);
+}
+
 #hint-levels {
   display: flex;
   flex-direction: column;

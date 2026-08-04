@@ -241,6 +241,24 @@
     "bat": ["vampire-bat-transition", "coal-gas-explosion", "coal-mine-rooms"],
     "thief": ["robber-npc-logic", "robber-demon", "treasure-room"],
     "maze": ["leaf-pile-burning", "locking-unlocking-grates"],
-    "endgame": ["boat-instructions"]
+    "endgame": ["boat-instructions"],
+
+    "goals": ["room-definition"],
+    "essential-items": ["find-room-and-find-obj"],
+    "combat-basics": ["sword-glow"],
+    "start": ["kitchen-window"],
+    "forest": ["room-definition"],
+    "attic-knife": ["room-definition"],
+    "echo-room": ["dynamic-room-descriptions"],
+    "coal-machine": ["coal-mine-rooms"],
+    "egg": ["robber-npc-logic"],
+    "scoring": ["room-definition"],
+    "hades": ["candle-lighting"],
+    "dome-rope": ["room-definition"],
+    "coffin": ["room-definition"],
+    "mirror-room": ["mirror-room-mechanics", "mirror-room-hackery", "mirror-room-network"],
+    "river": ["boat-instructions"],
+    "buoy": ["boat-instructions"],
+    "rainbow": ["room-definition"]
   }
 }
