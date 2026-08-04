@@ -220,7 +220,22 @@
     "GROUP-COAL-MINE": ["coal-mine-rooms"],
     "GROUP-CLEARING": ["leaf-pile-burning"],
     "GRATING-ROOM": ["locking-unlocking-grates"],
-    "TROLL-ROOM": ["sword-glow"]
+    "TROLL-ROOM": ["sword-glow"],
+
+    "GROUP-MAZE": ["locking-unlocking-grates"],
+    "GROUP-DEAD-END": ["locking-unlocking-grates"],
+    "MACHINE-ROOM": ["coal-mine-rooms"],
+    "LOUD-ROOM": ["dynamic-room-descriptions"],
+    "ENTRANCE-TO-HADES": ["candle-lighting"],
+    "LAND-OF-LIVING-DEAD": ["candle-lighting"],
+    "UP-A-TREE": ["robber-npc-logic"],
+    "GROUP-FRIGID-RIVER": ["boat-instructions"],
+    "SANDY-BEACH": ["boat-instructions"],
+    "GROUP-FOREST": ["room-definition"],
+    "ATTIC": ["room-definition"],
+    "EGYPT-ROOM": ["room-definition"],
+    "DOME-ROOM": ["room-definition"],
+    "ARAGAIN-FALLS": ["room-definition"]
   },
 
   "byHintTopic": {
