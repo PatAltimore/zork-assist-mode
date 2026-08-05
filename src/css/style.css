@@ -352,6 +352,39 @@ html, body {
   color: var(--fg-dim);
 }
 
+#map-help {
+  margin-bottom: 0.8em;
+}
+
+#map-help summary {
+  cursor: pointer;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 1.1em;
+  list-style: none;
+}
+
+#map-help summary::-webkit-details-marker {
+  display: none;
+}
+
+#map-help summary::before {
+  content: '▸ ';
+}
+
+#map-help[open] summary::before {
+  content: '▾ ';
+}
+
+#map-help summary:hover {
+  color: var(--fg-bright);
+}
+
+#map-help .assist-note {
+  margin-top: 0.5em;
+}
+
 .assist-intro a {
   color: var(--fg-bright);
 }
