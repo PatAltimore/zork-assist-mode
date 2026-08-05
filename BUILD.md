@@ -66,6 +66,12 @@ directional `TO` exits. `tools/build-map.js` then:
   walking exits breadth-first from `WEST-OF-HOUSE`, using compass directions
   for x/y and `UP`/`DOWN` for level, with collision-avoidance for the
   inherently inconsistent blob areas.
+- Also emits `rawExits` (every room's real, un-merged exits) and
+  `rawToCanonical` (blob member id → canonical id) alongside the merged
+  view. The rooms behind a blob are still fully deterministic — the game
+  just never says which one you're in — so `src/js/map.js` uses this data
+  to work out the specific real room from how the player got there, and
+  shows its exact exits instead of a blanket "varies" whenever it can.
 
 One connection — the Frigid River — is entered by launching a boat (an
 action routine, not a room exit), so it has no `TO` reference in the ZIL

@@ -36,6 +36,28 @@ for (const [desc, ids] of Object.entries(groupByDesc)) {
     canonicalMeta[canonicalId] = { name: desc, blob: isBlob, members: ids };
 }
 
+// --- 1b. Keep every room's own raw exits too (real target room ids, not
+//         merged into the canonical view -- canonicalExits below rewrites
+//         *every* room's exits, including non-blob ones, to point at
+//         canonical ids, which is exactly the information this needs to
+//         preserve separately). The game always displays the same name for
+//         rooms behind a blob, but the *real* rooms there are fully
+//         deterministic -- if the assist map can work out which specific
+//         real room you're standing in (see resolveSpecificId in
+//         src/js/map.js, which walks this data forward from wherever you
+//         arrived from, one raw hop at a time regardless of whether that
+//         hop started inside a blob or not), it can show exits with total
+//         confidence instead of "varies".
+const rawToCanonical = {}; // raw member id -> canonical id (blob members only)
+for (const [canonicalId, meta] of Object.entries(canonicalMeta)) {
+    if (!meta.blob) continue;
+    for (const rawId of meta.members) rawToCanonical[rawId] = canonicalId;
+}
+const rawExits = {}; // raw room id -> [{dir, target: raw room id}]
+for (const r of Object.values(rooms)) {
+    rawExits[r.id] = r.exits.map((e) => ({ dir: e.dir, target: e.target }));
+}
+
 // --- 2. Rebuild exits in terms of canonical ids, dedup, drop self-loops ---
 const canonicalExits = {};
 for (const r of Object.values(rooms)) {
@@ -174,9 +196,12 @@ for (const id of Object.keys(canonicalMeta)) {
         y: pos[id].y,
         exits: canonicalExits[id] ? Array.from(canonicalExits[id].values()) : [],
     };
+    if (canonicalMeta[id].blob) {
+        outRooms[id].memberIds = canonicalMeta[id].members;
+    }
 }
 
-fs.writeFileSync(OUT, JSON.stringify({ start: START, rooms: outRooms }));
+fs.writeFileSync(OUT, JSON.stringify({ start: START, rawToCanonical, rawExits, rooms: outRooms }));
 console.log('Canonical rooms:', Object.keys(outRooms).length);
 console.log('Levels used:', Object.keys(levels).sort((a, b) => b - a).join(', '));
 console.log('Wrote', path.relative(process.cwd(), OUT));
