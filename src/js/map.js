@@ -154,7 +154,7 @@
     // Exits whose target isn't the room's immediate N/S/E/W grid neighbor --
     // genuine shortcuts/loops (or a diagonal step) that the straight grid
     // connectors below can't draw as a line without crossing other rooms.
-    // Surfaced instead as a "Hidden exits" row under Exits Here (see
+    // Surfaced instead as a "Hidden exits" row under Exits (see
     // renderCurrentExits) so they're not silently lost.
     function extraExits(room, exits) {
         return (exits || room.exits).filter(function (e) {
@@ -324,7 +324,7 @@
         }
 
         var room = mapData.rooms[currentId];
-        var mainRow = exitsRow('Exits here:');
+        var mainRow = exitsRow('Exits:');
         currentExitsEl.appendChild(mainRow);
 
         // If we've worked out exactly which real room is behind a blob's
@@ -351,7 +351,7 @@
 
         // Exits that only exist once some flag or object state is true
         // (the trap door propped open, the window open...) don't belong in
-        // the plain "Exits here" list at all -- listed there, they read as
+        // the plain "Exits" list at all -- listed there, they read as
         // just as usable as every other exit, which is exactly the
         // confusion a dashed badge in the same row didn't fix. Pull them
         // out into their own row instead, so this list only ever contains

@@ -19,7 +19,7 @@ Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red
   game's real room/exit graph. Areas the game's own text can't distinguish
   (mazes, the river, dark caves) are shown as one fogged region rather than
   spoiled room-by-room. Persists across reloads via `localStorage`. An
-  "Exits here" line lists every command the current room actually accepts
+  "Exits" line lists every command the current room actually accepts
   (N, S, E, W, U, D, etc.), unexplored neighbor cells are labeled with the
   direction that leads there (e.g. "N ?") instead of a bare "?", and a line
   is drawn between any two grid-adjacent cells with a real exit between
@@ -28,7 +28,7 @@ Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red
   that don't fit a clean compass grid (the coal mine slide, the trapdoor,
   the Round Room/Mirror Room network) -- an arrowhead on a connector line
   marks a one-way passage, and a small dashed corner tag on a room marks
-  an exit that leads somewhere not shown as a line here (see "Exits here"
+  an exit that leads somewhere not shown as a line here (see "Exits"
   for the full list).
 - **Continue where you left off**: the game itself autosaves after every turn
   to `localStorage` (score, inventory, room, everything) and silently resumes
