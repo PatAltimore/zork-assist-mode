@@ -346,10 +346,28 @@
             return;
         }
 
-        var dirGroups = groupExitsByDir(effectiveExits);
-        sortDirs(new Set(Object.keys(dirGroups))).forEach(function (d) {
-            mainRow.appendChild(exitBadge(d, dirGroups[d]));
-        });
+        // Exits that only exist once some flag or object state is true
+        // (the trap door propped open, the window open...) don't belong in
+        // the plain "Exits here" list at all -- listed there, they read as
+        // just as usable as every other exit, which is exactly the
+        // confusion a dashed badge in the same row didn't fix. Pull them
+        // out into their own row instead, so this list only ever contains
+        // exits that work right now.
+        var unconditionalExits = effectiveExits.filter(function (e) { return !e.note; });
+        var conditionalExits = effectiveExits.filter(function (e) { return e.note; });
+
+        var dirGroups = groupExitsByDir(unconditionalExits);
+        var dirs = Object.keys(dirGroups);
+        if (dirs.length === 0) {
+            var noneOpen = document.createElement('span');
+            noneOpen.className = 'map-exits-note';
+            noneOpen.textContent = 'none open right now.';
+            mainRow.appendChild(noneOpen);
+        } else {
+            sortDirs(new Set(dirs)).forEach(function (d) {
+                mainRow.appendChild(exitBadge(d, dirGroups[d]));
+            });
+        }
 
         if (room.blob) {
             var blobNote = document.createElement('span');
@@ -360,11 +378,25 @@
             mainRow.appendChild(blobNote);
         }
 
-        // A second row for exits that loop or shortcut somewhere not
-        // adjacent to this room on the grid -- there's no straight line to
-        // draw for these, so without calling them out separately here
-        // they'd be invisible on the map entirely.
-        var hiddenGroups = groupExitsByDir(extraExits(room, effectiveExits));
+        // A row for exits that exist in the source but need something done
+        // first -- shown separately, with the requirement, rather than
+        // mixed into the exits that just work.
+        var lockedGroups = groupExitsByDir(conditionalExits);
+        var lockedDirs = Object.keys(lockedGroups);
+        if (lockedDirs.length > 0) {
+            var lockedRow = exitsRow('Locked exits (not open yet):');
+            sortDirs(new Set(lockedDirs)).forEach(function (d) {
+                lockedRow.appendChild(exitBadge(d, lockedGroups[d]));
+            });
+            currentExitsEl.appendChild(lockedRow);
+        }
+
+        // A row for exits that loop or shortcut somewhere not adjacent to
+        // this room on the grid -- there's no straight line to draw for
+        // these, so without calling them out separately here they'd be
+        // invisible on the map entirely. Locked exits already got their
+        // own row above regardless of adjacency, so they're excluded here.
+        var hiddenGroups = groupExitsByDir(extraExits(room, unconditionalExits));
         var hiddenDirs = Object.keys(hiddenGroups);
         if (hiddenDirs.length > 0) {
             var hiddenRow = exitsRow('Hidden exits (not drawn as lines):');
