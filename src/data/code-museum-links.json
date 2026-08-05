@@ -192,6 +192,26 @@
       "title": "Opening and Closing the Kitchen Window",
       "path": "/act1/define-window-function-interaction",
       "blurb": "The only unlocked way into the house, and how it's implemented."
+    },
+    "east-house-window": {
+      "title": "Behind the White House: A Room Description",
+      "path": "/act1/define-east-house-room-description",
+      "blurb": "The room routine for Behind the House, including the kitchen window's open/ajar state."
+    },
+    "living-room-trap-door": {
+      "title": "Living Room: The Trap Door Puzzle",
+      "path": "/act1/define-living-room-trap-door",
+      "blurb": "The Living Room's trap door and the conditions that let it open or close."
+    },
+    "boat-inflate-deflate": {
+      "title": "Inflating and Deflating Boats",
+      "path": "/act1/inflating-and-deflating-boats",
+      "blurb": "The pump and the routines that inflate or deflate the boat you need for the river."
+    },
+    "bottle-filling-water": {
+      "title": "Object Interactions: Filling Bottles with Water",
+      "path": "/act1/object-interactions-filling-bottles",
+      "blurb": "How the bottle can be filled with water from a stream or river."
     }
   },
 
@@ -208,8 +228,12 @@
   ],
 
   "byRoom": {
-    "LIVING-ROOM": ["dynamic-room-descriptions"],
+    "LIVING-ROOM": ["dynamic-room-descriptions", "living-room-trap-door"],
+    "CELLAR": ["living-room-trap-door"],
     "KITCHEN": ["kitchen-window"],
+    "EAST-OF-HOUSE": ["east-house-window"],
+    "DAM-BASE": ["boat-inflate-deflate"],
+    "IN-STREAM": ["bottle-filling-water"],
     "GROUP-MIRROR-ROOM": ["mirror-room-mechanics", "mirror-room-hackery", "mirror-room-network"],
     "TREASURE-ROOM": ["robber-npc-logic", "robber-demon", "treasure-room"],
     "CYCLOPS-ROOM": ["cyclops-encounter", "cyclops-room-desc"],
