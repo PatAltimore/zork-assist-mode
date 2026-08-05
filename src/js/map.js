@@ -278,12 +278,15 @@
             }
             // Some exits in Zork only exist once a specific flag or object
             // state is true (the trap door propped open, the window open,
-            // the cyclops scared off...) -- flag those visually so this
-            // never reads as a guaranteed way through before that's true,
-            // regardless of whether the destination itself is known yet.
+            // the cyclops scared off...). This map only ever watches the
+            // status line's room name -- it has no way to see object or
+            // flag state, so it can't tell whether that condition is
+            // already met. Flag these so they never read as a guaranteed
+            // way through, but say so honestly rather than asserting a
+            // "locked" status this map can't actually verify.
             if (candidate.note) {
                 badge.classList.add('map-exit-conditional');
-                badge.title = 'Not always open -- ' + candidate.note + '.';
+                badge.title = 'This exit exists ' + candidate.note + ' -- this map can\'t tell whether that\'s already true, so check with the game before counting on it.';
             }
         } else {
             destPart.textContent = 'varies';
@@ -378,13 +381,16 @@
             mainRow.appendChild(blobNote);
         }
 
-        // A row for exits that exist in the source but need something done
-        // first -- shown separately, with the requirement, rather than
-        // mixed into the exits that just work.
+        // A row for exits that exist in the source but require some flag
+        // or object state this map has no way to observe (it only ever
+        // watches the status line's room name) -- shown separately, with
+        // the requirement, rather than mixed into exits known to just
+        // work. "Conditional" rather than "locked": that state may well
+        // already be true, this map just can't tell either way.
         var lockedGroups = groupExitsByDir(conditionalExits);
         var lockedDirs = Object.keys(lockedGroups);
         if (lockedDirs.length > 0) {
-            var lockedRow = exitsRow('Locked exits (not open yet):');
+            var lockedRow = exitsRow('Conditional exits:');
             sortDirs(new Set(lockedDirs)).forEach(function (d) {
                 lockedRow.appendChild(exitBadge(d, lockedGroups[d]));
             });
@@ -394,12 +400,12 @@
         // A row for exits that loop or shortcut somewhere not adjacent to
         // this room on the grid -- there's no straight line to draw for
         // these, so without calling them out separately here they'd be
-        // invisible on the map entirely. Locked exits already got their
+        // invisible on the map entirely. Conditional exits already got their
         // own row above regardless of adjacency, so they're excluded here.
         var hiddenGroups = groupExitsByDir(extraExits(room, unconditionalExits));
         var hiddenDirs = Object.keys(hiddenGroups);
         if (hiddenDirs.length > 0) {
-            var hiddenRow = exitsRow('Hidden exits (not drawn as lines):');
+            var hiddenRow = exitsRow('Hidden exits (not listed):');
             sortDirs(new Set(hiddenDirs)).forEach(function (d) {
                 hiddenRow.appendChild(exitBadge(d, hiddenGroups[d]));
             });
