@@ -267,22 +267,33 @@
         destPart.className = 'map-exit-dest';
 
         if (candidates.length === 1) {
-            var target = mapData.rooms[candidates[0].target];
-            if (target && visited.has(candidates[0].target)) {
+            var candidate = candidates[0];
+            var target = mapData.rooms[candidate.target];
+            if (target && visited.has(candidate.target)) {
                 destPart.textContent = target.blob ? target.name + ' (varies)' : target.name;
             } else {
                 destPart.textContent = '?';
                 destPart.classList.add('map-exit-dest-unknown');
                 badge.title = 'Not yet visited -- go ' + (DIR_LABELS[dir] || dir) + ' to find out what\'s here.';
             }
+            // Some exits in Zork only exist once a specific flag or object
+            // state is true (the trap door propped open, the window open,
+            // the cyclops scared off...) -- flag those visually so this
+            // never reads as a guaranteed way through before that's true,
+            // regardless of whether the destination itself is known yet.
+            if (candidate.note) {
+                badge.classList.add('map-exit-conditional');
+                badge.title = 'Not always open -- ' + candidate.note + '.';
+            }
         } else {
             destPart.textContent = 'varies';
             destPart.classList.add('map-exit-dest-unknown');
             var names = candidates.map(function (e) {
                 var t = mapData.rooms[e.target];
-                if (!t) return 'somewhere unknown';
-                if (!visited.has(e.target)) return 'somewhere unexplored';
-                return t.blob ? t.name + ' (varies)' : t.name;
+                var label = !t ? 'somewhere unknown'
+                    : !visited.has(e.target) ? 'somewhere unexplored'
+                        : (t.blob ? t.name + ' (varies)' : t.name);
+                return e.note ? label + ' (' + e.note + ')' : label;
             }).filter(function (n, i, arr) { return arr.indexOf(n) === i; });
             badge.title = 'Depends exactly which room this really is -- could be: ' + names.join(', ') + '.';
         }

@@ -34,7 +34,16 @@ function extractRoomBlocks(src) {
 }
 
 const DIRS = ['NORTH', 'SOUTH', 'EAST', 'WEST', 'NE', 'NW', 'SE', 'SW', 'UP', 'DOWN', 'IN', 'OUT', 'ENTER', 'LAND'];
-const dirPattern = new RegExp('\\((' + DIRS.join('|') + ')\\s+TO\\s+([A-Z][A-Z0-9-]*)', 'g');
+// The optional trailing group captures a ZIL "IF <condition>" guard, e.g.
+// "(SW TO STONE-BARROW IF WON-FLAG)" or "(UP TO LIVING-ROOM IF TRAP-DOOR IS
+// OPEN)" -- these exits only exist once that flag/object-state is true, so
+// callers need the raw condition text to tell a real exit from one that's
+// only sometimes real. \s already matches the newlines ZIL sometimes wraps
+// this clause across (e.g. target and IF on separate lines).
+const dirPattern = new RegExp(
+    '\\((' + DIRS.join('|') + ')\\s+TO\\s+([A-Z][A-Z0-9-]*)(?:\\s+IF\\s+([A-Z][A-Z0-9-]*(?:\\s+IS\\s+OPEN)?))?',
+    'g'
+);
 const descPattern = /\(DESC\s+"([^"]+)"\)/;
 
 const blocks = extractRoomBlocks(text);
@@ -47,7 +56,9 @@ for (const b of blocks) {
     let em;
     dirPattern.lastIndex = 0;
     while ((em = dirPattern.exec(b.text))) {
-        exits.push({ dir: em[1], target: em[2] });
+        const exit = { dir: em[1], target: em[2] };
+        if (em[3]) exit.condition = em[3];
+        exits.push(exit);
     }
     rooms[b.id] = { id: b.id, desc, exits };
 }

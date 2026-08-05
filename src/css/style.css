@@ -568,6 +568,16 @@ html, body {
   font-style: italic;
 }
 
+.map-exit-conditional {
+  border-style: dashed;
+  cursor: help;
+}
+
+.map-exit-conditional .map-exit-dest {
+  color: var(--fg-dim);
+  font-style: italic;
+}
+
 .map-exits-note {
   color: var(--fg-dim);
   font-style: italic;

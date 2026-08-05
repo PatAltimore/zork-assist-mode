@@ -20,6 +20,34 @@ rooms['DAM-BASE'].exits.push({ dir: 'DOWN', target: 'RIVER-1' });
 rooms['WHITE-CLIFFS-NORTH'].exits.push({ dir: 'DOWN', target: 'RIVER-3' });
 rooms['WHITE-CLIFFS-SOUTH'].exits.push({ dir: 'DOWN', target: 'RIVER-4' });
 
+// Some exits only exist once a specific flag or object state is true --
+// extract-rooms.js captures that as e.condition (the raw ZIL "IF ..."
+// text). FALSE-FLAG is a permanently-false joke global (Kitchen's chimney:
+// "Only Santa Claus climbs down chimneys."), so that one exit is not just
+// conditional, it's flat-out impossible -- drop it before it goes anywhere
+// near the map. Every other condition below really is achievable through
+// normal play, so those exits are kept, just annotated with a plain-
+// English requirement (see CONDITION_NOTES) instead of pretending they're
+// always open.
+for (const r of Object.values(rooms)) {
+    r.exits = r.exits.filter((e) => e.condition !== 'FALSE-FLAG');
+}
+
+const CONDITION_NOTES = {
+    'WON-FLAG': "only after you've already won the game",
+    'KITCHEN-WINDOW IS OPEN': 'only with the kitchen window open',
+    'MAGIC-FLAG': "only after saying \"Odysseus\" or \"Ulysses\" to scare off the cyclops",
+    'CYCLOPS-FLAG': "only after saying \"Odysseus\" or \"Ulysses\" to scare off the cyclops",
+    'LLD-FLAG': 'only after completing the exorcism ritual (bell, candles, book)',
+    'TRAP-DOOR IS OPEN': 'only if the trap door is propped open',
+    'DEFLATE': 'only with the boat deflated',
+    'RAINBOW-FLAG': 'only after waving the sceptre at the rainbow',
+};
+function noteFor(condition) {
+    if (!condition) return undefined;
+    return CONDITION_NOTES[condition] || 'only under a specific condition';
+}
+
 // --- 1. Group by DESC (ambiguous names collapse into one canonical node) ---
 const groupByDesc = {};
 for (const r of Object.values(rooms)) {
@@ -53,9 +81,14 @@ for (const [canonicalId, meta] of Object.entries(canonicalMeta)) {
     if (!meta.blob) continue;
     for (const rawId of meta.members) rawToCanonical[rawId] = canonicalId;
 }
-const rawExits = {}; // raw room id -> [{dir, target: raw room id}]
+const rawExits = {}; // raw room id -> [{dir, target: raw room id, note?}]
 for (const r of Object.values(rooms)) {
-    rawExits[r.id] = r.exits.map((e) => ({ dir: e.dir, target: e.target }));
+    rawExits[r.id] = r.exits.map((e) => {
+        const out = { dir: e.dir, target: e.target };
+        const note = noteFor(e.condition);
+        if (note) out.note = note;
+        return out;
+    });
 }
 
 // --- 2. Rebuild exits in terms of canonical ids, dedup, drop self-loops ---
@@ -66,7 +99,10 @@ for (const r of Object.values(rooms)) {
     for (const e of r.exits) {
         const to = canonicalOf[e.target];
         if (!to || to === from) continue;
-        canonicalExits[from].set(e.dir + '|' + to, { dir: e.dir, target: to });
+        const entry = { dir: e.dir, target: to };
+        const note = noteFor(e.condition);
+        if (note) entry.note = note;
+        canonicalExits[from].set(e.dir + '|' + to, entry);
     }
 }
 
