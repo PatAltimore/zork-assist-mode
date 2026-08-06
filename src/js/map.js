@@ -254,26 +254,37 @@
     // step. Cheap to call every render: rooms that already have a position
     // are skipped instantly.
     function fillMissingPositions() {
-        var seed = (mapData.start && visited.has(mapData.start)) ? mapData.start
-            : (currentId && visited.has(currentId)) ? currentId
-                : Array.from(visited)[0];
-        if (!seed) {
-            return;
-        }
-        ensurePosition(seed, null);
-        var queue = [seed];
-        var queued = new Set([seed]);
-        while (queue.length) {
-            var cur = queue.shift();
-            var room = mapData.rooms[cur];
-            if (!room) continue;
-            room.exits.forEach(function (e) {
-                if (visited.has(e.target) && !queued.has(e.target)) {
-                    queued.add(e.target);
-                    ensurePosition(e.target, cur);
-                    queue.push(e.target);
-                }
-            });
+        // Most sessions need only one pass from mapData.start, but a
+        // visited set built up before this live tracking existed -- or
+        // with gaps from very fast moves outrunning the status-line
+        // observer (a pre-existing limitation of watching the status line
+        // at all -- see checkRoom) -- can contain a room with no unbroken
+        // chain of *other visited rooms* leading back to that seed. Rather
+        // than leave a room like that positionless (and so invisible on
+        // the grid, indistinguishable from the map just not updating),
+        // keep seeding fresh BFS runs from whatever's still unpositioned
+        // until every visited room has landed somewhere.
+        var remaining = Array.from(visited).filter(function (id) { return !livePositions[id]; });
+        while (remaining.length) {
+            var seed = (mapData.start && remaining.indexOf(mapData.start) !== -1) ? mapData.start
+                : (currentId && remaining.indexOf(currentId) !== -1) ? currentId
+                    : remaining[0];
+            ensurePosition(seed, null);
+            var queue = [seed];
+            var queued = new Set([seed]);
+            while (queue.length) {
+                var cur = queue.shift();
+                var room = mapData.rooms[cur];
+                if (!room) continue;
+                room.exits.forEach(function (e) {
+                    if (visited.has(e.target) && !queued.has(e.target)) {
+                        queued.add(e.target);
+                        ensurePosition(e.target, cur);
+                        queue.push(e.target);
+                    }
+                });
+            }
+            remaining = Array.from(visited).filter(function (id) { return !livePositions[id]; });
         }
     }
 
@@ -401,12 +412,20 @@
         // without spoiling what's actually there. The first time a
         // frontier room shows up here, it also gets a grid position (see
         // ensurePosition), anchored off whichever visited room reaches it.
+        //
+        // Exits with a `note` (see exitBadge) only exist once some flag or
+        // object state this map can't observe is true -- a plain "?" box
+        // for one of those would look exactly like a normal, walkable
+        // unknown, which is the same misleading claim already fixed for
+        // the Exits list. Skipped here entirely; if the same target is
+        // *also* reachable some other, unconditional way, it still shows
+        // up normally from that direction.
         var dirsByFrontier = {}; // id -> Set of raw direction strings
         visited.forEach(function (id) {
             var room = mapData.rooms[id];
             if (!room) return;
             room.exits.forEach(function (exit) {
-                if (visited.has(exit.target)) {
+                if (visited.has(exit.target) || exit.note) {
                     return;
                 }
                 if (!dirsByFrontier[exit.target]) {
