@@ -65,11 +65,10 @@
 
       <div id="map-view" role="tabpanel" aria-labelledby="tab-map" hidden>
         <h2>Map</h2>
-        <div id="map-current-exits"></div>
         <div id="map-levels"></div>
         <details id="map-help">
           <summary>How exits work</summary>
-          <p class="assist-note">The tree below is rooted at wherever you're currently standing and branches out two exits deep, so you can see what's nearby without wandering blind. A room's name means you've been there; "?" means you haven't, so nothing about it is spoiled. A few locations (the Cave, the Maze, the Mirror Room...) are really more than one identical-looking room the game can't tell apart -- exits are still shown exactly when every version of that room agrees where they lead, and only marked "varies" when they genuinely don't. Some exits only exist once something specific happens elsewhere (a door propped open, a puzzle solved) -- those get a dashed border and are kept out of the main exits list above, shown in their own "Conditional exits" row instead, with what's needed in the tooltip. This map only ever watches the room name in the status line, though, so it has no way to know whether you've already met that condition -- treat that row as "here's what to check," not as a live yes/no.</p>
+          <p class="assist-note">The tree below is rooted at wherever you're currently standing and branches out two exits deep, so you can see what's nearby without wandering blind. A room's name means you've been there; "?" means you haven't, so nothing about it is spoiled. An extra "->" after an exit means it's one-way -- there's no exit back that way once you go. A few locations (the Cave, the Maze, the Mirror Room...) are really more than one identical-looking room the game can't tell apart -- exits are still shown exactly when every version of that room agrees where they lead, and only marked "varies" when they genuinely don't. Some exits only exist once something specific happens elsewhere (a door propped open, a puzzle solved) -- those get a dashed border, with what's needed in the tooltip. This map only ever watches the room name in the status line, though, so it has no way to know whether you've already met that condition -- treat that as "here's what to check," not as a live yes/no.</p>
         </details>
         <button id="map-clear" type="button">Forget map</button>
       </div>

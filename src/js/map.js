@@ -20,7 +20,6 @@
 
     var levelsEl = document.getElementById('map-levels');
     var clearButton = document.getElementById('map-clear');
-    var currentExitsEl = document.getElementById('map-current-exits');
 
     var DIR_LABELS = {
         NORTH: 'N', SOUTH: 'S', EAST: 'E', WEST: 'W',
@@ -173,7 +172,7 @@
     // is normally a single exit, but can hold more than one when the real
     // rooms behind a blob genuinely disagree about where this direction
     // leads -- in that case we say so plainly instead of picking one.
-    function exitBadge(dir, candidates) {
+    function exitBadge(dir, candidates, fromId) {
         var badge = document.createElement('span');
         badge.className = 'map-exit-badge';
 
@@ -184,6 +183,8 @@
 
         var destPart = document.createElement('span');
         destPart.className = 'map-exit-dest';
+
+        var isOneWay = false;
 
         if (candidates.length === 1) {
             var candidate = candidates[0];
@@ -207,6 +208,15 @@
                 badge.classList.add('map-exit-conditional');
                 badge.title = 'This exit exists ' + candidate.note + ' -- this map can\'t tell whether that\'s already true, so check with the game before counting on it.';
             }
+            // A handful of Zork's exits only go one way (the coal mine
+            // slide, the trap door once it swings shut...) -- if the
+            // target has no exit back to where this edge started, there's
+            // no walking back the way you came. Known even for an
+            // unvisited "?" target, since it's a fact about the exit's
+            // shape, not about what's actually in the room.
+            if (fromId && target) {
+                isOneWay = !target.exits.some(function (e) { return e.target === fromId; });
+            }
         } else {
             destPart.textContent = 'varies';
             destPart.classList.add('map-exit-dest-unknown');
@@ -220,17 +230,16 @@
             badge.title = 'Depends exactly which room this really is -- could be: ' + names.join(', ') + '.';
         }
         badge.appendChild(destPart);
-        return badge;
-    }
 
-    function exitsRow(labelText) {
-        var row = document.createElement('div');
-        row.className = 'map-exits-row';
-        var label = document.createElement('span');
-        label.className = 'map-exits-label';
-        label.textContent = labelText;
-        row.appendChild(label);
-        return row;
+        if (isOneWay) {
+            var oneWayMark = document.createElement('span');
+            oneWayMark.className = 'map-exit-oneway';
+            oneWayMark.textContent = '->';
+            badge.appendChild(oneWayMark);
+            badge.title = (badge.title ? badge.title + ' ' : '') + 'One-way -- there\'s no exit back this way.';
+        }
+
+        return badge;
     }
 
     // The exits to use when building a tree node for `id`. Only the root
@@ -257,81 +266,6 @@
         return room.exits;
     }
 
-    function renderCurrentExits() {
-        if (!currentExitsEl) {
-            return;
-        }
-        currentExitsEl.innerHTML = '';
-        if (!mapData || !currentId || !mapData.rooms[currentId]) {
-            return;
-        }
-
-        var room = mapData.rooms[currentId];
-        var mainRow = exitsRow('Exits:');
-        currentExitsEl.appendChild(mainRow);
-
-        var effectiveExits = exitsForNode(currentId, true);
-        var specificId = room.blob ? currentSpecificId : null;
-
-        if (effectiveExits.length === 0) {
-            var none = document.createElement('span');
-            none.className = 'map-exits-note';
-            none.textContent = room.blob
-                ? "this name covers more than one real room, and none of them have a known exit yet."
-                : 'none known yet.';
-            mainRow.appendChild(none);
-            return;
-        }
-
-        // Exits that only exist once some flag or object state is true
-        // (the trap door propped open, the window open...) don't belong in
-        // the plain "Exits" list at all -- listed there, they read as
-        // just as usable as every other exit, which is exactly the
-        // confusion a dashed badge in the same row didn't fix. Pull them
-        // out into their own row instead, so this list only ever contains
-        // exits that work right now.
-        var unconditionalExits = effectiveExits.filter(function (e) { return !e.note; });
-        var conditionalExits = effectiveExits.filter(function (e) { return e.note; });
-
-        var dirGroups = groupExitsByDir(unconditionalExits);
-        var dirs = Object.keys(dirGroups);
-        if (dirs.length === 0) {
-            var noneOpen = document.createElement('span');
-            noneOpen.className = 'map-exits-note';
-            noneOpen.textContent = 'none open right now.';
-            mainRow.appendChild(noneOpen);
-        } else {
-            sortDirs(new Set(dirs)).forEach(function (d) {
-                mainRow.appendChild(exitBadge(d, dirGroups[d]));
-            });
-        }
-
-        if (room.blob) {
-            var blobNote = document.createElement('span');
-            blobNote.className = 'map-exits-note';
-            blobNote.textContent = specificId
-                ? "this name covers more than one real room, but based on how you got here, these exits are for the specific one you're actually in."
-                : "this name covers more than one real room -- exits marked “varies” depend on exactly which one you're in.";
-            mainRow.appendChild(blobNote);
-        }
-
-        // A row for exits that exist in the source but require some flag
-        // or object state this map has no way to observe (it only ever
-        // watches the status line's room name) -- shown separately, with
-        // the requirement, rather than mixed into exits known to just
-        // work. "Conditional" rather than "locked": that state may well
-        // already be true, this map just can't tell either way.
-        var lockedGroups = groupExitsByDir(conditionalExits);
-        var lockedDirs = Object.keys(lockedGroups);
-        if (lockedDirs.length > 0) {
-            var lockedRow = exitsRow('Conditional exits:');
-            sortDirs(new Set(lockedDirs)).forEach(function (d) {
-                lockedRow.appendChild(exitBadge(d, lockedGroups[d]));
-            });
-            currentExitsEl.appendChild(lockedRow);
-        }
-    }
-
     // Builds the "N levels deep" hierarchy rooted at the room the player
     // is actually standing in. Unlike a fixed grid, a tree has no trouble
     // representing loops or one-way shortcuts (the same room can simply
@@ -348,6 +282,23 @@
         rootLine.className = 'map-tree-line map-tree-root';
         rootLine.textContent = rootRoom.blob ? rootRoom.name + ' (varies)' : rootRoom.name;
         container.appendChild(rootLine);
+
+        if (rootRoom.blob) {
+            var blobNote = document.createElement('div');
+            blobNote.className = 'map-tree-note';
+            blobNote.textContent = currentSpecificId
+                ? "this name covers more than one real room, but based on how you got here, the exits below are for the specific one you're actually in."
+                : "this name covers more than one real room -- exits marked “varies” depend on exactly which one you're in.";
+            container.appendChild(blobNote);
+        }
+
+        if (exitsForNode(rootId, true).length === 0) {
+            var none = document.createElement('div');
+            none.className = 'map-tree-note';
+            none.textContent = 'No exits known yet.';
+            container.appendChild(none);
+            return;
+        }
 
         function walk(id, level, prefix, parentId) {
             var dirGroups = groupExitsByDir(exitsForNode(id, level === 1));
@@ -369,7 +320,7 @@
                 prefixSpan.className = 'map-tree-prefix';
                 prefixSpan.textContent = prefix + (isLast ? '└─ ' : '├─ ');
                 line.appendChild(prefixSpan);
-                line.appendChild(exitBadge(d, candidates));
+                line.appendChild(exitBadge(d, candidates, id));
                 container.appendChild(line);
 
                 if (candidates.length === 1 && visited.has(candidates[0].target) && level < TREE_DEPTH) {
@@ -384,7 +335,6 @@
 
     function render() {
         levelsEl.innerHTML = '';
-        renderCurrentExits();
 
         if (!mapData) {
             return;

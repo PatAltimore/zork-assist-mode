@@ -515,29 +515,6 @@ html, body {
 
 /* --- Map view --- */
 
-#map-current-exits {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4em;
-  margin-bottom: 1em;
-  min-height: 1.6em;
-}
-
-.map-exits-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.3em;
-}
-
-.map-exits-label {
-  color: var(--fg-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.85em;
-  margin-right: 0.2em;
-}
-
 .map-exit-badge {
   display: inline-flex;
   align-items: baseline;
@@ -578,7 +555,13 @@ html, body {
   font-style: italic;
 }
 
-.map-exits-note {
+.map-exit-oneway {
+  color: var(--fg-dim);
+  font-weight: bold;
+  margin-left: 0.1em;
+}
+
+.map-tree-note {
   color: var(--fg-dim);
   font-style: italic;
   font-size: 0.9em;
