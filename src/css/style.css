@@ -553,6 +553,11 @@ html, body {
   font-style: italic;
 }
 
+.map-exit-unreliable {
+  border-style: dotted;
+  cursor: help;
+}
+
 .map-exit-oneway {
   color: var(--fg-dim);
   font-weight: bold;

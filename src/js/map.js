@@ -206,6 +206,15 @@
                 badge.classList.add('map-exit-conditional');
                 badge.title = 'This exit exists ' + candidate.note + ' -- this map can\'t tell whether that\'s already true, so check with the game before counting on it.';
             }
+            // A blob's real rooms don't all necessarily share this
+            // direction at all (see blobExitsForDisplay) -- even though
+            // the ones that do all agree on where it leads, trying it from
+            // a real room that doesn't have it will just fail.
+            if (candidate.unreliable) {
+                badge.classList.add('map-exit-unreliable');
+                badge.title = (badge.title ? badge.title + ' ' : '') +
+                    'Not every real room behind this name has this exit -- it may not work from wherever you actually are.';
+            }
             // A handful of Zork's exits only go one way (the coal mine
             // slide, the trap door once it swings shut...) -- if the
             // target has no exit back to where this edge started, there's
@@ -246,6 +255,51 @@
     // "which real room is this" treatment; every deeper node uses the
     // room's plain merged exits, same as anywhere else this map shows a
     // blob it hasn't (and structurally can't, at that remove) disambiguated.
+    // map.json's precomputed room.exits is a *union* of every real member's
+    // exits, deduped by direction+target -- but it doesn't track which
+    // members actually have each direction. A blob's real rooms usually
+    // don't all share the same exits (Zork's Forest is the extreme case:
+    // none of its 4 real rooms has all 5 directions the union shows), so
+    // that union alone can present a direction as a normal exit when it
+    // simply doesn't exist from whichever real room the player is actually
+    // in. This rebuilds the exit list straight from every member's own raw
+    // exits so each direction can be marked unreliable if even one member
+    // lacks it -- including a member's own exit back into a different real
+    // room of the *same* blob (a self-loop map.json's canonical merge
+    // silently drops, since that's a real duplicate for line-drawing
+    // purposes but a real, working exit for a player standing there).
+    function blobExitsForDisplay(canonId) {
+        var room = mapData.rooms[canonId];
+        var memberIds = room.memberIds || [];
+        var byDir = {}; // dir -> { presentIn: Set(memberId), targets: { canonTargetId: exit } }
+        memberIds.forEach(function (memberId) {
+            (rawExitsOf(memberId) || []).forEach(function (e) {
+                var canonTarget = canonicalOf(e.target);
+                var entry = byDir[e.dir] || (byDir[e.dir] = { presentIn: new Set(), targets: {} });
+                entry.presentIn.add(memberId);
+                if (!entry.targets[canonTarget]) {
+                    var exit = { dir: e.dir, target: canonTarget };
+                    if (e.note) exit.note = e.note;
+                    entry.targets[canonTarget] = exit;
+                }
+            });
+        });
+
+        var result = [];
+        Object.keys(byDir).forEach(function (dir) {
+            var entry = byDir[dir];
+            var reliable = entry.presentIn.size === memberIds.length;
+            Object.keys(entry.targets).forEach(function (targetId) {
+                var exit = entry.targets[targetId];
+                if (!reliable) {
+                    exit.unreliable = true;
+                }
+                result.push(exit);
+            });
+        });
+        return result;
+    }
+
     function exitsForNode(id, isRoot) {
         var room = mapData.rooms[id];
         if (!room) {
@@ -260,6 +314,9 @@
                     return out;
                 });
             }
+        }
+        if (room.blob && room.memberIds) {
+            return blobExitsForDisplay(id);
         }
         return room.exits;
     }
@@ -286,7 +343,7 @@
             blobNote.className = 'map-tree-note';
             blobNote.textContent = currentSpecificId
                 ? "this name covers more than one real room, but based on how you got here, the exits below are for the specific one you're actually in."
-                : "this name covers more than one real room -- exits marked “varies” depend on exactly which one you're in.";
+                : "this name covers more than one real room -- exits marked “varies” depend on exactly which one you're in, and a dotted border means that direction doesn't exist from every one of them, so it might not work at all from here.";
             container.appendChild(blobNote);
         }
 
