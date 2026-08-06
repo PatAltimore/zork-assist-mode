@@ -3,7 +3,7 @@
 
     var VISITED_KEY = 'zork-assist-map-visited-v1';
     var CURRENT_KEY = 'zork-assist-map-current-v1';
-    var TREE_DEPTH = 3;
+    var TREE_DEPTH = 2;
 
     var mapData = null; // { start, rawToCanonical, rawExits, rooms: { id: {name, blob, exits:[{dir,target,note?}], memberIds?} } }
     var nameToId = {};
