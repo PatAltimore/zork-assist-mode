@@ -481,8 +481,7 @@ html, body {
 }
 
 #hint-reveal,
-#hint-reset,
-#map-clear {
+#hint-reset {
   width: 100%;
   padding: 0.45em;
   margin-bottom: 0.5em;
@@ -498,8 +497,7 @@ html, body {
 }
 
 #hint-reveal:hover,
-#hint-reset:hover,
-#map-clear:hover {
+#hint-reset:hover {
   background: var(--fg-dim);
   color: var(--bg);
   text-shadow: none;

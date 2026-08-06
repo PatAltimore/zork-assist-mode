@@ -19,8 +19,6 @@
     var blobsWithInternalEdges = null; // Set, computed once mapData loads
 
     var levelsEl = document.getElementById('map-levels');
-    var clearButton = document.getElementById('map-clear');
-
     var DIR_LABELS = {
         NORTH: 'N', SOUTH: 'S', EAST: 'E', WEST: 'W',
         NE: 'NE', NW: 'NW', SE: 'SE', SW: 'SW',
@@ -449,20 +447,6 @@
 
         tabs.forEach(function (tab) {
             tab.addEventListener('click', function () { activate(tab); });
-        });
-    }
-
-    if (clearButton) {
-        clearButton.addEventListener('click', function () {
-            visited.clear();
-            currentId = null;
-            currentSpecificId = null;
-            try {
-                localStorage.removeItem(VISITED_KEY);
-                localStorage.removeItem(CURRENT_KEY);
-            } catch (e) { /* ignore */ }
-            render();
-            checkRoom(); // Re-add wherever the player is currently standing.
         });
     }
 

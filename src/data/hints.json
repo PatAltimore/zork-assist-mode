@@ -18,6 +18,15 @@
     ]
   },
   {
+    "id": "inventory",
+    "title": "Managing what you carry",
+    "hints": [
+      "You can't just grab everything you find — there's a real weight limit on what you can hold at once, so hauling treasures works better as several smaller trips than one giant haul.",
+      "Getting wounded in a fight temporarily makes you weaker AND lowers how much you can carry until you heal back up over the next several turns — an overloaded pack can suddenly become 'too heavy' right after a fight for reasons that have nothing to do with what you picked up. Also, the very first time you go down through the trap door, it always slams shut and locks behind you no matter what — the only way back up immediately afterward is climbing the chimney, and that only works carrying nothing but the lit lamp.",
+      "Treat it as round trips, not one expedition: grab a manageable load, bring it straight to the trophy case (see 'Getting the most out of your treasures'), then head back down for more — nothing is lost by doing this, and it's basically required once you've found more than a few treasures. If you're overloaded, dropping the excess in a room you already know is safe works as a temporary stash. Because that first trip down the trap door is a one-way slam, don't carry anything down with you on that first descent that you'd hate to leave behind if the chimney (lamp-only) turns out to be your fastest way back. Keep a weapon on you at all times once you're underground regardless — the troll fight is mandatory and can't be talked or sneaked past, and the thief can turn up and attack whether or not you're looking for a fight (the cyclops is the one exception: he can't be fought at all, only scared off with a word)."
+    ]
+  },
+  {
     "id": "combat-basics",
     "title": "How fighting works",
     "hints": [
