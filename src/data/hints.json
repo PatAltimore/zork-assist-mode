@@ -162,6 +162,15 @@
     ]
   },
   {
+    "id": "treasure-routes",
+    "title": "Getting treasures out of tricky spots",
+    "hints": [
+      "A couple of treasures aren't just hard to find — the way out with them in hand isn't the same as the way in, and a shortcut you'd normally take simply refuses to work while you're carrying one of them.",
+      "The reservoir's trunk of jewels sits in a room that's normally flooded — you need to lower the water level from the dam before you can even stand there, let alone take anything (see 'The dam and the reservoir'). Separately, the Egyptian Room's coffin is too much for the quick way out of the temple area — there's a shortcut hole near the altar that's tempting, but it specifically won't let you through while you're still holding the coffin.",
+      "For the trunk: go to the dam, turn the bolt with the wrench to lower the reservoir, then go into the Reservoir itself and take the trunk. For the coffin: after finding it in the Egyptian Room, don't try to pray your way out through the small hole near the Altar while carrying it — that passage explicitly rejects you with the coffin in hand. Carry it back out the ordinary way instead (through the Temple and up the way you first came down), and save that quick hole for trips when you're not hauling it. Both are heavy on top of everything else you're carrying, so it's worth pairing this with the round-trip approach in 'Managing what you carry' — drop what you don't need for that specific trip before heading in."
+    ]
+  },
+  {
     "id": "hades",
     "title": "Entering the Land of the Dead",
     "hints": [
@@ -231,6 +240,15 @@
       "All the rooms here look identical, and normal exploration will just get you lost or looped back to where you started.",
       "Dropping something distinctive in each room to map it by trial and error works, but you don't have to -- this particular maze has one specific, fixed way through it from the Troll Room, regardless of how turned around the identical descriptions make you feel.",
       "From the Troll Room, go west, south, east, then up -- that fixed four-move path always leads to the room with the skeleton, no mapping required. There you'll find a leather bag of coins (a treasure), a rusty knife, and a skeleton key; the burned-out lantern lying there is junk, skip it. From that room, go southwest, up, east, up, then northeast to reach a grating; unlock it with the skeleton key, open it, and go up to pop out in a clearing above ground -- a shortcut that lets you skip the maze entirely on future trips in or out."
+    ]
+  },
+  {
+    "id": "surface-routes",
+    "title": "Finding your way back to the surface",
+    "hints": [
+      "The classic way home is exactly the way you came in, but once you've dealt with a certain underground obstacle, there's a genuine shortcut you might not expect — and yet another one waits near the maze.",
+      "The Cellar connects straight back up to the Living Room through the trap door, as long as it's currently open — that's the fallback if you retrace your steps through the Troll Room. But if you've already scared off the cyclops, a passage that opens up behind him leads directly to the Living Room too, skipping the trap door route entirely. There's also a much shorter way out near the maze, if you've unlocked the grate there.",
+      "Three real routes home: (1) Troll Room, south to the Cellar, then up through the trap door (if it's open) to the Living Room — the standard way; the only snag is that door locks itself shut the very first time you ever go down it (see 'Managing what you carry' for the lamp-only chimney escape if that catches you out). (2) Once you've said the magic word to the cyclops (see 'Getting past the Cyclops'), a passage opens east of him straight to the Living Room — by far the fastest way back once it's open. (3) If you've found the skeleton key and unlocked the grate near the maze (see 'Navigating the twisty maze'), going up through it drops you in a clearing in the forest right by the house, letting you skip the maze on the way out too."
     ]
   },
   {
