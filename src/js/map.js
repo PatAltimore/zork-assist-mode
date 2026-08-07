@@ -170,7 +170,25 @@
     // is normally a single exit, but can hold more than one when the real
     // rooms behind a blob genuinely disagree about where this direction
     // leads -- in that case we say so plainly instead of picking one.
-    function exitBadge(dir, candidates, fromId) {
+    // A handful of Zork's exits only go one way (the coal mine slide, the
+    // trap door once it swings shut...) -- if the target has no exit back
+    // to where this edge started, there's no walking back the way you
+    // came. Known even for an unvisited "?" target, since it's a fact
+    // about the exit's shape, not about what's actually in the room.
+    // Skipped for a "varies" (multi-candidate) exit, since which real room
+    // it leads to -- and so whether it's one-way -- isn't known yet either.
+    function isOneWayExit(candidates, fromId) {
+        if (!fromId || candidates.length !== 1) {
+            return false;
+        }
+        var target = mapData.rooms[candidates[0].target];
+        if (!target) {
+            return false;
+        }
+        return !target.exits.some(function (e) { return e.target === fromId; });
+    }
+
+    function exitBadge(dir, candidates) {
         var badge = document.createElement('span');
         badge.className = 'map-exit-badge';
 
@@ -181,8 +199,6 @@
 
         var destPart = document.createElement('span');
         destPart.className = 'map-exit-dest';
-
-        var isOneWay = false;
 
         if (candidates.length === 1) {
             var candidate = candidates[0];
@@ -215,15 +231,6 @@
                 badge.title = (badge.title ? badge.title + ' ' : '') +
                     'Not every real room behind this name has this exit -- it may not work from wherever you actually are.';
             }
-            // A handful of Zork's exits only go one way (the coal mine
-            // slide, the trap door once it swings shut...) -- if the
-            // target has no exit back to where this edge started, there's
-            // no walking back the way you came. Known even for an
-            // unvisited "?" target, since it's a fact about the exit's
-            // shape, not about what's actually in the room.
-            if (fromId && target) {
-                isOneWay = !target.exits.some(function (e) { return e.target === fromId; });
-            }
         } else {
             destPart.textContent = 'varies';
             destPart.classList.add('map-exit-dest-unknown');
@@ -237,14 +244,6 @@
             badge.title = 'Depends exactly which room this really is -- could be: ' + names.join(', ') + '.';
         }
         badge.appendChild(destPart);
-
-        if (isOneWay) {
-            var oneWayMark = document.createElement('span');
-            oneWayMark.className = 'map-exit-oneway';
-            oneWayMark.textContent = '->';
-            badge.appendChild(oneWayMark);
-            badge.title = (badge.title ? badge.title + ' ' : '') + 'One-way -- there\'s no exit back this way.';
-        }
 
         return badge;
     }
@@ -375,7 +374,16 @@
                 prefixSpan.className = 'map-tree-prefix';
                 prefixSpan.textContent = prefix + (isLast ? '└─ ' : '├─ ');
                 line.appendChild(prefixSpan);
-                line.appendChild(exitBadge(d, candidates, id));
+
+                if (isOneWayExit(candidates, id)) {
+                    var oneWayMark = document.createElement('span');
+                    oneWayMark.className = 'map-exit-oneway';
+                    oneWayMark.textContent = '->';
+                    oneWayMark.title = 'One-way -- there\'s no exit back this way.';
+                    line.appendChild(oneWayMark);
+                }
+
+                line.appendChild(exitBadge(d, candidates));
                 container.appendChild(line);
 
                 if (candidates.length === 1 && visited.has(candidates[0].target) && level < TREE_DEPTH) {

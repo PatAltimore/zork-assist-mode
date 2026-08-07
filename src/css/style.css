@@ -561,7 +561,7 @@ html, body {
 .map-exit-oneway {
   color: var(--fg-dim);
   font-weight: bold;
-  margin-left: 0.1em;
+  cursor: help;
 }
 
 .map-tree-note {
