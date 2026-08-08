@@ -3,7 +3,7 @@
 
     var VISITED_KEY = 'zork-assist-map-visited-v1';
     var CURRENT_KEY = 'zork-assist-map-current-v1';
-    var TREE_DEPTH = 2;
+    var TREE_DEPTH = 3;
 
     var mapData = null; // { start, rawToCanonical, rawExits, rooms: { id: {name, blob, exits:[{dir,target,note?}], memberIds?} } }
     var nameToId = {};
@@ -361,7 +361,20 @@
                 // Skip the trivial "straight back where you came from" edge
                 // one level up -- everything further back (a longer loop)
                 // still shows, since that's genuinely useful to see.
-                return !(parentId && candidates.length === 1 && candidates[0].target === parentId);
+                if (parentId && candidates.length === 1 && candidates[0].target === parentId) {
+                    return false;
+                }
+                // Only the root's own exits (level 1) show where you could
+                // go next, including "?" unknowns and "varies" guesses --
+                // that's the point of showing them at all. Levels 2 and 3
+                // exist to show the *known* map around you, so a branch
+                // only continues there if it leads somewhere you've
+                // actually already found; unvisited or ambiguous exits are
+                // left off rather than repeating "?" at every depth.
+                if (level > 1) {
+                    return candidates.length === 1 && visited.has(candidates[0].target);
+                }
+                return true;
             });
 
             dirs.forEach(function (d, i) {
