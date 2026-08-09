@@ -365,14 +365,23 @@
                     return false;
                 }
                 // Only the root's own exits (level 1) show where you could
-                // go next, including "?" unknowns and "varies" guesses --
-                // that's the point of showing them at all. Levels 2 and 3
-                // exist to show the *known* map around you, so a branch
-                // only continues there if it leads somewhere you've
-                // actually already found; unvisited or ambiguous exits are
-                // left off rather than repeating "?" at every depth.
+                // go next, including "?" unknowns, "varies" guesses, and
+                // conditional/unreliable exits with their dashed or dotted
+                // border -- that's the point of showing them at all.
+                // Levels 2 and 3 exist to show the *known, trustworthy* map
+                // around you, so a branch only continues there if it leads
+                // somewhere you've actually already found *and* nothing
+                // about it is in question -- otherwise a real but
+                // unreliable exit (say, a blob room's shortcut that only
+                // exists in one of the real rooms behind that name) would
+                // look exactly as solid as a guaranteed one once it's
+                // nested a level or two deep, which is worse than not
+                // showing it at all.
                 if (level > 1) {
-                    return candidates.length === 1 && visited.has(candidates[0].target);
+                    return candidates.length === 1
+                        && visited.has(candidates[0].target)
+                        && !candidates[0].unreliable
+                        && !candidates[0].note;
                 }
                 return true;
             });
