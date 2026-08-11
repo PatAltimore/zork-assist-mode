@@ -100,11 +100,11 @@
   },
   {
     "id": "echo-room",
-    "title": "The room with the strange echo",
+    "title": "The platinum bar in the Loud Room",
     "hints": [
-      "Ordinary commands seem to just bounce back at you strangely in one particular room. Try something other than movement or object commands.",
-      "The room itself is the puzzle, not an object in it. Consider what you'd naturally shout in a room like this.",
-      "Say 'echo' while in the Loud Room. This quiets the water noise from the nearby dam long enough for you to also read the marble engraving that helps at the endgame."
+      "There's a valuable bar sitting right there in this deafening room, but taking it just doesn't work no matter how you try — and ordinary commands seem to bounce back at you strangely too.",
+      "The room itself is the puzzle, not the bar — it's genuinely stuck fast until you deal with the noise first. Consider what you'd naturally shout in a room this loud.",
+      "Say 'echo' while in the Loud Room. That's not just flavor text — it's specifically what frees the platinum bar so you can take it at all; trying to take it before that always fails. Saying echo also quiets the water noise from the nearby dam long enough to read the marble engraving there, which matters later at the endgame."
     ]
   },
   {
