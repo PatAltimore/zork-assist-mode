@@ -153,6 +153,15 @@
     ]
   },
   {
+    "id": "thief-lair",
+    "title": "Finding the thief and reclaiming his hoard",
+    "hints": [
+      "There's more at stake with the thief than just winning a fight — where you finally beat him matters as much as beating him at all.",
+      "He has a lair deep in the dungeon, and every so often while wandering he quietly stashes whatever he's stolen there — but that hoard stays magically hidden as long as he's alive. Kill him anywhere else, and everything he's already stashed in that lair stays hidden for good; only defeating him specifically inside it reveals the whole pile at once.",
+      "His lair is the Treasure Room, reached by going up from the Cyclops Room -- so you'll need to have already dealt with the cyclops (see 'Getting past the Cyclops') before that route even opens. Build up your fighting strength first (see 'How fighting works'), then head to the Treasure Room and attack him if he's there; since he wanders on his own schedule, you may need to check back more than once. Whatever he's personally carrying drops on the spot no matter where he dies, but only a killing blow landed inside the Treasure Room reveals everything he's silently squirreled away there over the course of the game -- worth the trip even if you've already beaten him once or twice elsewhere. If you gave him the jewel-encrusted egg earlier (see 'The jewel-encrusted egg'), its opened contents come back to you the same way, wherever he actually dies."
+    ]
+  },
+  {
     "id": "scoring",
     "title": "Getting the most out of your treasures",
     "hints": [
