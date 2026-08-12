@@ -99,6 +99,15 @@
     ]
   },
   {
+    "id": "nailed-door",
+    "title": "The door nailed shut in the Living Room",
+    "hints": [
+      "That door in the living room wall won't budge no matter what you try on it directly — prying, opening, even going after the nails themselves all lead nowhere. Whatever fixes this isn't something you do to the door.",
+      "The room on the other side of that wall belongs to a very memorable underground resident, and it's dealing with him — not the door — that changes things here.",
+      "The nails are a genuine dead end: trying to take or remove them just says they're 'deeply imbedded... and cannot be removed.' The door only opens once you've said the magic word to the cyclops in the Cyclops Room (see 'Getting past the Cyclops') — he flees in a panic and smashes a passage through that connects the two areas, and the living room door unnails itself as part of the same event. It's a one-time discovery, not a lock you pick from this side."
+    ]
+  },
+  {
     "id": "echo-room",
     "title": "The platinum bar in the Loud Room",
     "hints": [
