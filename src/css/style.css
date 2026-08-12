@@ -35,6 +35,21 @@ body.theme-modern {
   --active-tab-bg: rgba(255, 255, 255, 0.10);
   --current-room-bg: rgba(255, 255, 255, 0.14);
   --current-room-glow: none;
+
+  /* Windows-Terminal-style accent palette, used only in this theme (see
+     "Modern theme section accents" below) to give each part of the UI --
+     the game's own input/system text, and each assist-panel tab -- its own
+     identity, the way a colorful terminal scheme does, without touching
+     the retro CRT theme's single-hue green-on-black look. */
+  --accent-hints: #e5c07b;    /* amber -- Hints tab */
+  --accent-hints-bg: rgba(229, 192, 123, 0.16);
+  --accent-map: #56b6c2;      /* cyan -- Map tab */
+  --accent-map-bg: rgba(86, 182, 194, 0.16);
+  --accent-code: #c678dd;     /* magenta -- Code tab */
+  --accent-code-bg: rgba(198, 120, 221, 0.16);
+  --accent-info: #61afef;     /* blue -- typed input, status line, one-way exits */
+  --accent-warn: #d19a66;     /* orange -- conditional exits, system notes */
+  --accent-danger: #e06c75;   /* red -- unreliable exits, destructive actions */
 }
 
 body.theme-modern #crt-overlay {
@@ -675,6 +690,127 @@ html, body {
   color: var(--fg-dim);
   font-style: italic;
   font-size: 0.95em;
+}
+
+/* --- Modern theme section accents ---
+   The retro CRT theme is deliberately a single hue (that's the point of
+   it), but the modern theme has room to give each part of the interface
+   its own color the way a Windows Terminal scheme does -- still flat text
+   on a dark background, no glow, just a different accent per section so
+   it's easier to tell at a glance which part of the UI you're looking at.
+   Every rule here is scoped under body.theme-modern so none of it touches
+   the retro theme. */
+
+body.theme-modern #app-header .subtitle {
+  color: var(--accent-info);
+}
+
+body.theme-modern .Style_input,
+body.theme-modern .Input,
+body.theme-modern .BufferWindow .Input,
+body.theme-modern .GridWindow .Input {
+  color: var(--accent-info) !important;
+  caret-color: var(--accent-info);
+}
+
+body.theme-modern .GridWindow {
+  color: var(--accent-info) !important;
+}
+
+body.theme-modern .Style_header,
+body.theme-modern .Style_subheader {
+  color: var(--accent-info);
+}
+
+body.theme-modern .Style_alert {
+  color: var(--accent-danger);
+}
+
+body.theme-modern .Style_note {
+  color: var(--accent-warn);
+}
+
+body.theme-modern #new-game {
+  color: var(--accent-danger);
+  border-color: var(--accent-danger);
+}
+
+body.theme-modern #new-game:hover {
+  background: var(--accent-danger);
+  color: var(--bg);
+}
+
+body.theme-modern #tab-hints.active {
+  color: var(--accent-hints);
+  background: var(--accent-hints-bg);
+}
+
+body.theme-modern #tab-map.active {
+  color: var(--accent-map);
+  background: var(--accent-map-bg);
+}
+
+body.theme-modern #tab-code.active {
+  color: var(--accent-code);
+  background: var(--accent-code-bg);
+}
+
+body.theme-modern #hints-view h2 {
+  color: var(--accent-hints);
+}
+
+body.theme-modern #map-view h2 {
+  color: var(--accent-map);
+}
+
+body.theme-modern #code-view h2 {
+  color: var(--accent-code);
+}
+
+body.theme-modern .hint-level {
+  border-left-color: var(--accent-hints);
+}
+
+body.theme-modern .hint-level .hint-tier-label {
+  color: var(--accent-hints);
+}
+
+body.theme-modern #hint-reveal {
+  color: var(--accent-hints);
+  border-color: var(--accent-hints);
+}
+
+body.theme-modern #hint-reveal:hover {
+  background: var(--accent-hints);
+  color: var(--bg);
+}
+
+body.theme-modern .map-tree-root {
+  color: var(--accent-map);
+}
+
+body.theme-modern .map-exit-dir {
+  color: var(--accent-map);
+}
+
+body.theme-modern .map-exit-conditional {
+  border-color: var(--accent-warn);
+}
+
+body.theme-modern .map-exit-unreliable {
+  border-color: var(--accent-danger);
+}
+
+body.theme-modern .map-exit-oneway {
+  color: var(--accent-info);
+}
+
+body.theme-modern .code-links li {
+  border-left-color: var(--accent-code);
+}
+
+body.theme-modern .code-links a {
+  color: var(--accent-code);
 }
 
 @media (max-width: 760px) {
