@@ -730,16 +730,6 @@ body.theme-modern .Style_note {
   color: var(--accent-warn);
 }
 
-body.theme-modern #new-game {
-  color: var(--accent-danger);
-  border-color: var(--accent-danger);
-}
-
-body.theme-modern #new-game:hover {
-  background: var(--accent-danger);
-  color: var(--bg);
-}
-
 body.theme-modern #tab-hints.active {
   color: var(--accent-hints);
   background: var(--accent-hints-bg);
