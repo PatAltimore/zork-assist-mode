@@ -18,6 +18,14 @@
     var currentSpecificId = null;
     var blobsWithInternalEdges = null; // Set, computed once mapData loads
 
+    // The direction of the last command the player actually submitted,
+    // consumed (and cleared) the next time checkRoom runs -- see
+    // predictedRawTarget and initCommandTracking. Null whenever the last
+    // input wasn't a recognized single-direction move (or has already been
+    // consumed), so a leftover guess never gets applied to some unrelated
+    // later change.
+    var pendingDir = null;
+
     var levelsEl = document.getElementById('map-levels');
     var DIR_LABELS = {
         NORTH: 'N', SOUTH: 'S', EAST: 'E', WEST: 'W',
@@ -26,8 +34,45 @@
     };
     var DIR_ORDER = ['NORTH', 'NE', 'EAST', 'SE', 'SOUTH', 'SW', 'WEST', 'NW', 'UP', 'DOWN', 'IN', 'OUT', 'ENTER', 'LAND'];
 
+    // Plain-English commands that map to one of the direction tokens above.
+    // Only single-word moves (after stripping a leading "go"/"walk"/"climb")
+    // are recognized -- anything else (multi-word, or a verb this doesn't
+    // know) is deliberately left unrecognized rather than guessed at, since
+    // an unrecognized command just falls back to the name-based resolution
+    // this map already had, while a *wrong* guess could assert a specific
+    // room that isn't actually the one the player is in.
+    var DIR_WORDS = {
+        n: 'NORTH', north: 'NORTH',
+        s: 'SOUTH', south: 'SOUTH',
+        e: 'EAST', east: 'EAST',
+        w: 'WEST', west: 'WEST',
+        ne: 'NE', northeast: 'NE',
+        nw: 'NW', northwest: 'NW',
+        se: 'SE', southeast: 'SE',
+        sw: 'SW', southwest: 'SW',
+        u: 'UP', up: 'UP',
+        d: 'DOWN', down: 'DOWN',
+        in: 'IN', enter: 'IN', inside: 'IN',
+        out: 'OUT', exit: 'OUT', outside: 'OUT',
+        land: 'LAND'
+    };
+    var DIR_PREFIX_VERBS = { go: true, walk: true, run: true, move: true, climb: true };
+
     function sortDirs(dirSet) {
         return DIR_ORDER.filter(function (d) { return dirSet.has(d); });
+    }
+
+    // Normalizes a submitted command line to one of the DIR tokens above, or
+    // null if it isn't (confidently) a single-direction move.
+    function parseDirection(text) {
+        if (!text) {
+            return null;
+        }
+        var words = text.trim().toLowerCase().replace(/[.,!]+$/, '').split(/\s+/);
+        if (words.length > 1 && DIR_PREFIX_VERBS[words[0]]) {
+            words = words.slice(1);
+        }
+        return words.length === 1 ? (DIR_WORDS[words[0]] || null) : null;
     }
 
     // The Z-machine's own status-line opcode (not this page) formats the
@@ -120,6 +165,26 @@
         return matches.size === 1 ? Array.from(matches)[0] : null;
     }
 
+    // The one deterministic raw room a direction command leads to from a
+    // known raw room, if any. Every real ZIL room's own exits are fully
+    // deterministic (the Maze and Coal Mine included -- see checkRoom's
+    // caller for how this gets verified against what the game actually did
+    // before it's ever trusted), so this is exact whenever it returns
+    // non-null: null only means "can't predict" (unknown starting room, no
+    // recognized direction, or -- vanishingly rare in this dungeon -- more
+    // than one exit sharing the same direction), never "predicted wrong".
+    function predictedRawTarget(direction, fromRawId) {
+        if (!direction || !fromRawId) {
+            return null;
+        }
+        var exits = rawExitsOf(fromRawId);
+        if (!exits) {
+            return null;
+        }
+        var matches = exits.filter(function (e) { return e.dir === direction; });
+        return matches.length === 1 ? matches[0].target : null;
+    }
+
     // Group exits by direction. A "blob" room (Cave, Maze, Mirror Room...)
     // stands in for more than one *real*, fully deterministic ZIL room that
     // just happens to print the exact same name -- so movement here isn't
@@ -181,7 +246,23 @@
         if (!fromId || candidates.length !== 1) {
             return false;
         }
-        var target = mapData.rooms[candidates[0].target];
+        var candidate = candidates[0];
+        // When this edge came from the root's own fully-resolved specific
+        // room (see exitsForNode), rawTarget names the exact real room it
+        // leads to -- check that real room's own raw exits for a way back
+        // to the exact real room we're leaving, rather than the canonical
+        // merged view. The merged view silently drops self-loop and other
+        // same-blob edges (see blobExitsForDisplay's own comment on why),
+        // which would otherwise misreport plenty of genuinely two-way
+        // Maze/Coal-Mine edges as one-way now that exact tracking makes it
+        // through more than one hop into a blob with internal edges.
+        if (candidate.rawTarget && currentSpecificId) {
+            var rawExits = rawExitsOf(candidate.rawTarget);
+            if (rawExits) {
+                return !rawExits.some(function (e) { return e.target === currentSpecificId; });
+            }
+        }
+        var target = mapData.rooms[candidate.target];
         if (!target) {
             return false;
         }
@@ -308,7 +389,7 @@
             var raw = rawExitsOf(currentSpecificId);
             if (raw) {
                 return raw.map(function (e) {
-                    var out = { dir: e.dir, target: canonicalOf(e.target) };
+                    var out = { dir: e.dir, target: canonicalOf(e.target), rawTarget: e.target };
                     if (e.note) out.note = e.note;
                     return out;
                 });
@@ -478,6 +559,26 @@
         if (!mapData) {
             return;
         }
+        // Consumed once per check, whether or not it ends up usable below,
+        // so a stale direction never lingers to be misapplied to some
+        // later, unrelated change.
+        var direction = pendingDir;
+        pendingDir = null;
+
+        // A recognized direction that the exact room we're in simply has no
+        // exit for is a guaranteed no-op -- Zork's parser rejects it
+        // outright ("You can't go that way") without attempting a move, so
+        // there's nothing to verify against the status line and nothing to
+        // lose track of. Handled before even reading the status line, since
+        // this is already certain either way.
+        var fromRawId = currentRawId();
+        if (direction && fromRawId) {
+            var fromExits = rawExitsOf(fromRawId);
+            if (fromExits && !fromExits.some(function (e) { return e.dir === direction; })) {
+                return;
+            }
+        }
+
         var name = getStatusRoomName();
         if (!name) {
             return;
@@ -486,6 +587,33 @@
         if (!id) {
             return;
         }
+
+        // Try the exact, command-driven prediction first: if the player's
+        // last move was a recognized direction from a known specific raw
+        // room, and that room's real exit for it lands somewhere whose
+        // canonical name matches what the status line actually now shows,
+        // that's proof the prediction was right -- including the cases the
+        // name-only fallback below genuinely can't handle, like moving to a
+        // same-named sibling room inside the Maze or Coal Mine (where the
+        // status line doesn't change at all) or resolving a blob's specific
+        // member the instant it's first entered. A mismatch just means the
+        // move didn't go as expected (a blocked exit, a conditional exit
+        // whose flag isn't set yet, the bat's random drop in the mines...)
+        // -- in that case this simply falls through to the honest
+        // name-based handling further down, same as if no prediction had
+        // been attempted at all.
+        var predictedRaw = predictedRawTarget(direction, fromRawId);
+        if (predictedRaw && canonicalOf(predictedRaw) === id) {
+            if (predictedRaw !== currentSpecificId || id !== currentId) {
+                currentSpecificId = predictedRaw;
+                currentId = id;
+                visited.add(id);
+                saveState();
+                render();
+            }
+            return;
+        }
+
         if (id === currentId) {
             // The status line alone can't tell "stayed put" apart from
             // "moved to a same-named sibling room" for a blob with
@@ -499,11 +627,48 @@
             }
             return;
         }
-        currentSpecificId = resolveSpecificId(id, currentRawId());
+        currentSpecificId = resolveSpecificId(id, fromRawId);
         currentId = id;
         visited.add(id);
         saveState();
         render();
+    }
+
+    // Watches the player's own typed commands so checkRoom can predict
+    // exact movement (see predictedRawTarget) instead of only ever
+    // comparing room names. A 'keydown' listener -- rather than 'keypress',
+    // which is what both GlkOte's own input handling and js/undo.js's
+    // "undo" interception key off -- guarantees this always reads the
+    // command text first: keydown for Enter fires before keypress for the
+    // same keystroke no matter what order listeners were attached in, so
+    // there's no race with GlkOte clearing the field or undo.js diverting
+    // the keystroke entirely. Delegated on document (rather than bound once
+    // to a specific input element) since it keeps working even if GlkOte
+    // ever recreates that element.
+    function initCommandTracking() {
+        document.addEventListener('keydown', function (ev) {
+            if (ev.key !== 'Enter') {
+                return;
+            }
+            var target = ev.target;
+            if (!target || typeof target.matches !== 'function' || !target.matches('#windowport input.Input')) {
+                return;
+            }
+            pendingDir = parseDirection(target.value);
+        });
+
+        // Save/Load submit their command via a synthetic event this
+        // listener never sees (see app.js's sendGameCommand), and a
+        // restore can jump to a completely different room than any
+        // direction predicts. Clearing defensively here means a stale
+        // pendingDir from just before the click can never get misapplied
+        // to wherever the restored game turns out to be.
+        ['save-game', 'load-game', 'new-game'].forEach(function (id) {
+            var button = document.getElementById(id);
+            if (button) {
+                button.addEventListener('click', function () { pendingDir = null; });
+            }
+        });
     }
 
     function initObserver() {
@@ -538,6 +703,7 @@
     }
 
     initTabs();
+    initCommandTracking();
     loadState();
 
     fetch('data/map.json')
