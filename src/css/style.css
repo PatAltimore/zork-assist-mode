@@ -340,7 +340,12 @@ html, body {
 /* A tab with curated content for the room you're currently standing in,
    while some other tab is the one actually open -- see js/tab-indicators.js.
    The tab's own text pulses between dim and bright so it reads at a glance
-   without staring at the panel. */
+   without staring at the panel. Deliberately unconditional (not gated
+   behind prefers-reduced-motion): on Windows that preference comes from a
+   system-wide "Animation effects" toggle with nothing to do with Edge
+   itself, easy to have on without realizing, and it silently turned this
+   into a frozen non-indicator rather than the steady highlight it was
+   meant to fall back to -- simplest fix is to just always animate. */
 @keyframes tab-alert-pulse {
   0%, 100% { color: var(--fg-dim); }
   50% { color: var(--fg-bright); text-shadow: var(--text-glow); }
@@ -348,23 +353,6 @@ html, body {
 
 .assist-tab.tab-alert {
   animation: tab-alert-pulse 1.4s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  /* !important is needed here specifically because the modern theme's
-     per-tab overrides further down (body.theme-modern #tab-hints.tab-alert
-     etc.) only replace animation-name, at higher specificity than this
-     rule's plain animation shorthand -- without !important, that leaves
-     animation-name pointing at a real (accent-colored) keyframe while
-     duration/iteration-count fall back to this rule's "none", producing a
-     broken 0s/1-iteration hybrid that just freezes instead of either
-     pulsing or showing this steady fallback color. !important forces this
-     rule to win outright for every reduced-motion user, in both themes. */
-  .assist-tab.tab-alert {
-    animation: none !important;
-    color: var(--fg-bright) !important;
-    text-shadow: var(--text-glow) !important;
-  }
 }
 
 #assist-panel h2 {
