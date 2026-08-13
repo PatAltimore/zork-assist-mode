@@ -38,6 +38,7 @@
   {
     "id": "start",
     "title": "Getting started above ground",
+    "rooms": ["EAST-OF-HOUSE"],
     "hints": [
       "Look closely at everything near the house before you go inside — small objects here matter later, and one of them explains the local geography.",
       "The front door won't budge, but the house has more than one way in. Walk all the way around it and examine what you find on each side.",
@@ -47,6 +48,7 @@
   {
     "id": "forest",
     "title": "Not getting lost in the forest",
+    "rooms": ["GROUP-FOREST", "GROUP-CLEARING"],
     "hints": [
       "The forest around the house isn't actually a maze -- it's small and its layout never changes -- but several different rooms print the exact same \"Forest\" description, and two entirely separate rooms are both just called \"Clearing,\" so it's very easy to feel turned around even though you aren't.",
       "The forest is really a loop wrapped around the house: the west, north, and south sides of the house each open directly into it, and the east side opens onto a clearing that continues toward a canyon. All of these connect to each other, so heading back toward any side of the house you recognize will get you out. The one real dead end is pushing further into impassable mountains -- once you're facing those, every direction just leads back to the same spot, so don't keep pushing past them looking for a way through.",
@@ -56,6 +58,7 @@
   {
     "id": "trapdoor",
     "title": "Finding the way underground",
+    "rooms": ["LIVING-ROOM", "CELLAR"],
     "hints": [
       "Something in the living room is covering more than just the floor. Furniture and rugs are always worth a closer look.",
       "Move the rug in the living room aside instead of just looking at it.",
@@ -65,6 +68,7 @@
   {
     "id": "light",
     "title": "Light before you go underground",
+    "rooms": ["LIVING-ROOM"],
     "hints": [
       "The Great Underground Empire has no windows. Anything you take with you should include a way to see.",
       "There's a brass lantern in the living room, inside furniture you can open.",
@@ -74,6 +78,7 @@
   {
     "id": "attic-knife",
     "title": "The knife and rope upstairs",
+    "rooms": ["ATTIC"],
     "hints": [
       "The house has one more floor you probably haven't explored, reachable from the room with the stove — though it's pitch dark up there.",
       "Bring your lit lamp and go up from the Kitchen. Two items worth taking are waiting: one on a table, one coiled in a corner.",
@@ -83,6 +88,7 @@
   {
     "id": "troll",
     "title": "The troll blocking the passage",
+    "rooms": ["TROLL-ROOM"],
     "hints": [
       "The troll won't let you pass peacefully, and bare hands aren't going to help.",
       "Make sure you're carrying the sword from the trophy case before you meet him, and draw it if the game doesn't do so automatically in combat.",
@@ -92,6 +98,7 @@
   {
     "id": "cyclops",
     "title": "Getting past the Cyclops",
+    "rooms": ["CYCLOPS-ROOM"],
     "hints": [
       "Brute force doesn't work on him, and he doesn't respond to ordinary conversation either.",
       "He reacts strongly to a very particular word — something from a much older story about someone who blinded a cyclops.",
@@ -101,6 +108,7 @@
   {
     "id": "nailed-door",
     "title": "The door nailed shut in the Living Room",
+    "rooms": ["LIVING-ROOM", "STRANGE-PASSAGE"],
     "hints": [
       "That door in the living room wall won't budge no matter what you try on it directly — prying, opening, even going after the nails themselves all lead nowhere. Whatever fixes this isn't something you do to the door.",
       "The room on the other side of that wall belongs to a very memorable underground resident, and it's dealing with him — not the door — that changes things here.",
@@ -110,6 +118,7 @@
   {
     "id": "echo-room",
     "title": "The platinum bar in the Loud Room",
+    "rooms": ["LOUD-ROOM"],
     "hints": [
       "There's a valuable bar sitting right there in this deafening room, but taking it just doesn't work no matter how you try — and ordinary commands seem to bounce back at you strangely too.",
       "The room itself is the puzzle, not the bar — it's genuinely stuck fast until you deal with the noise first. Consider what you'd naturally shout in a room this loud.",
@@ -119,6 +128,7 @@
   {
     "id": "dam",
     "title": "The dam and the reservoir",
+    "rooms": ["DAM-ROOM", "DAM-LOBBY", "MAINTENANCE-ROOM"],
     "hints": [
       "There's machinery on the dam that clearly used to control the water level, but turning it does nothing on its own — it's stuck until something elsewhere gets switched on first.",
       "You'll need a small tool from a nearby room to actually turn the control panel's bolt — but even holding it, the bolt genuinely won't budge until you've armed the panel remotely from that same nearby room. Its wall has four different colored buttons; only one of them is the one you want.",
@@ -128,6 +138,7 @@
   {
     "id": "bat",
     "title": "The bat in the coal mine area",
+    "rooms": ["BAT-ROOM"],
     "hints": [
       "One of the underground rooms has a creature that will interfere with you if you're not carrying the right thing.",
       "Something pungent from the kitchen keeps unwanted flying creatures away.",
@@ -137,6 +148,7 @@
   {
     "id": "coal-machine",
     "title": "Turning coal into a diamond",
+    "rooms": ["MACHINE-ROOM"],
     "hints": [
       "The coal mine's machine looks built to transform whatever you feed it, but it won't run without the right tool in hand.",
       "You'll need to be holding a screwdriver to work the switch, and you'll need something to put inside first.",
@@ -155,6 +167,7 @@
   {
     "id": "egg",
     "title": "The jewel-encrusted egg",
+    "rooms": ["UP-A-TREE"],
     "hints": [
       "The egg you find in a tree is fragile, and forcing it open yourself ruins the valuable thing inside.",
       "You don't have the delicate touch needed to open it safely — but you know someone who does, even though he's not exactly a friend.",
@@ -164,6 +177,7 @@
   {
     "id": "thief-lair",
     "title": "Finding the thief and reclaiming his hoard",
+    "rooms": ["TREASURE-ROOM"],
     "hints": [
       "There's more at stake with the thief than just winning a fight — where you finally beat him matters as much as beating him at all.",
       "He has a lair deep in the dungeon, and every so often while wandering he quietly stashes whatever he's stolen there — but that hoard stays magically hidden as long as he's alive. Kill him anywhere else, and everything he's already stashed in that lair stays hidden for good; only defeating him specifically inside it reveals the whole pile at once.",
@@ -173,6 +187,7 @@
   {
     "id": "scoring",
     "title": "Getting the most out of your treasures",
+    "rooms": ["LIVING-ROOM"],
     "hints": [
       "Simply finding a treasure only earns part of its value — the rest is waiting for you back at the house.",
       "Treasures score extra points the moment they're actually placed inside a specific piece of furniture in the Living Room, not just carried around in your pack.",
@@ -182,6 +197,7 @@
   {
     "id": "treasure-routes",
     "title": "Getting treasures out of tricky spots",
+    "rooms": ["RESERVOIR", "EGYPT-ROOM", "SOUTH-TEMPLE"],
     "hints": [
       "A couple of treasures aren't just hard to find — the way out with them in hand isn't the same as the way in, and a shortcut you'd normally take simply refuses to work while you're carrying one of them.",
       "The reservoir's trunk of jewels sits in a room that's normally flooded — you need to lower the water level from the dam before you can even stand there, let alone take anything (see 'The dam and the reservoir'). Separately, the Egyptian Room's coffin is too much for the quick way out of the temple area — there's a shortcut hole near the altar that's tempting, but it specifically won't let you through while you're still holding the coffin.",
@@ -191,6 +207,7 @@
   {
     "id": "hades",
     "title": "Entering the Land of the Dead",
+    "rooms": ["ENTRANCE-TO-HADES"],
     "hints": [
       "The entrance near the cyclops area is guarded by something that isn't physical — ordinary weapons won't help.",
       "You'll need a specific ritual, and the tools for it are all found elsewhere in the dungeon: something to ring, something to read from, and something to light.",
@@ -200,6 +217,7 @@
   {
     "id": "dome-rope",
     "title": "Getting down from the Dome Room",
+    "rooms": ["DOME-ROOM"],
     "hints": [
       "One large, round room overlooks a long drop to a room below, with no visible stairs down.",
       "You'll need something long to lower yourself with, tied off to something sturdy that's already there.",
@@ -209,6 +227,7 @@
   {
     "id": "coffin",
     "title": "The Egyptian Room's coffin",
+    "rooms": ["EGYPT-ROOM"],
     "hints": [
       "Deep in a temple complex is a room decorated like a tomb, holding something valuable and something far too heavy to haul around.",
       "The gold coffin itself won't fit down every passage nearby, but what's sitting inside it isn't attached.",
@@ -218,6 +237,7 @@
   {
     "id": "mirror-room",
     "title": "The mirror rooms",
+    "rooms": ["GROUP-MIRROR-ROOM"],
     "hints": [
       "Two identical rooms, far apart in the dungeon, both happen to have an enormous mirror covering a wall — that's unlikely to be a coincidence.",
       "Try interacting with the mirror itself, not just looking into it.",
@@ -227,6 +247,7 @@
   {
     "id": "river",
     "title": "Crossing the Frigid River safely",
+    "rooms": ["GROUP-FRIGID-RIVER", "DAM-BASE"],
     "hints": [
       "A wide, swift river blocks part of the dungeon, and swimming, wading, or leaping across it all end badly.",
       "You'll need something that floats, inflated with the right tool — and you must empty your hands of anything sharp before you climb aboard.",
@@ -236,6 +257,7 @@
   {
     "id": "buoy",
     "title": "The buoy floating in the river",
+    "rooms": ["GROUP-FRIGID-RIVER"],
     "hints": [
       "Something small and red drifts past while you're out on the water — probably worth grabbing before it's out of reach.",
       "It's not just a marker; it's built to hold something inside.",
@@ -245,6 +267,7 @@
   {
     "id": "rainbow",
     "title": "Crossing the rainbow for the pot of gold",
+    "rooms": ["ARAGAIN-FALLS", "END-OF-RAINBOW", "ON-RAINBOW"],
     "hints": [
       "The rainbow over Aragain Falls looks purely decorative — until you're holding the right treasure.",
       "Something you found inside a coffin does more than just look nice when you wave it in the right spot.",
@@ -254,6 +277,7 @@
   {
     "id": "maze",
     "title": "Navigating the twisty maze",
+    "rooms": ["GROUP-MAZE", "GRATING-ROOM", "GROUP-DEAD-END"],
     "hints": [
       "All the rooms here look identical, and normal exploration will just get you lost or looped back to where you started.",
       "Dropping something distinctive in each room to map it by trial and error works, but you don't have to -- this particular maze has one specific, fixed way through it from the Troll Room, regardless of how turned around the identical descriptions make you feel.",
@@ -263,6 +287,7 @@
   {
     "id": "surface-routes",
     "title": "Finding your way back to the surface",
+    "rooms": ["CELLAR", "CYCLOPS-ROOM", "STRANGE-PASSAGE", "GRATING-ROOM"],
     "hints": [
       "The classic way home is exactly the way you came in, but once you've dealt with a certain underground obstacle, there's a genuine shortcut you might not expect — and yet another one waits near the maze.",
       "The Cellar connects straight back up to the Living Room through the trap door, as long as it's currently open — that's the fallback if you retrace your steps through the Troll Room. But if you've already scared off the cyclops, a passage that opens up behind him leads directly to the Living Room too, skipping the trap door route entirely. There's also a much shorter way out near the maze, if you've unlocked the grate there.",
@@ -272,6 +297,7 @@
   {
     "id": "endgame",
     "title": "Reaching the endgame",
+    "rooms": ["LIVING-ROOM", "STONE-BARROW"],
     "hints": [
       "Finishing the game isn't triggered by reaching a place — it's triggered by something you've been building the whole time. Leaving even one treasure uncased will stop you short.",
       "Once your trophy case truly holds (almost) everything of value and your score has topped out, the game lets you know something's changed. Pay attention next time you're back above ground.",

@@ -337,6 +337,38 @@ html, body {
   text-shadow: var(--text-glow);
 }
 
+/* A tab with curated content for the room you're currently standing in,
+   while some other tab is the one actually open -- see js/tab-indicators.js.
+   Text color pulses (so it reads at a glance without staring at the panel)
+   and a small dot rides along via currentColor, so the cue isn't purely
+   color-based. */
+@keyframes tab-alert-pulse {
+  0%, 100% { color: var(--fg-dim); }
+  50% { color: var(--fg-bright); text-shadow: var(--text-glow); }
+}
+
+.assist-tab.tab-alert {
+  animation: tab-alert-pulse 1.4s ease-in-out infinite;
+}
+
+.assist-tab.tab-alert::after {
+  content: '●';
+  display: inline-block;
+  margin-left: 0.4em;
+  font-size: 0.55em;
+  vertical-align: middle;
+  animation: tab-alert-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .assist-tab.tab-alert,
+  .assist-tab.tab-alert::after {
+    animation: none;
+    color: var(--fg-bright);
+    text-shadow: var(--text-glow);
+  }
+}
+
 #assist-panel h2 {
   margin-top: 0;
   font-size: 1.5em;
@@ -743,6 +775,26 @@ body.theme-modern #tab-map.active {
 body.theme-modern #tab-code.active {
   color: var(--accent-code);
   background: var(--accent-code-bg);
+}
+
+@keyframes tab-alert-pulse-hints {
+  0%, 100% { color: var(--fg-dim); }
+  50% { color: var(--accent-hints); }
+}
+
+@keyframes tab-alert-pulse-code {
+  0%, 100% { color: var(--fg-dim); }
+  50% { color: var(--accent-code); }
+}
+
+body.theme-modern #tab-hints.tab-alert,
+body.theme-modern #tab-hints.tab-alert::after {
+  animation-name: tab-alert-pulse-hints;
+}
+
+body.theme-modern #tab-code.tab-alert,
+body.theme-modern #tab-code.tab-alert::after {
+  animation-name: tab-alert-pulse-code;
 }
 
 body.theme-modern #hints-view h2 {
