@@ -120,9 +120,9 @@
     "id": "dam",
     "title": "The dam and the reservoir",
     "hints": [
-      "There's machinery on the dam that clearly used to control the water level, but it's stuck.",
-      "Look for a small tool left behind near the control panel — you'll need it in hand, not just nearby.",
-      "Take the wrench in the Maintenance Room, go to the Dam, and turn the bolt with the wrench to raise or lower the reservoir's water level as needed. Push the yellow button in Maintenance first to light the room, and be careful about being in the reservoir when you drain or fill it."
+      "There's machinery on the dam that clearly used to control the water level, but turning it does nothing on its own — it's stuck until something elsewhere gets switched on first.",
+      "You'll need a small tool from a nearby room to actually turn the control panel's bolt — but even holding it, the bolt genuinely won't budge until you've armed the panel remotely from that same nearby room. Its wall has four different colored buttons; only one of them is the one you want.",
+      "In the Maintenance Room (off the Dam Lobby, next to the Dam), take the wrench, then push the yellow button — that's what arms the dam's control panel; a small green bubble on the panel lights up once it's engaged, and the bolt won't turn at all until you've done this. Then go to the Dam and turn the bolt with the wrench to open or close the sluice gates, raising or lowering the reservoir's water level as needed (the brown button disarms the panel again, if you ever want the bolt to stop responding). Avoid the blue button — it starts a leak that slowly floods the Maintenance Room, so don't linger if you press it by accident — and the red button is just the room's ordinary light switch, with no effect on the dam at all. Be careful about being in the Reservoir itself when you drain or fill it."
     ]
   },
   {
