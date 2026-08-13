@@ -351,10 +351,19 @@ html, body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  /* !important is needed here specifically because the modern theme's
+     per-tab overrides further down (body.theme-modern #tab-hints.tab-alert
+     etc.) only replace animation-name, at higher specificity than this
+     rule's plain animation shorthand -- without !important, that leaves
+     animation-name pointing at a real (accent-colored) keyframe while
+     duration/iteration-count fall back to this rule's "none", producing a
+     broken 0s/1-iteration hybrid that just freezes instead of either
+     pulsing or showing this steady fallback color. !important forces this
+     rule to win outright for every reduced-motion user, in both themes. */
   .assist-tab.tab-alert {
-    animation: none;
-    color: var(--fg-bright);
-    text-shadow: var(--text-glow);
+    animation: none !important;
+    color: var(--fg-bright) !important;
+    text-shadow: var(--text-glow) !important;
   }
 }
 
