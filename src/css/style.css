@@ -339,9 +339,8 @@ html, body {
 
 /* A tab with curated content for the room you're currently standing in,
    while some other tab is the one actually open -- see js/tab-indicators.js.
-   Text color pulses (so it reads at a glance without staring at the panel)
-   and a small dot rides along via currentColor, so the cue isn't purely
-   color-based. */
+   The tab's own text pulses between dim and bright so it reads at a glance
+   without staring at the panel. */
 @keyframes tab-alert-pulse {
   0%, 100% { color: var(--fg-dim); }
   50% { color: var(--fg-bright); text-shadow: var(--text-glow); }
@@ -351,18 +350,8 @@ html, body {
   animation: tab-alert-pulse 1.4s ease-in-out infinite;
 }
 
-.assist-tab.tab-alert::after {
-  content: '●';
-  display: inline-block;
-  margin-left: 0.4em;
-  font-size: 0.55em;
-  vertical-align: middle;
-  animation: tab-alert-pulse 1.4s ease-in-out infinite;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .assist-tab.tab-alert,
-  .assist-tab.tab-alert::after {
+  .assist-tab.tab-alert {
     animation: none;
     color: var(--fg-bright);
     text-shadow: var(--text-glow);
@@ -787,13 +776,11 @@ body.theme-modern #tab-code.active {
   50% { color: var(--accent-code); }
 }
 
-body.theme-modern #tab-hints.tab-alert,
-body.theme-modern #tab-hints.tab-alert::after {
+body.theme-modern #tab-hints.tab-alert {
   animation-name: tab-alert-pulse-hints;
 }
 
-body.theme-modern #tab-code.tab-alert,
-body.theme-modern #tab-code.tab-alert::after {
+body.theme-modern #tab-code.tab-alert {
   animation-name: tab-alert-pulse-code;
 }
 

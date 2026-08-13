@@ -5,13 +5,15 @@
     // on-screen keyboard when a native <select> with many options is
     // focused, apparently treating it as a searchable/type-ahead combo box.
     // The topic pickers in the hints and code-museum tabs are populated
-    // dynamically (see hints.js / codemuseum.js) and never have their value
-    // set by anything other than user choice, so it's safe to fully replace
-    // their interactive surface with a plain button + listbox that a
-    // touchscreen never has reason to treat as text entry, while leaving
+    // dynamically (see hints.js / codemuseum.js), so it's safe to fully
+    // replace their interactive surface with a plain button + listbox that
+    // a touchscreen never has reason to treat as text entry, while leaving
     // the original <select> in the DOM (hidden) as the single source of
     // truth those other scripts already read via .value and listen to via
-    // "change" -- neither of them needs to change at all.
+    // "change". The value isn't only ever set by a click here anymore,
+    // though (see js/tab-indicators.js, which jumps the hint topic to match
+    // the current room), so this also listens for a "change" it didn't
+    // originate itself and re-syncs the visible button/list to match.
     function enhanceSelect(select) {
         if (!select || select.dataset.customSelectApplied) {
             return;
@@ -194,6 +196,15 @@
         // when this runs -- rebuild whenever the underlying select's
         // options change instead of assuming a one-time population.
         new MutationObserver(rebuildList).observe(select, { childList: true });
+
+        // choose() below already updates the button/list directly for a
+        // click, so this only has real work left to do when something else
+        // changed .value+dispatched "change" itself -- rebuildList's own
+        // selected-item bookkeeping makes re-running it here harmless
+        // either way.
+        select.addEventListener('change', function () {
+            rebuildList();
+        });
 
         rebuildList();
     }
