@@ -568,8 +568,7 @@ html, body {
   content: ' ]';
 }
 
-#hint-reveal,
-#hint-reset {
+#hint-reveal {
   width: 100%;
   padding: 0.45em;
   margin-bottom: 0.5em;
@@ -584,8 +583,7 @@ html, body {
   text-shadow: var(--text-glow);
 }
 
-#hint-reveal:hover,
-#hint-reset:hover {
+#hint-reveal:hover {
   background: var(--fg-dim);
   color: var(--bg);
   text-shadow: none;
