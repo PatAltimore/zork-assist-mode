@@ -422,6 +422,61 @@ html, body {
   color: var(--fg-bright);
 }
 
+#hint-room-section {
+  margin-bottom: 1em;
+  padding-bottom: 0.8em;
+  border-bottom: 1px solid var(--border);
+}
+
+#hint-room-section > label {
+  display: block;
+  font-size: 1.1em;
+  margin-bottom: 0.4em;
+  color: var(--fg-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+#hint-room-name {
+  color: var(--fg-bright);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.hint-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.hint-links li {
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--fg);
+  padding: 0;
+}
+
+.hint-room-topic-button {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  margin: 0;
+  padding: 0.4em 0.6em;
+  color: var(--fg-bright);
+  font-family: var(--font);
+  font-size: 1.1em;
+  font-weight: bold;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hint-room-topic-button:hover {
+  text-decoration: underline;
+}
+
 #hint-topic,
 #code-topic {
   width: 100%;
@@ -798,6 +853,14 @@ body.theme-modern .hint-level {
 }
 
 body.theme-modern .hint-level .hint-tier-label {
+  color: var(--accent-hints);
+}
+
+body.theme-modern .hint-links li {
+  border-left-color: var(--accent-hints);
+}
+
+body.theme-modern .hint-room-topic-button {
   color: var(--accent-hints);
 }
 

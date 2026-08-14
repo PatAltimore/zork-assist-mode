@@ -18,6 +18,9 @@
     var hintTab = document.getElementById('tab-hints');
     var codeTab = document.getElementById('tab-code');
     var hintTopicSelect = document.getElementById('hint-topic');
+    var hintRoomSection = document.getElementById('hint-room-section');
+    var hintRoomNameEl = document.getElementById('hint-room-name');
+    var hintRoomTopicsEl = document.getElementById('hint-room-topics');
 
     // Mirrors map.js's resolveRoomId: the status line can arrive already
     // truncated to fit a narrow window, so fall back to an unambiguous
@@ -64,16 +67,55 @@
             codeLinksData.byRoom[roomId].length > 0;
         setAlert(hintTab, hasHint);
         setAlert(codeTab, hasCode);
+        renderHintRoomSection(roomId);
     }
 
-    // Every topic id tagged with this room, in hints.json's own order.
-    function matchingTopicsForRoom(roomId) {
+    // Every topic tagged with this room, in hints.json's own order.
+    function topicsForRoom(roomId) {
         if (!roomId || !hintTopics) {
             return [];
         }
         return hintTopics.filter(function (topic) {
             return topic.rooms && topic.rooms.indexOf(roomId) !== -1;
-        }).map(function (topic) { return topic.id; });
+        });
+    }
+
+    // Same list, just ids -- what jumpToRoomTopicIfAny needs.
+    function matchingTopicsForRoom(roomId) {
+        return topicsForRoom(roomId).map(function (topic) { return topic.id; });
+    }
+
+    // Mirrors codemuseum.js's own "Here: <room>" section -- a standing,
+    // always-current list of whatever hint topics apply to wherever the
+    // player actually is right now, kept in sync on every room change
+    // (unlike jumpToRoomTopicIfAny, which deliberately only fires on a tab
+    // switch). Each entry is just a button rather than a real link, since
+    // picking one selects that topic in the picker below instead of
+    // navigating anywhere -- clicking one you're already on is a harmless
+    // no-op via selectHintTopic's own guard.
+    function renderHintRoomSection(roomId) {
+        if (!hintRoomSection || !hintRoomTopicsEl || !mapData) {
+            return;
+        }
+        var topics = topicsForRoom(roomId);
+        if (topics.length === 0) {
+            hintRoomSection.hidden = true;
+            return;
+        }
+        hintRoomSection.hidden = false;
+        var room = mapData.rooms[roomId];
+        hintRoomNameEl.textContent = room ? room.name : roomId;
+        hintRoomTopicsEl.innerHTML = '';
+        topics.forEach(function (topic) {
+            var li = document.createElement('li');
+            var button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'hint-room-topic-button';
+            button.textContent = topic.title;
+            button.addEventListener('click', function () { selectHintTopic(topic.id); });
+            li.appendChild(button);
+            hintRoomTopicsEl.appendChild(li);
+        });
     }
 
     function selectHintTopic(id) {
