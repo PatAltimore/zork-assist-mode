@@ -9,6 +9,15 @@
     ]
   },
   {
+    "id": "strategy",
+    "title": "What order to tackle things in",
+    "hints": [
+      "There's no one required path through this game, but a couple of things really are forced on you early, and one of the 'monster' encounters is pure upside the moment you find it rather than something worth saving for later -- everything else, especially treasure-hunting, is far more flexible than it might feel.",
+      "One early fight genuinely can't be avoided, talked past, or postponed. A second encounter is completely optional to even attempt, costs you nothing once you know the trick, and is worth resolving the instant you stumble on it -- not something to put off. A third character isn't really a gate to 'clear' at all -- he wanders on his own schedule and is better handled opportunistically once you're stronger, and treasure-hunting is itself what makes you stronger.",
+      "Concretely: fight through the troll first (see 'The troll blocking the passage') -- he blocks the only way deeper underground early on and there's no way around him. After that, make treasure-hunting your main activity rather than something you set aside -- your combat strength actually rises with your score, so grabbing the easier treasures first makes every later fight easier, and most treasures don't require dealing with the cyclops or the thief at all. You'll typically stumble onto the cyclops while poking around the maze area -- say the magic word the moment you find him (see 'Getting past the Cyclops'): he can't be fought, it costs nothing, and it opens a fast shortcut straight back to the living room that pays off on every treasure run afterward, so there's no reason to delay it. The thief is different -- he's a wandering hazard you'll run into regardless of what you do, and his lair only opens up once the cyclops route exists anyway, so save a deliberate showdown with him (see 'Dealing with the thief') for once you're carrying a good weapon and have built up some score, ideally after handing him the unopened egg first (see 'The jewel-encrusted egg') so he opens it for you. In short: troll immediately, treasures continuously, cyclops the moment you meet him, thief once you're strong."
+    ]
+  },
+  {
     "id": "essential-items",
     "title": "Items you shouldn't leave without",
     "hints": [
