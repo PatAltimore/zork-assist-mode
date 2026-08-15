@@ -117,6 +117,52 @@ html, body {
 
 .edge-peek {
   display: none;
+  width: 100%;
+  border: none;
+  background: var(--panel-bg);
+  color: var(--fg-dim);
+  padding: 0.35em;
+  font-family: var(--font);
+  font-size: 1em;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+}
+
+.edge-peek:hover {
+  background: var(--fg-dim);
+  color: var(--bg);
+}
+
+/* Touch devices, at any width or orientation: the header's hide toggle is
+   always reachable here (a plain top bar, nothing for it to disrupt), and
+   the hints panel's REOPEN tab is too, once collapsed -- pinned via
+   position:fixed (see #hints-peek.floating) so it stays reachable without
+   competing for space in the side-by-side layout that landscape phones
+   keep (along with desktops) outside the narrow stacked breakpoint below.
+   While the hints panel is still open, #hint-toggle in the header already
+   covers hiding it, so there's no need for a second, redundant in-flow
+   control that would otherwise have to squeeze into that side-by-side row
+   -- see the narrow-width media query further down for where the in-flow
+   version of both tabs takes over instead, full width, since there's no
+   row there for it to conflict with. */
+@media (pointer: coarse) {
+  #header-peek {
+    display: block;
+    flex: 0 0 auto;
+    border-bottom: 2px solid var(--border);
+  }
+
+  #hints-peek.floating {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    border-top: 2px solid var(--border);
+  }
 }
 
 #app-header h1 {
@@ -922,34 +968,20 @@ body.theme-modern .code-links a {
      automatic and semi-automatic behavior around the on-screen keyboard
      all made real devices (iPhone, Kindle Fire) behave worse, so this is
      deliberately as simple as possible: two tabs, always present, that
-     just toggle visibility on tap. */
-  .edge-peek {
-    display: block;
-    width: 100%;
-    flex: 0 0 auto;
-    border: none;
-    background: var(--panel-bg);
-    color: var(--fg-dim);
-    padding: 0.35em;
-    font-family: var(--font);
-    font-size: 1em;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    cursor: pointer;
-    text-align: center;
-  }
-
-  #header-peek {
-    border-bottom: 2px solid var(--border);
-  }
-
+     just toggle visibility on tap. Stacked (narrow) layout only, since
+     there's no side-by-side row here for an in-flow full-width bar to
+     disrupt -- the coarse-pointer media query above handles both tabs at
+     any other width instead (landscape phones included), just with
+     #hints-peek limited to its already-out-of-flow floating/collapsed
+     state there to avoid exactly that disruption. Redeclaring #header-peek
+     here too, even though real phones already get it from that query, is
+     cheap insurance for the (unlikely) case of a narrow but mouse-driven
+     window, so hiding the header still works there either way. */
+  #header-peek,
   #hints-peek {
+    display: block;
+    flex: 0 0 auto;
     border-bottom: 2px solid var(--border);
-  }
-
-  .edge-peek:hover {
-    background: var(--fg-dim);
-    color: var(--bg);
   }
 
   /* While the hints panel is collapsed, its reopen tab sits at the very
