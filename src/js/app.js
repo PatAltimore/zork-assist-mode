@@ -100,16 +100,19 @@
     // (vendor/glkote.js, evhan_viewport_resize), which sets #gameport's
     // top/height directly to carve out the space above the keyboard. That
     // math can end up stale -- e.g. if the keyboard closes right after the
-    // hints panel was toggled while it was still open -- leaving gameport
-    // stuck smaller than the screen even once the keyboard is fully gone,
-    // which shows up as a dead black band at the bottom that isn't part of
-    // any scrollable content. Rather than trying to out-guess GlkOte's
-    // calculation for every case, this just checks the one thing that's
-    // unambiguous: whether there's currently any real gap between the
-    // window and the visible viewport at all. If there isn't (no keyboard
-    // up), gameport should simply fill its container -- so clear whatever
-    // inline top/height GlkOte left behind and let our own CSS (inset: 0)
-    // take back over, instead of trusting its last calculation.
+    // hints panel was toggled while it was still open, or a device rotates
+    // -- leaving gameport stuck with a leftover inline top/height even
+    // though no keyboard is actually up any more. Depending on which way
+    // it's stale, that shows up as either a dead black band at the bottom
+    // that isn't part of any scrollable content, or (rotating to landscape)
+    // the buffer window's text pushed up out of view at the top with
+    // nothing to scroll back to it. Rather than trying to out-guess
+    // GlkOte's calculation for every case, this just checks the one thing
+    // that's unambiguous: whether there's currently any real gap between
+    // the window and the visible viewport at all. If there isn't (no
+    // keyboard up), gameport should simply fill its container -- so clear
+    // whatever inline top/height GlkOte left behind and let our own CSS
+    // (inset: 0) take back over, instead of trusting its last calculation.
     function initGameportKeyboardSafetyNet() {
         if (!window.visualViewport) {
             return;
@@ -118,25 +121,47 @@
         if (!gameport) {
             return;
         }
-        var mobileQuery = window.matchMedia('(max-width: 760px)');
+        // Gates this to touchscreens specifically -- an on-screen-keyboard
+        // correction has no business running on a desktop trackpad/mouse
+        // setup. Deliberately NOT a viewport-width check (e.g.
+        // max-width: 760px, which the mobile layout breakpoint elsewhere
+        // uses): "coarse pointer" describes the input device, not the
+        // current orientation, so it still matches a phone turned
+        // landscape -- where most current iPhones (13 mini and up) report
+        // a viewport well over 760px wide, which silently skipped this
+        // entire correction and was exactly why landscape got stuck.
+        var mobileQuery = window.matchMedia('(pointer: coarse)');
+
+        function maybeResetGameport() {
+            if (!mobileQuery.matches) {
+                return;
+            }
+            var gap = window.innerHeight - window.visualViewport.height;
+            if (gap < 50) {
+                gameport.style.top = '';
+                gameport.style.height = '';
+                if (window.GlkOte && typeof window.GlkOte.recompute_gameport_margins === 'function') {
+                    window.GlkOte.recompute_gameport_margins();
+                }
+            }
+        }
 
         window.visualViewport.addEventListener('resize', function () {
             // Deferred so this runs after GlkOte's own (synchronous)
             // handler for the same event has already had its say --
             // we're a correction on top of it, not a competing one.
-            setTimeout(function () {
-                if (!mobileQuery.matches) {
-                    return;
-                }
-                var gap = window.innerHeight - window.visualViewport.height;
-                if (gap < 50) {
-                    gameport.style.top = '';
-                    gameport.style.height = '';
-                    if (window.GlkOte && typeof window.GlkOte.recompute_gameport_margins === 'function') {
-                        window.GlkOte.recompute_gameport_margins();
-                    }
-                }
-            }, 50);
+            setTimeout(maybeResetGameport, 50);
+        });
+
+        // Belt and suspenders: visualViewport's own "resize" already fires
+        // on rotation and should be sufficient on its own, but rotation is
+        // exactly the case this safety net exists for, so this also reruns
+        // the same check directly off the rotation event itself -- cheap,
+        // idempotent (maybeResetGameport is a no-op once nothing's stale),
+        // and one less thing to depend on iOS getting the timing of the
+        // other event exactly right.
+        window.addEventListener('orientationchange', function () {
+            setTimeout(maybeResetGameport, 150);
         });
     }
 
