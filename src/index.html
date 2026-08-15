@@ -2,8 +2,23 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Zork I &mdash; Assist Mode</title>
+
+<!-- "Add to Home Screen" is the only way to hide a mobile browser's own
+     address bar/chrome -- there's no in-page API for that in a regular tab.
+     Once launched from the resulting home-screen icon (not just visited as
+     a normal bookmark), these make it open full-screen with no browser
+     chrome at all, on both iOS and Android. -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Zork I">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+
 <link rel="stylesheet" href="vendor/glkote.css">
 <link rel="stylesheet" href="vendor/dialog.css">
 <link rel="stylesheet" href="css/style.css">
