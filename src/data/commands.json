@@ -1,0 +1,130 @@
+{
+  "items": {
+    "sword": { "match": "sword" },
+    "knife": { "match": "knife" },
+    "wrench": { "match": "wrench" },
+    "screwdriver": { "match": "screwdriver" },
+    "egg": { "match": "egg" },
+    "bell": { "match": "bell" },
+    "candles": { "match": "candles" },
+    "book": { "match": "book" },
+    "rope": { "match": "rope" },
+    "coal": { "match": "coal" },
+    "sceptre": { "match": "sceptre" },
+    "garlic": { "match": "garlic" }
+  },
+
+  "general": [
+    { "cmd": "inventory", "kind": "useful" },
+    { "cmd": "diagnose", "kind": "useful" },
+    { "cmd": "score", "kind": "useful" },
+    { "cmd": "look", "kind": "useful" },
+    { "cmd": "xyzzy", "kind": "funny" },
+    { "cmd": "plugh", "kind": "funny" },
+    { "cmd": "curse", "kind": "funny" },
+    { "cmd": "yell", "kind": "funny" },
+    { "cmd": "zork", "kind": "funny" },
+    { "cmd": "win", "kind": "funny" }
+  ],
+
+  "byRoom": {
+    "LIVING-ROOM": [
+      { "cmd": "move rug", "kind": "useful" },
+      { "cmd": "open trap door", "kind": "useful" },
+      { "cmd": "open case", "kind": "useful" },
+      { "cmd": "turn on lamp", "kind": "useful" }
+    ],
+    "TROLL-ROOM": [
+      { "cmd": "kill troll with sword", "kind": "useful", "item": "sword" }
+    ],
+    "CYCLOPS-ROOM": [
+      { "cmd": "say ulysses", "kind": "useful" }
+    ],
+    "EAST-OF-HOUSE": [
+      { "cmd": "open window", "kind": "useful" },
+      { "cmd": "west", "kind": "useful" }
+    ],
+    "KITCHEN": [
+      { "cmd": "up", "kind": "useful" }
+    ],
+    "ATTIC": [
+      { "cmd": "take knife", "kind": "useful" },
+      { "cmd": "take rope", "kind": "useful" }
+    ],
+    "LOUD-ROOM": [
+      { "cmd": "echo", "kind": "useful" },
+      { "cmd": "yell", "kind": "funny" }
+    ],
+    "DAM-ROOM": [
+      { "cmd": "turn bolt with wrench", "kind": "useful", "item": "wrench" }
+    ],
+    "MAINTENANCE-ROOM": [
+      { "cmd": "take wrench", "kind": "useful" },
+      { "cmd": "take screwdriver", "kind": "useful" },
+      { "cmd": "push yellow button", "kind": "useful" }
+    ],
+    "MACHINE-ROOM": [
+      { "cmd": "put coal in machine", "kind": "useful", "item": "coal" },
+      { "cmd": "close lid", "kind": "useful" },
+      { "cmd": "turn switch with screwdriver", "kind": "useful", "item": "screwdriver" },
+      { "cmd": "open lid", "kind": "useful" }
+    ],
+    "ENTRANCE-TO-HADES": [
+      { "cmd": "ring bell", "kind": "useful", "item": "bell" },
+      { "cmd": "light candles with match", "kind": "useful", "item": "candles" },
+      { "cmd": "read book", "kind": "useful", "item": "book" }
+    ],
+    "DOME-ROOM": [
+      { "cmd": "tie rope to railing", "kind": "useful", "item": "rope" }
+    ],
+    "TORCH-ROOM": [
+      { "cmd": "climb down rope", "kind": "useful" }
+    ],
+    "EGYPT-ROOM": [
+      { "cmd": "open coffin", "kind": "useful" },
+      { "cmd": "take sceptre", "kind": "useful" }
+    ],
+    "SOUTH-TEMPLE": [
+      { "cmd": "pray", "kind": "useful" }
+    ],
+    "RESERVOIR": [
+      { "cmd": "take trunk", "kind": "useful" }
+    ],
+    "GROUP-MIRROR-ROOM": [
+      { "cmd": "rub mirror", "kind": "useful" }
+    ],
+    "DAM-BASE": [
+      { "cmd": "inflate boat with pump", "kind": "useful" },
+      { "cmd": "get in boat", "kind": "useful" }
+    ],
+    "TREASURE-ROOM": [
+      { "cmd": "kill thief with knife", "kind": "useful", "item": "knife" },
+      { "cmd": "give egg to thief", "kind": "useful", "item": "egg" }
+    ],
+    "UP-A-TREE": [
+      { "cmd": "take egg", "kind": "useful" }
+    ],
+    "GRATING-ROOM": [
+      { "cmd": "unlock grate with key", "kind": "useful" },
+      { "cmd": "open grate", "kind": "useful" }
+    ],
+    "ARAGAIN-FALLS": [
+      { "cmd": "wave sceptre", "kind": "useful", "item": "sceptre" }
+    ],
+    "END-OF-RAINBOW": [
+      { "cmd": "take pot of gold", "kind": "useful" }
+    ],
+    "IN-STREAM": [
+      { "cmd": "fill bottle with water", "kind": "useful" }
+    ],
+    "BAT-ROOM": [
+      { "cmd": "wave garlic", "kind": "funny" }
+    ],
+    "GROUP-CLEARING": [
+      { "cmd": "count leaves", "kind": "funny" }
+    ],
+    "STONE-BARROW": [
+      { "cmd": "enter", "kind": "useful" }
+    ]
+  }
+}
