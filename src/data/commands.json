@@ -28,11 +28,18 @@
   ],
 
   "byRoom": {
+    "WEST-OF-HOUSE": [
+      { "cmd": "open mailbox", "kind": "useful" },
+      { "cmd": "read leaflet", "kind": "useful" }
+    ],
     "LIVING-ROOM": [
       { "cmd": "move rug", "kind": "useful" },
       { "cmd": "open trap door", "kind": "useful" },
       { "cmd": "open case", "kind": "useful" },
       { "cmd": "turn on lamp", "kind": "useful" }
+    ],
+    "CELLAR": [
+      { "cmd": "north", "kind": "useful" }
     ],
     "TROLL-ROOM": [
       { "cmd": "kill troll with sword", "kind": "useful", "item": "sword" }
@@ -45,6 +52,8 @@
       { "cmd": "west", "kind": "useful" }
     ],
     "KITCHEN": [
+      { "cmd": "open sack", "kind": "useful" },
+      { "cmd": "take garlic", "kind": "useful" },
       { "cmd": "up", "kind": "useful" }
     ],
     "ATTIC": [
