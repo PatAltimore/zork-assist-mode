@@ -137,10 +137,15 @@
 
     // --- Command-driven detection (combat, puzzle solves, inventory) ------
 
+    // Keyed by every word that should resolve to it (see OBJECT LAMP's own
+    // (SYNONYM LAMP LANTERN LIGHT) in 1dungeon.zil) -- a real gap until now,
+    // since "take lantern" (a completely reasonable, verified-real synonym)
+    // silently matched nothing at all.
     var ITEMS = {
         sword: 'sword', knife: 'knife', wrench: 'wrench', screwdriver: 'screwdriver',
         egg: 'egg', bell: 'bell', candles: 'candles', book: 'book', rope: 'rope',
-        coal: 'coal', sceptre: 'sceptre', garlic: 'garlic'
+        coal: 'coal', sceptre: 'sceptre', garlic: 'garlic',
+        lamp: 'lamp', lantern: 'lamp'
     };
     var TAKE_VERBS = ['take', 'get', 'grab', 'pick up', 'carry'];
     var DROP_VERBS = ['drop', 'put down', 'discard'];
@@ -160,10 +165,34 @@
         { pattern: /^echo$/, category: 'puzzle:echo', label: 'Said "echo"', topic: 'echo-room', room: 'LOUD-ROOM' },
         { pattern: /^turn\s+bolt\s+with\s+wrench$/, category: 'puzzle:dam', label: 'Turned the dam control bolt', topic: 'dam', room: 'DAM-ROOM' },
         { pattern: /^rub\s+mirror$/, category: 'puzzle:mirror', label: 'Rubbed the mirror', topic: 'mirror-room', room: 'GROUP-MIRROR-ROOM' },
-        { pattern: /^(unlock\s+grate\s+with\s+key|open\s+grate)$/, category: 'puzzle:grate', label: 'Opened the grate', topic: 'maze', room: 'GRATING-ROOM' }
+        { pattern: /^(unlock\s+grate\s+with\s+key|open\s+grate)$/, category: 'puzzle:grate', label: 'Opened the grate', topic: 'maze', room: 'GRATING-ROOM' },
+        // Same category for both -- they're the two halves of one puzzle
+        // (move the rug to find the trap door, then open it), so whichever
+        // one the player just did should refresh a single entry rather than
+        // showing two near-duplicate lines.
+        { pattern: /^move\s+rug$/, category: 'puzzle:trapdoor', label: 'Moved the rug', topic: 'trapdoor', room: 'LIVING-ROOM' },
+        { pattern: /^open\s+trap\s*door$/, category: 'puzzle:trapdoor', label: 'Opened the trap door', topic: 'trapdoor', room: 'LIVING-ROOM' },
+        { pattern: /^turn\s+on\s+lamp$/, category: 'puzzle:light', label: 'Turned on the lamp', topic: 'light' }
     ];
 
-    var pendingAction = null; // { type: 'take'|'drop', item }
+    // A small queue, not a single slot: checkPendingAction only runs on the
+    // debounced MutationObserver callback (see scheduleCheck), which can
+    // legitimately lag behind real typing -- most dramatically right after
+    // this tab comes back from being backgrounded (e.g. the player opened
+    // a Code Museum link in a new tab), since browsers throttle a hidden
+    // tab's timers. A single-slot design confirmed live to lose actions in
+    // exactly that situation: type "take lantern", then "move rug" before
+    // the first check ever runs, and the second command's bookkeeping
+    // silently overwrote the first's before it was ever verified -- the
+    // lantern take just vanished. Queueing means every recent attempt gets
+    // its own chance to be confirmed against the text that actually
+    // resulted, not just whichever was typed last. Capped and aged out
+    // (see checkPendingAction) so a typo or an attempt that never
+    // succeeds doesn't sit around indefinitely, ready to falsely match
+    // some unrelated "Taken." several turns later.
+    var pendingActions = [];
+    var MAX_PENDING = 5;
+    var MAX_PENDING_AGE = 3;
 
     function matchItem(word) {
         return ITEMS[word] || null;
@@ -178,7 +207,6 @@
                 if (keys && keys.length > 0) {
                     logAction(rule.category, rule.label, keys);
                 }
-                pendingAction = null;
                 return;
             }
         }
@@ -192,37 +220,46 @@
         }
         var itemId = matchItem(rest.split(/\s+/).pop());
         if (!itemId) {
-            pendingAction = null;
             return;
         }
-        if (TAKE_VERBS.indexOf(verb) !== -1) {
-            pendingAction = { type: 'take', item: itemId };
-        } else if (DROP_VERBS.indexOf(verb) !== -1) {
-            pendingAction = { type: 'drop', item: itemId };
-        } else {
-            pendingAction = null;
+        var type = TAKE_VERBS.indexOf(verb) !== -1 ? 'take' : DROP_VERBS.indexOf(verb) !== -1 ? 'drop' : null;
+        if (!type) {
+            return;
+        }
+        pendingActions.push({ type: type, item: itemId, age: 0 });
+        if (pendingActions.length > MAX_PENDING) {
+            pendingActions.shift();
         }
     }
 
     // Confirmed against the game's own next response, same as
     // command-suggestions.js's identical check -- a typed "take X" can
     // still fail (wrong room, not actually present, over capacity), so
-    // this only logs once the game actually says so.
+    // this only logs once the game actually says so. Note this can't tell
+    // *which* pending "Taken." belongs to which queued attempt if more than
+    // one is waiting at once (e.g. two takes both still unresolved) -- a
+    // known, accepted best-effort limitation, same spirit as the rest of
+    // this project's inventory tracking, which already leans on the
+    // player's own next "inventory" check to resync anything this misses.
     function checkPendingAction(newText) {
-        if (!pendingAction) {
+        if (pendingActions.length === 0) {
             return;
         }
-        var verified = pendingAction.type === 'take'
-            ? newText.indexOf('Taken.') !== -1
-            : newText.indexOf('Dropped.') !== -1;
-        if (verified) {
-            var label = (pendingAction.type === 'take' ? 'Took the ' : 'Dropped the ') + pendingAction.item;
-            // "How the game looks up a room or object by name" -- genuinely
-            // the relevant explainer for what just happened (resolving the
-            // typed object name), not a stretch tie-in.
-            logAction('item:' + pendingAction.item, label, ['find-room-and-find-obj']);
-        }
-        pendingAction = null;
+        pendingActions = pendingActions.filter(function (action) {
+            var verified = action.type === 'take'
+                ? newText.indexOf('Taken.') !== -1
+                : newText.indexOf('Dropped.') !== -1;
+            if (verified) {
+                var label = (action.type === 'take' ? 'Took the ' : 'Dropped the ') + action.item;
+                // "How the game looks up a room or object by name" --
+                // genuinely the relevant explainer for what just happened
+                // (resolving the typed object name), not a stretch tie-in.
+                logAction('item:' + action.item, label, ['find-room-and-find-obj']);
+                return false; // resolved, drop from the queue
+            }
+            action.age += 1;
+            return action.age < MAX_PENDING_AGE; // drop once stale, never matched
+        });
     }
 
     // --- Wiring -----------------------------------------------------------

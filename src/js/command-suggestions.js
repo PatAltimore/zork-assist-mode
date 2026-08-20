@@ -34,10 +34,20 @@
     var suggestionIndex = -1; // -1 = not currently browsing a suggestion
     var lastProgrammaticValue = null;
 
-    // What the last submitted command was trying to do, so the next bit of
-    // game output can be checked for whether it actually worked -- see
-    // recordPendingAction / checkPendingAction.
-    var pendingAction = null; // { type: 'take'|'drop'|'inventory', item?: id }
+    // What recently-submitted commands were trying to do, so the next bit
+    // of game output can be checked for whether each actually worked --
+    // see recordPendingAction / checkPendingAction. A queue, not a single
+    // slot: checkPendingAction only runs on the debounced MutationObserver
+    // callback, which can lag behind real typing -- most dramatically right
+    // after this tab returns from being backgrounded (browsers throttle a
+    // hidden tab's timers), where a single-slot design was confirmed live
+    // to lose an action entirely (a second command typed before the first
+    // was ever checked silently overwrote it). Capped and aged out in
+    // checkPendingAction so a typo or a command that never succeeds
+    // doesn't sit around ready to falsely match some unrelated later text.
+    var pendingActions = []; // [{ type: 'take'|'drop'|'inventory', item?: id, age }]
+    var MAX_PENDING = 5;
+    var MAX_PENDING_AGE = 3;
 
     function resolveRoomId(name) {
         if (!name) {
@@ -145,10 +155,18 @@
     // against the game's own next response in checkPendingAction, never
     // assumed just because the command was typed (it might fail: wrong
     // room, over capacity, not actually present...).
+    function pushPendingAction(action) {
+        action.age = 0;
+        pendingActions.push(action);
+        if (pendingActions.length > MAX_PENDING) {
+            pendingActions.shift();
+        }
+    }
+
     function recordPendingAction(raw) {
         var text = raw.trim().toLowerCase().replace(/[.,!]+$/, '');
         if (text === 'inventory' || text === 'i') {
-            pendingAction = { type: 'inventory' };
+            pushPendingAction({ type: 'inventory' });
             return;
         }
         var words = text.split(/\s+/);
@@ -161,53 +179,61 @@
         }
         var itemId = matchItem(rest.split(/\s+/).pop());
         if (!itemId) {
-            pendingAction = null;
             return;
         }
-        if (TAKE_VERBS.indexOf(verb) !== -1) {
-            pendingAction = { type: 'take', item: itemId };
-        } else if (DROP_VERBS.indexOf(verb) !== -1) {
-            pendingAction = { type: 'drop', item: itemId };
-        } else {
-            pendingAction = null;
+        var type = TAKE_VERBS.indexOf(verb) !== -1 ? 'take' : DROP_VERBS.indexOf(verb) !== -1 ? 'drop' : null;
+        if (type) {
+            pushPendingAction({ type: type, item: itemId });
         }
     }
 
     // Checked against the newest text the game just printed, once per
-    // submitted command. Deliberately simple substring checks rather than
-    // strict line-boundary parsing -- worst case on a false match is a
-    // suggestion's availability is briefly wrong, which self-corrects the
-    // next time the player checks their own inventory.
+    // debounced check (not necessarily once per submitted command -- see
+    // pendingActions' own comment). Deliberately simple substring checks
+    // rather than strict line-boundary parsing -- worst case on a false
+    // match is a suggestion's availability is briefly wrong, which
+    // self-corrects the next time the player checks their own inventory.
+    // Can't tell *which* queued attempt a given "Taken." belongs to when
+    // more than one is still pending at once -- an accepted best-effort
+    // limitation, same spirit as the rest of this project's inventory
+    // tracking.
     function checkPendingAction(newText) {
-        if (!pendingAction) {
+        if (pendingActions.length === 0) {
             return;
         }
-        if (pendingAction.type === 'take') {
-            if (newText.indexOf('Taken.') !== -1) {
-                heldItems.add(pendingAction.item);
-                refreshSuggestions();
+        pendingActions = pendingActions.filter(function (action) {
+            if (action.type === 'take') {
+                if (newText.indexOf('Taken.') !== -1) {
+                    heldItems.add(action.item);
+                    refreshSuggestions();
+                    return false;
+                }
+            } else if (action.type === 'drop') {
+                if (newText.indexOf('Dropped.') !== -1) {
+                    heldItems.delete(action.item);
+                    refreshSuggestions();
+                    return false;
+                }
+            } else if (action.type === 'inventory') {
+                if (newText.indexOf('empty-handed') !== -1) {
+                    heldItems.clear();
+                    refreshSuggestions();
+                    return false;
+                } else if (newText.indexOf('You are carrying') !== -1) {
+                    var ids = Object.keys(commandsData.items);
+                    ids.forEach(function (id) {
+                        var word = commandsData.items[id].match;
+                        if (newText.toLowerCase().indexOf(word) !== -1) {
+                            heldItems.add(id);
+                        }
+                    });
+                    refreshSuggestions();
+                    return false;
+                }
             }
-        } else if (pendingAction.type === 'drop') {
-            if (newText.indexOf('Dropped.') !== -1) {
-                heldItems.delete(pendingAction.item);
-                refreshSuggestions();
-            }
-        } else if (pendingAction.type === 'inventory') {
-            if (newText.indexOf('empty-handed') !== -1) {
-                heldItems.clear();
-                refreshSuggestions();
-            } else if (newText.indexOf('You are carrying') !== -1) {
-                var ids = Object.keys(commandsData.items);
-                ids.forEach(function (id) {
-                    var word = commandsData.items[id].match;
-                    if (newText.toLowerCase().indexOf(word) !== -1) {
-                        heldItems.add(id);
-                    }
-                });
-                refreshSuggestions();
-            }
-        }
-        pendingAction = null;
+            action.age += 1;
+            return action.age < MAX_PENDING_AGE;
+        });
     }
 
     // --- Room tracking ---------------------------------------------------
