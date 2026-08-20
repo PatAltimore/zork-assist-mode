@@ -762,12 +762,13 @@ html, body {
   color: var(--fg-dim);
 }
 
-#code-room-section {
+#action-log-section {
   margin-bottom: 1em;
   padding-bottom: 0.8em;
   border-bottom: 1px solid var(--border);
 }
 
+#action-log-section > label,
 #code-room-section > label {
   display: block;
   font-size: 1.1em;
@@ -775,6 +776,58 @@ html, body {
   color: var(--fg-dim);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+#action-log-section .assist-note {
+  margin: 0 0 0.4em 0;
+}
+
+.action-log-time {
+  display: block;
+  font-size: 0.85em;
+  color: var(--fg-dim);
+}
+
+.action-log-label {
+  display: block;
+  color: var(--fg-bright);
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.action-log-links {
+  display: block;
+  margin-top: 0.2em;
+}
+
+/* #action-log-list-prefixed so this reliably wins over .code-links a's own
+   display:block/font-size/font-weight further down (equal-specificity,
+   later-in-file rule that would otherwise silently override these on
+   source order alone) -- multiple filenames on one action need to sit
+   inline with a separator, not stack as their own full-width lines the
+   way the room/topic link lists intentionally do. Color deliberately not
+   redeclared here, so it still inherits .code-links a's own (and its
+   modern-theme accent override's) color normally. */
+#action-log-list .action-log-links a {
+  display: inline;
+  font-size: 0.9em;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+#action-log-list .action-log-links a:hover {
+  text-decoration: underline;
+}
+
+.action-log-links a + a::before {
+  content: ' · ';
+  color: var(--fg-dim);
+}
+
+#code-room-section {
+  margin-bottom: 1em;
+  padding-bottom: 0.8em;
+  border-bottom: 1px solid var(--border);
 }
 
 #code-room-name {
