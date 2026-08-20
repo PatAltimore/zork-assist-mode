@@ -201,7 +201,8 @@ html, body {
 #font-size-decrease,
 #font-size-increase,
 #theme-toggle,
-#hint-toggle {
+#hint-toggle,
+#keyboard-toggle {
   background: transparent;
   color: var(--fg-bright);
   border: 1px solid var(--border);
@@ -220,10 +221,25 @@ html, body {
 #font-size-decrease:hover,
 #font-size-increase:hover,
 #theme-toggle:hover,
-#hint-toggle:hover {
+#hint-toggle:hover,
+#keyboard-toggle:hover {
   background: var(--fg-dim);
   color: var(--bg);
   text-shadow: none;
+}
+
+/* Only meaningful on a touchscreen (where there's an on-screen keyboard to
+   suppress in the first place) -- a mouse/trackpad desktop has no such
+   keyboard, so the button would just be confusing noise there. Same
+   pointer:coarse gate already used for the mobile edge-peek tabs. */
+#keyboard-toggle {
+  display: none;
+}
+
+@media (pointer: coarse) {
+  #keyboard-toggle {
+    display: inline-block;
+  }
 }
 
 .button-group {

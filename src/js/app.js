@@ -332,6 +332,79 @@
         });
     }
 
+    // There's no reliable, cross-browser way to detect whether a Bluetooth
+    // or other physical keyboard is actually connected -- the platform
+    // just doesn't expose that. iOS/Android usually suppress the on-screen
+    // keyboard on their own once a hardware keyboard is paired, but that
+    // isn't universal across every device/browser combination, so this is
+    // a manual fallback: inputmode="none" tells the browser not to pop the
+    // virtual keyboard on focus, while still accepting real typed input
+    // (from a physical keyboard, or pasted text) completely normally --
+    // it's not a way to "disable" the input, just to stop the on-screen
+    // keyboard specifically from appearing for it.
+    function initKeyboardToggle() {
+        var KEYBOARD_HIDDEN_KEY = 'zork-assist-keyboard-hidden';
+        var button = document.getElementById('keyboard-toggle');
+        if (!button) {
+            return;
+        }
+
+        var hidden = false;
+        try {
+            hidden = localStorage.getItem(KEYBOARD_HIDDEN_KEY) === '1';
+        } catch (e) {
+            // Ignore -- defaults to showing the on-screen keyboard normally.
+        }
+
+        function applyToInput() {
+            var input = document.querySelector('#windowport input.Input');
+            if (!input) {
+                return;
+            }
+            if (hidden) {
+                input.setAttribute('inputmode', 'none');
+            } else {
+                input.removeAttribute('inputmode');
+            }
+        }
+
+        function updateButton() {
+            button.textContent = hidden ? 'Show Keyboard' : 'Hide Keyboard';
+            button.setAttribute('aria-pressed', String(hidden));
+        }
+
+        button.addEventListener('click', function () {
+            hidden = !hidden;
+            try {
+                localStorage.setItem(KEYBOARD_HIDDEN_KEY, hidden ? '1' : '0');
+            } catch (e) {
+                // Ignore -- just won't persist across reloads.
+            }
+            applyToInput();
+            updateButton();
+            // A browser only re-reads inputmode when focus is (re-)established,
+            // not retroactively on an already-focused field -- cycle focus so
+            // the change actually takes effect right away instead of only on
+            // the next natural tap into the input.
+            var input = document.querySelector('#windowport input.Input');
+            if (input) {
+                input.blur();
+                input.focus();
+            }
+        });
+
+        applyToInput();
+        updateButton();
+
+        // GlkOte can recreate the input element between turns, so the
+        // attribute has to be re-applied whenever that happens rather than
+        // assumed to stick from this one-time setup.
+        var target = document.getElementById('windowport');
+        if (target) {
+            new MutationObserver(applyToInput).observe(target, { childList: true, subtree: true });
+        }
+    }
+
     function initNewGameButton() {
         var button = document.getElementById('new-game');
         if (!button) {
@@ -363,6 +436,7 @@
             initFontSizeButtons();
             initThemeToggle();
             initNewGameButton();
+            initKeyboardToggle();
             initGameportKeyboardSafetyNet();
         });
     } else {
@@ -372,6 +446,7 @@
         initFontSizeButtons();
         initThemeToggle();
         initNewGameButton();
+        initKeyboardToggle();
         initGameportKeyboardSafetyNet();
     }
 })();
