@@ -31,6 +31,20 @@
             // localStorage unavailable -- just boot normally each time.
         }
 
+        // LEARNING NOTE: zork1.z3 is a compiled game file, not text --
+        // fetch()'s response.json()/.text() helpers used elsewhere in this
+        // project won't do here, since those assume the response is
+        // JSON/plain text. .arrayBuffer() instead gives back the response
+        // as an ArrayBuffer -- a fixed-length chunk of raw bytes in memory,
+        // with no built-in way to read individual bytes from it directly.
+        // `new Uint8Array(buffer)` below wraps that same memory in a view
+        // that treats it as an array of 8-bit unsigned integers (0-255,
+        // one per byte), which is the form the Z-machine emulator (ZVM)
+        // actually expects. `throw new Error(...)` manually signals a
+        // failure -- fetch() itself only rejects on a true network error,
+        // not on a valid HTTP response with an error status like 404, so
+        // checking response.ok and throwing explicitly is what makes a bad
+        // status also end up in this promise chain's .catch() below.
         fetch('data/zork1.z3')
             .then(function (response) {
                 if (!response.ok) {
@@ -87,8 +101,22 @@
     function correctGameportAfterToggle() {
         var buf = document.querySelector('.BufferWindow');
         if (buf) {
+            // LEARNING NOTE: browsers batch up style changes and only
+            // actually recalculate layout ("reflow") when they need an
+            // up-to-date answer -- normally right before painting the next
+            // frame. Reading certain properties, like .offsetHeight, forces
+            // the browser to do that recalculation immediately instead of
+            // waiting, since it can't answer "how tall is this element
+            // right now" without first applying whatever styles are
+            // pending. `void expr` evaluates expr and then discards its
+            // result (becoming `undefined`) -- used here purely to make it
+            // obvious to a reader that .offsetHeight's *value* isn't
+            // wanted, only the side effect of reading it. That forced
+            // reflow is what makes WebKit actually notice the `overflow:
+            // hidden` that was just set, right before it gets undone again
+            // on the next line.
             buf.style.overflow = 'hidden';
-            void buf.offsetHeight; // force a reflow before restoring
+            void buf.offsetHeight;
             buf.style.overflow = '';
         }
         if (window.GlkOte && typeof window.GlkOte.recompute_gameport_margins === 'function') {
@@ -130,6 +158,15 @@
         // landscape -- where most current iPhones (13 mini and up) report
         // a viewport well over 760px wide, which silently skipped this
         // entire correction and was exactly why landscape got stuck.
+        // LEARNING NOTE: matchMedia() is the JS equivalent of a CSS
+        // `@media` query -- it returns a MediaQueryList object whose
+        // `.matches` property is `true` or `false` depending on whether
+        // the given condition currently holds, and stays "live": you don't
+        // need to re-run matchMedia() to get an up-to-date answer later,
+        // just re-read `.matches` (as maybeResetGameport does below).
+        // `(pointer: coarse)` specifically asks "is the primary pointing
+        // device imprecise, like a finger", as opposed to `(pointer: fine)`
+        // for a mouse/trackpad/stylus.
         var mobileQuery = window.matchMedia('(pointer: coarse)');
 
         function maybeResetGameport() {

@@ -1,3 +1,13 @@
+// LEARNING NOTE: this whole file is wrapped in an "IIFE" -- an Immediately
+// Invoked Function Expression, `(function () { ... })()`. Wrapping the file
+// in a function and then calling it right away creates a private scope:
+// every `var` declared inside (mapData, visited, all the helper functions)
+// lives only in this function's closure and is invisible from outside the
+// file. Without this, every `var` here would become a global variable,
+// and since this project loads several plain <script> files into one page
+// (no bundler, no ES modules), two files both declaring e.g. `var render`
+// would silently stomp on each other. This is the classic "module pattern"
+// from before JavaScript had real modules.
 (function () {
     'use strict';
 
@@ -5,8 +15,25 @@
     var CURRENT_KEY = 'zork-assist-map-current-v1';
     var TREE_DEPTH = 3;
 
+    // LEARNING NOTE: mapData, nameToId, visited, currentId (and the other
+    // `var`s below) are this module's shared state -- not local to any one
+    // function. Every function defined inside this IIFE can read and write
+    // them directly because of *closures*: a function defined inside
+    // another function keeps a live reference to its outer function's
+    // variables, even after the outer function (this IIFE) has already
+    // run. That's what lets, say, checkRoom() update `currentId` and have
+    // render() immediately see the new value, with no need to pass it
+    // around as a parameter or return value.
     var mapData = null; // { start, rawToCanonical, rawExits, rooms: { id: {name, blob, exits:[{dir,target,note?}], memberIds?} } }
     var nameToId = {};
+    // LEARNING NOTE: Set is a built-in collection of unique values (adding
+    // the same value twice is a no-op) with fast `.has(x)` membership
+    // checks -- both properties matter here: a room can only be "visited"
+    // once no matter how many times you re-enter it, and checking "have we
+    // been here before" needs to be cheap since it happens on every move.
+    // An array would technically work too, but `.includes()` on an array
+    // has to scan every element; Set is built to answer "is x in here?"
+    // in roughly constant time regardless of how many rooms you've visited.
     var visited = new Set();
     var currentId = null;
 
@@ -68,6 +95,16 @@
         if (!text) {
             return null;
         }
+        // LEARNING NOTE: /[.,!]+$/ is a regular expression -- a pattern for
+        // matching text. Reading it piece by piece: `[.,!]` is a character
+        // class meaning "any one of these three characters", `+` means "one
+        // or more of the previous thing", and `$` anchors the match to the
+        // very end of the string. So this whole pattern matches "a run of
+        // period/comma/exclamation-point characters at the end of the
+        // string" -- e.g. the "." in "north." -- and .replace(pattern, '')
+        // deletes whatever it matches. Below, /\s+/ (`\s` = whitespace,
+        // `+` = one or more) is used with .split() to break the remaining
+        // text into words on any run of spaces/tabs.
         var words = text.trim().toLowerCase().replace(/[.,!]+$/, '').split(/\s+/);
         if (words.length > 1 && DIR_PREFIX_VERBS[words[0]]) {
             words = words.slice(1);
@@ -90,6 +127,16 @@
         if (nameToId[name]) {
             return nameToId[name];
         }
+        // LEARNING NOTE: .filter() is one of JavaScript's "array methods
+        // that take a function" -- instead of writing a for-loop and
+        // manually building up a result array, you hand .filter() a
+        // function that returns true/false for each element, and it hands
+        // back a new array containing only the elements where that
+        // function returned true. Object.keys(obj) turns an object's own
+        // property names into a plain array first, since .filter() only
+        // works on arrays. fullName.indexOf(name) === 0 means "name occurs
+        // starting at position 0 of fullName" -- i.e. fullName starts with
+        // name.
         var candidates = Object.keys(nameToId).filter(function (fullName) {
             return fullName.indexOf(name) === 0;
         });
@@ -118,11 +165,21 @@
     // didn't change" might still mean "you moved" for a given blob.
     function computeBlobsWithInternalEdges() {
         var result = new Set();
+        // LEARNING NOTE: .forEach() runs a function once per array element,
+        // purely for its side effects (here, populating `result`) -- unlike
+        // .filter()/.map(), it doesn't build a new array for you. `return;`
+        // inside the callback just skips to the next element, the same way
+        // `continue` would in a for-loop; it does NOT exit computeBlobsWithInternalEdges
+        // itself.
         Object.keys(mapData.rooms).forEach(function (canonId) {
             var room = mapData.rooms[canonId];
             if (!room.blob || !room.memberIds) {
                 return;
             }
+            // .some() is like .filter() but stops at the first match and
+            // returns just true/false, instead of collecting every match
+            // into an array -- exactly "does at least one element satisfy
+            // this?", which is all that's needed here.
             var hasInternal = room.memberIds.some(function (rawId) {
                 var exits = rawExitsOf(rawId) || [];
                 return exits.some(function (e) { return canonicalOf(e.target) === canonId; });
@@ -205,6 +262,15 @@
         return byDir;
     }
 
+    // LEARNING NOTE: localStorage is a browser API for storing small bits of
+    // text that survive a page reload (and even closing the browser) --
+    // unlike a normal `var`, which resets to nothing every time the page
+    // loads fresh. It only stores strings, which is why saveState() below
+    // calls JSON.stringify() to turn the `visited` Set into a plain array
+    // and then into a string, and loadState() calls JSON.parse() to reverse
+    // that. It's wrapped in try/catch because some browser settings (like
+    // Safari in private browsing) make localStorage throw an error on
+    // every access instead of just failing quietly.
     function loadState() {
         try {
             var raw = localStorage.getItem(VISITED_KEY);
@@ -435,6 +501,16 @@
             return;
         }
 
+        // LEARNING NOTE: walk() is recursive -- it calls itself (see the
+        // `walk(candidates[0].target, level + 1, ...)` call near the
+        // bottom) to build each deeper level of the tree from the level
+        // above it. `level` is what stops it going forever: TREE_DEPTH
+        // caps how many times it's allowed to recurse, so the function
+        // keeps calling a slightly-modified version of itself on a
+        // smaller/deeper piece of the problem until that stopping
+        // condition is hit, then unwinds. This is a natural fit for a
+        // tree shape, where "the rest of the tree below this node" is
+        // itself just another (smaller) tree.
         function walk(id, level, prefix, parentId) {
             var dirGroups = groupExitsByDir(exitsForNode(id, level === 1));
             var dirs = sortDirs(new Set(Object.keys(dirGroups))).filter(function (d) {
@@ -529,6 +605,17 @@
         return text.replace(/\s*Score:.*$/i, '').trim();
     }
 
+    // LEARNING NOTE: this is the "debounce" pattern. The game's output can
+    // mutate the DOM many times in quick succession for a single turn
+    // (the echoed command, then the response, possibly line by line), and
+    // each mutation would otherwise trigger a separate checkRoom() call.
+    // Debouncing coalesces a burst of calls into just one: the first call
+    // sets a timer and every call after it (while checkTimer is still set)
+    // just returns early and does nothing, so only when the timer actually
+    // *fires* -- 60ms after the last burst of activity settled -- does the
+    // real work (checkRoom) run. setTimeout(fn, ms) schedules fn to run
+    // once, after at least ms milliseconds, without blocking the rest of
+    // the page in the meantime.
     var checkTimer = null;
     function scheduleCheck() {
         if (checkTimer) {
@@ -646,6 +733,18 @@
     // to a specific input element) since it keeps working even if GlkOte
     // ever recreates that element.
     function initCommandTracking() {
+        // LEARNING NOTE: this is "event delegation". Instead of finding the
+        // game's text input and attaching a listener directly to it, the
+        // listener is attached once to `document` -- the whole page. Key
+        // events on ANY element "bubble" up through their ancestors (input
+        // -> its containers -> ... -> document), so a listener on document
+        // still fires for every keypress anywhere. `ev.target` tells you
+        // which actual element the event started on, so the `.matches(...)`
+        // check filters that down to just the game's input. The payoff:
+        // this keeps working even if GlkOte destroys and recreates that
+        // input element between turns (which it does) -- a listener
+        // attached directly to the old element would silently stop
+        // firing the moment that element was replaced.
         document.addEventListener('keydown', function (ev) {
             if (ev.key !== 'Enter') {
                 return;
@@ -671,6 +770,16 @@
         });
     }
 
+    // LEARNING NOTE: MutationObserver is a browser API that watches part of
+    // the page and calls your function whenever the DOM changes inside it
+    // -- no polling ("check every N ms whether anything changed") needed.
+    // `childList: true` means "tell me about elements being added/removed",
+    // `subtree: true` extends that to descendants at any depth (not just
+    // direct children of #windowport), and `characterData: true` covers
+    // plain text changes. This is how the map knows a new turn just
+    // happened: the game engine (GlkOte) is the one actually writing text
+    // into #windowport, and this file has no direct hook into it, so
+    // watching the DOM it produces is the only way to notice.
     function initObserver() {
         var target = document.getElementById('windowport');
         if (!target) {
@@ -706,6 +815,19 @@
     initCommandTracking();
     loadState();
 
+    // LEARNING NOTE: fetch() starts an HTTP request and returns a Promise --
+    // an object representing "a value that will exist later, once this
+    // finishes" -- rather than the actual response, since network requests
+    // take time and JavaScript doesn't pause and wait for them. .then()
+    // registers a callback to run once that Promise resolves, and itself
+    // returns a new Promise, which is why these chain: the first .then()
+    // takes the raw HTTP response and asks it to parse its body as JSON
+    // (response.json() is ALSO async, so it returns its own Promise, and
+    // returning a Promise from inside a .then() callback makes the *next*
+    // .then() wait for it too, rather than firing early with the still-
+    // pending Promise object itself). .catch() at the end catches an error
+    // from the fetch or from either .then() -- e.g. no network, or the file
+    // being missing.
     fetch('data/map.json')
         .then(function (response) { return response.json(); })
         .then(function (data) {

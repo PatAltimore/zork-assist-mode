@@ -10,6 +10,13 @@
     var levelsContainer = document.getElementById('hint-levels');
     var revealButton = document.getElementById('hint-reveal');
 
+    // LEARNING NOTE: this is a manual search loop -- functionally the same
+    // as `topics.find(function (t) { return t.id === id; }) || null`,
+    // which is how you'd typically write "find the first array element
+    // matching a condition" today using the built-in .find() method. Both
+    // versions stop as soon as a match is found rather than scanning the
+    // whole array (the `return` here exits the function immediately,
+    // right from inside the loop).
     function currentTopic() {
         var id = topicSelect.value;
         for (var i = 0; i < topics.length; i++) {
@@ -86,6 +93,13 @@
         }
     });
 
+    // LEARNING NOTE: `.then(populateTopics)` passes the function itself as
+    // a value, rather than wrapping it in another function like
+    // `.then(function (data) { populateTopics(data); })`. Both do the same
+    // thing here -- when this .then() fires, it'll call whatever function
+    // it was given with one argument (the parsed JSON) -- but passing the
+    // reference directly is shorter whenever you don't need to do
+    // anything extra with the argument first.
     fetch('data/hints.json')
         .then(function (response) {
             return response.json();

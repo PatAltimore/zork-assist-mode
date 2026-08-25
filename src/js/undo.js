@@ -14,6 +14,15 @@
     var MAX_UNDO_DEPTH = 100;
     var MAIN_WINDOW_ROCK = 201; // see gidispa-zvm.js / ifvms.js's own convention
 
+    // LEARNING NOTE: this array is used as a "stack" -- a data structure
+    // where you only ever add or remove from one end (here, the end;
+    // arrays also support this at the start with .unshift()/.shift(),
+    // which is a "queue" instead). .push() adds a new snapshot at the end,
+    // .pop() removes and returns the last one added, so the most recently
+    // added snapshot is always the first one to come back off -- "last in,
+    // first out" (LIFO). That's exactly the shape "undo" needs: each
+    // undo should roll back the *most recent* change first, then the one
+    // before that, and so on.
     var undoStack = [];
     var lastStatusText = null;
 
@@ -59,6 +68,13 @@
         var promptLine = lines[lines.length - 1];
         var insertBefore = (promptLine && promptLine.parentElement === win) ? promptLine : null;
 
+        // LEARNING NOTE: node.insertBefore(newNode, referenceNode) inserts
+        // newNode right before referenceNode among node's children -- and,
+        // conveniently, if referenceNode is `null` (as `insertBefore` can
+        // be here, when there's no existing prompt line to slot in front
+        // of), it just appends newNode at the very end instead of
+        // erroring. That's what lets the same call work whether or not a
+        // prompt line currently exists to insert ahead of.
         if (echoText) {
             win.insertBefore(makeLine('>' + echoText, 'Style_input'), insertBefore);
         }
@@ -163,6 +179,17 @@
             if ((target.value || '').trim().toLowerCase() !== 'undo') {
                 return;
             }
+            // LEARNING NOTE: stopPropagation() (used elsewhere in this
+            // project) stops an event from continuing on to the *next*
+            // phase or ancestor -- but other listeners already registered
+            // on this exact same element, for this same event and phase,
+            // would still all run first. stopImmediatePropagation() goes
+            // further: it also skips any sibling listeners still waiting
+            // on this very element. That distinction matters here because
+            // GlkOte's own keypress handler is registered on this same
+            // input element -- stopPropagation() alone wouldn't be enough
+            // to stop it, since it hasn't "propagated" anywhere yet, it's
+            // just next in line on the same element.
             ev.preventDefault();
             ev.stopImmediatePropagation();
             target.value = '';

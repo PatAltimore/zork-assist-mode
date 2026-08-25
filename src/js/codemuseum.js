@@ -142,6 +142,15 @@
     ]).then(function (results) {
         linksData = results[0];
         var mapData = results[1];
+        // LEARNING NOTE: .map() transforms an array by running a function
+        // over every element and collecting the return values into a new
+        // array of the same length -- unlike .filter() (which keeps some
+        // elements as-is and drops others) or .forEach() (which doesn't
+        // build a result at all), .map() is specifically for "turn each
+        // element into something else". Here, hints.json's full topic
+        // objects (id, title, and an array of hint strings) get mapped
+        // down to just {id, title} -- this file only needs enough to
+        // populate a dropdown, not the actual hint text.
         hintTopics = results[2].map(function (t) { return { id: t.id, title: t.title }; });
 
         Object.keys(mapData.rooms).forEach(function (id) {

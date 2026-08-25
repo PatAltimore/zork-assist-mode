@@ -181,7 +181,13 @@
         if (!itemId) {
             return;
         }
-        var type = TAKE_VERBS.indexOf(verb) !== -1 ? 'take' : DROP_VERBS.indexOf(verb) !== -1 ? 'drop' : null;
+        // LEARNING NOTE: `a ? b : c` is the ternary operator -- a compact
+    // if/else that evaluates to a value: "if a is truthy, the whole
+    // expression is b, otherwise it's c". These can be chained, as here:
+    // read it as "if this verb is a take-verb, 'take'; otherwise, if it's
+    // a drop-verb, 'drop'; otherwise, null" -- equivalent to a longer
+    // if/else-if/else, just written as one assignment.
+    var type = TAKE_VERBS.indexOf(verb) !== -1 ? 'take' : DROP_VERBS.indexOf(verb) !== -1 ? 'drop' : null;
         if (type) {
             pushPendingAction({ type: type, item: itemId });
         }
@@ -201,6 +207,15 @@
         if (pendingActions.length === 0) {
             return;
         }
+        // LEARNING NOTE: reassigning `pendingActions = pendingActions.filter(...)`
+        // is a common idiom for "remove some items from an array in place"
+        // -- .filter() itself doesn't modify the original array (arrays
+        // methods like .filter/.map never mutate their input), it builds a
+        // brand new one containing only the elements whose callback
+        // returned true, and here that new array is immediately assigned
+        // back over the old variable. Each action below returns false
+        // (drop it) once it's been resolved one way or another, or true
+        // (keep it for next time) while it's still waiting to be verified.
         pendingActions = pendingActions.filter(function (action) {
             if (action.type === 'take') {
                 if (newText.indexOf('Taken.') !== -1) {
@@ -285,6 +300,20 @@
         return !!el && typeof el.matches === 'function' && el.matches('#windowport input.Input');
     }
 
+    // LEARNING NOTE: a DOM event travels through the page in two stages --
+    // "capture" (from the document down to the exact element clicked/typed
+    // in) and then "bubble" (back up from that element to the document).
+    // addEventListener's third argument (see initInputHandlers's call to
+    // `windowport.addEventListener('keydown', onKeyDown, true)`) chooses
+    // which stage this listener fires on: `true` means capture. GlkOte's
+    // own keydown listener is attached directly to the input element,
+    // which only ever runs during the bubble stage (or effectively "at
+    // the target", since capture and target-phase listeners on the same
+    // element still run before that element's bubble-phase ones). Using
+    // capture here guarantees this code sees the keystroke -- and can
+    // decide whether to preventDefault()/stopPropagation() it away, see
+    // below -- before GlkOte's own handler ever gets a turn.
+    //
     // Capture phase, ahead of GlkOte's own keydown handler on the input
     // itself (vendor/glkote.js, evhan_input_keydown), so this always gets
     // first look at Up/Down. shadowHistoryPos mirrors GlkOte's own
@@ -328,6 +357,15 @@
                 shadowHistoryPos -= 1;
                 return;
             }
+            // LEARNING NOTE: preventDefault() cancels whatever the browser
+            // would normally do for this key (here, that matters less --
+            // Up in a text field has no default browser behavior to
+            // block, but it's included for safety/clarity). stopPropagation()
+            // is the important one: it stops the event from continuing on
+            // to the next phase/listener at all, which is what actually
+            // keeps GlkOte's own bubble-phase handler on the input from
+            // ever seeing this keystroke and doing its own (wrong, in this
+            // moment) thing with it.
             ev.preventDefault();
             ev.stopPropagation();
             if (suggestions.length === 0) {
@@ -376,6 +414,13 @@
         if (!isGameInput(ev.target)) {
             return;
         }
+        // LEARNING NOTE: Date.now() returns the current time as a plain
+        // number (milliseconds since Jan 1 1970 -- the "Unix epoch"), which
+        // makes measuring elapsed time as simple as subtracting two
+        // readings, as below. Double-tap detection here is just "was the
+        // previous tap on this element less than 350ms ago?"; there's no
+        // built-in browser "doubletap" event for touch, so this is the
+        // standard manual way to detect one.
         var now = Date.now();
         var isDouble = now - lastTapTime < DOUBLE_TAP_MS;
         lastTapTime = now;
@@ -419,6 +464,16 @@
         }
     }
 
+    // LEARNING NOTE: this needs two separate files before it can do
+    // anything, so both fetches are kicked off together (not one, then
+    // the other afterward) and Promise.all() waits for the whole array of
+    // Promises to finish. Its own result is an array in the same order as
+    // the input, which is why results[0] below is map.json's parsed data
+    // and results[1] is commands.json's -- even though whichever request
+    // actually finishes first over the network isn't guaranteed. This is
+    // faster than awaiting them one at a time, since both downloads
+    // happen in parallel instead of one waiting for the other to finish
+    // first.
     Promise.all([
         fetch('data/map.json').then(function (r) { return r.json(); }),
         fetch('data/commands.json').then(function (r) { return r.json(); })

@@ -14,10 +14,28 @@
     // though (see js/tab-indicators.js, which jumps the hint topic to match
     // the current room), so this also listens for a "change" it didn't
     // originate itself and re-syncs the visible button/list to match.
+    // LEARNING NOTE: this file builds a fake dropdown out of a <button> and
+    // a <ul>, since a real <select> is what's causing the keyboard-popping
+    // problem described above -- but a screen reader or other assistive
+    // tech has no idea a plain button+list is *supposed* to behave like a
+    // dropdown unless it's told so explicitly. That's what the
+    // `role="listbox"`/`role="option"` and `aria-*` attributes sprinkled
+    // through this function are for (ARIA = Accessible Rich Internet
+    // Applications): they don't change how anything looks or behaves for a
+    // mouse/keyboard user, but they tell assistive tech "treat this button
+    // as a dropdown trigger", "treat this list as the dropdown's options",
+    // "this option is currently selected", and so on.
     function enhanceSelect(select) {
         if (!select || select.dataset.customSelectApplied) {
             return;
         }
+        // LEARNING NOTE: `.dataset` is how JS reads/writes an element's
+        // custom `data-*` HTML attributes -- `select.dataset.customSelectApplied`
+        // corresponds to an attribute named `data-custom-select-applied`
+        // (dataset automatically converts between camelCase in JS and
+        // dash-case in HTML). It's a convenient, standard place to stash
+        // small bits of state directly on an element, like this flag
+        // marking "don't set this select up twice".
         select.dataset.customSelectApplied = '1';
 
         var nativeId = select.id;
@@ -110,10 +128,24 @@
         }
 
         function positionList() {
+            // LEARNING NOTE: getBoundingClientRect() returns an element's
+            // current size and position on screen (left/top/right/bottom/
+            // width/height), measured relative to the browser viewport --
+            // this is how the fake dropdown list knows exactly where to
+            // place itself so it lines up under the button, since the list
+            // is positioned independently (see the CSS) rather than
+            // sitting in normal document flow right after the button.
             var rect = button.getBoundingClientRect();
             list.style.left = rect.left + 'px';
             list.style.width = rect.width + 'px';
             var spaceBelow = window.innerHeight - rect.bottom;
+            // LEARNING NOTE: Math.min/Math.max are a common combo for
+            // "clamping" a number between a floor and a ceiling. Reading
+            // inside-out: Math.min(300, spaceBelow - 8) never lets the
+            // height exceed 300px, and wrapping that in Math.max(120, ...)
+            // never lets it drop below 120px either -- so maxHeight always
+            // ends up somewhere in the [120, 300] range, adapting to
+            // however much real screen space is actually available.
             var maxHeight = Math.max(120, Math.min(300, spaceBelow - 8));
             if (spaceBelow < 120 && rect.top > spaceBelow) {
                 // More room above the button than below -- open upward.
@@ -214,6 +246,19 @@
         enhanceSelect(document.getElementById('code-topic'));
     }
 
+    // LEARNING NOTE: this handles a timing race that comes up whenever a
+    // script needs to touch elements from the HTML. `document.readyState`
+    // is `'loading'` while the browser is still parsing the HTML document
+    // -- if this script tag happened to run before the rest of the page
+    // (e.g. it was placed in <head>), `document.getElementById('hint-topic')`
+    // above could return null because that element doesn't exist in the
+    // DOM yet. `DOMContentLoaded` is an event that fires once the full
+    // HTML document has been parsed, so waiting for it guarantees the
+    // elements exist. Since this project's script tags are all placed at
+    // the end of <body> (after the elements they need), readyState is
+    // typically already past 'loading' by the time this runs, and init()
+    // just runs immediately -- but checking first makes this file safe
+    // to move or load differently without silently breaking.
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

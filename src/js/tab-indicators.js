@@ -56,10 +56,24 @@
         tab.classList.toggle('tab-alert', !!on && !isActive);
     }
 
+    // LEARNING NOTE: update() calls renderHintRoomSection() even though
+    // that function is defined further down this file, below update()
+    // itself. This works because of "function hoisting": a `function foo()
+    // {}` declaration (unlike `var foo = function () {}`) is fully set up
+    // before any code in its scope runs, so it can be called from code
+    // written above it in the file. It only reads oddly if you're used to
+    // languages that require strict top-to-bottom definition order.
     function update(roomId) {
         if (!hintTopics || !codeLinksData) {
             return;
         }
+        // `!!roomId` -- two `!` in a row -- converts any value to a real
+        // boolean: the first `!` negates it (so a truthy roomId becomes
+        // `false`, a falsy one becomes `true`), and the second `!`
+        // negates that back, landing on `true`/`false` instead of
+        // whatever roomId's original type was (a string or `null`).
+        // Written out longhand, `!!roomId && x.some(...)` is just "only
+        // bother checking .some() if roomId is actually set".
         var hasHint = !!roomId && hintTopics.some(function (topic) {
             return topic.rooms && topic.rooms.indexOf(roomId) !== -1;
         });
@@ -123,10 +137,18 @@
             return;
         }
         hintTopicSelect.value = id;
-        // hints.js listens for this to reset the revealed tiers and
-        // re-render; custom-select.js listens for it too, to keep the
-        // visible dropdown button in sync with a change it didn't itself
-        // originate from a click.
+        // LEARNING NOTE: setting .value on a <select> directly, the way
+        // the line above does, does NOT fire the browser's own "change"
+        // event -- that only happens automatically when a *user* picks an
+        // option. So this manually constructs and dispatches one: `new
+        // Event('change', { bubbles: true })` creates an event object of
+        // the same kind the browser would have fired, and `bubbles: true`
+        // means it propagates up through ancestor elements the normal way,
+        // so any listener anywhere (not just one attached directly to this
+        // element) sees it. hints.js listens for this to reset the
+        // revealed tiers and re-render; custom-select.js listens for it
+        // too, to keep the visible dropdown button in sync with a change
+        // it didn't itself originate from a click.
         hintTopicSelect.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
@@ -183,6 +205,18 @@
     // listener (this script loads later in index.html), so by the time
     // this runs, the .active classes map.js just set are already in place.
     function initTabWatch() {
+        // LEARNING NOTE: document.querySelectorAll() returns a NodeList,
+        // which looks and acts a lot like an array (it has a .length and
+        // you can index into it with []) but is missing most real array
+        // methods -- notably .forEach() used below didn't even exist on
+        // NodeList in older browsers. `Array.prototype.slice.call(list)`
+        // is the classic pre-ES6 trick for converting any "array-like"
+        // object into a genuine Array: it borrows Array's own .slice()
+        // method and runs it with `list` standing in for the array it
+        // would normally operate on, which works because .slice() only
+        // actually cares that its target has a .length and numbered
+        // properties, not that it's really an Array. Modern code would
+        // more often write `Array.from(list)` for the same result.
         Array.prototype.slice.call(document.querySelectorAll('.assist-tab')).forEach(function (tab) {
             tab.addEventListener('click', function () {
                 update(currentRoomId);

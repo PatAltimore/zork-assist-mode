@@ -29,6 +29,15 @@
     var nameToRoomId = {};
 
     var WINDOW_MS = 5 * 60 * 1000;
+    // LEARNING NOTE: Map is a built-in key-value collection, like a plain
+    // `{}` object but built specifically for this job: any value can be a
+    // key (not just strings), it remembers insertion order, and it has a
+    // real .size plus methods like .get/.set/.delete/.has instead of
+    // needing `in` or hasOwnProperty checks. Here the key is the action's
+    // category string (e.g. "room:CYCLOPS-ROOM") and the value is the
+    // entry itself -- storing entries.set(category, ...) again with a
+    // category that's already a key just replaces that one entry in place,
+    // which is exactly the de-duplication this file relies on throughout.
     var entries = new Map(); // category -> { category, timestamp, label, filenameKeys }
 
     function logAction(category, label, filenameKeys) {
@@ -46,6 +55,14 @@
                 list.push(entry);
             }
         });
+        // LEARNING NOTE: .sort() takes a "comparator" function and uses its
+        // return value to decide ordering: negative means "a comes first",
+        // positive means "b comes first", zero means "equal". Subtracting
+        // is a common shorthand for numeric sorting: b.timestamp -
+        // a.timestamp is positive whenever a's timestamp is smaller (older)
+        // than b's, which pushes older entries later -- i.e. newest first.
+        // Flipping to `a.timestamp - b.timestamp` would sort oldest first
+        // instead.
         list.sort(function (a, b) { return b.timestamp - a.timestamp; });
         return list;
     }
@@ -78,6 +95,18 @@
         if (!line) {
             return null;
         }
+        // LEARNING NOTE: parentheses in a regex create a "capture group" --
+        // a sub-part of the match you can pull out separately. `-?` means
+        // "an optional minus sign", `\d+` means "one or more digits", so
+        // `(-?\d+)` captures just the number itself, not the whole "Score:
+        // 25" text it's embedded in. .match() returns null if there's no
+        // match at all, or an array-like object if there is, where
+        // match[0] is the whole match and match[1] is the first captured
+        // group -- here, the score as a *string* (regex matches are always
+        // text). parseInt(str, 10) converts that string to an actual
+        // number, with 10 explicitly meaning "base 10" (ordinary decimal)
+        // -- worth always passing explicitly, since a leading "0" without
+        // it has historically been parsed as octal in some engines.
         var match = (line.textContent || '').match(/Score:\s*(-?\d+)/i);
         return match ? parseInt(match[1], 10) : null;
     }
@@ -391,7 +420,15 @@
             }
             row.time.textContent = formatRelativeTime(entry.timestamp);
             row.label.textContent = entry.label;
-            listEl.appendChild(row.item); // re-attaching an attached node just moves it
+            // LEARNING NOTE: appendChild's behavior when the node you pass
+            // it is *already* somewhere in the document is easy to miss --
+            // it doesn't clone it or error, it just moves it (detaches it
+            // from its current spot and reattaches it at the end of
+            // listEl). Since `actions` is already sorted newest-first,
+            // appending each row in that order naturally leaves them in
+            // the right order in the real DOM too, without ever having to
+            // destroy and recreate a row that hasn't actually changed.
+            listEl.appendChild(row.item);
         });
 
         rowsByCategory.forEach(function (row, category) {
@@ -402,8 +439,12 @@
         });
     }
 
-    // Relative timestamps ("2m ago") go stale without a re-render even when
-    // nothing new has happened.
+    // LEARNING NOTE: setInterval(fn, ms) is setTimeout's repeating cousin --
+    // it calls fn again and again, every ms milliseconds, until something
+    // calls clearInterval() on the id it returns (this code never does,
+    // since the log should keep refreshing for as long as the page is
+    // open). Relative timestamps ("2m ago") go stale without a re-render
+    // even when nothing new has happened.
     setInterval(render, 30000);
 
     Promise.all([
