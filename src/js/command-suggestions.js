@@ -4,31 +4,23 @@
     // Suggests commands worth trying right now -- a mix of genuinely useful
     // ones for whatever puzzle the current room represents, and a few that
     // just show off the game's own sense of humor -- cycled into the input
-    // box with the Up arrow or a double-tap, the same way a terminal's own
-    // command history works. Tracks room and inventory independently via
-    // their own passive observation, the same pattern map.js/codemuseum.js/
-    // tab-indicators.js each already use, since none of these files share a
-    // module system to hook into each other directly.
+    // box with Tab (Shift+Tab goes back) or a double-tap. Tracks room and
+    // inventory independently via their own passive observation, the same
+    // pattern map.js/codemuseum.js/tab-indicators.js each already use, since
+    // none of these files share a module system to hook into each other
+    // directly.
     //
-    // Deliberately layered on TOP of GlkOte's own real command history
-    // (vendor/glkote.js, win.history/historypos, bound to the same Up/Down
-    // keys) rather than replacing it: this only ever takes over once GlkOte's
-    // own history has nothing left to recall, so pressing Up still recalls
-    // what you actually typed first, same as always.
+    // Up/Down are deliberately left alone: they belong to GlkOte's own
+    // command history (vendor/glkote.js, win.history/historypos).
 
     var mapData = null;
-    var commandsData = null; // { items: {id: {match}}, general: [...], byRoom: {...} }
+    var commandsData = null; // { items: {id: {match, aliases?}}, general: [...], byRoom: {...} }
+    var walkthroughData = null; // { steps: [{id, cmd, at, why, gate?, done: {arrive?, item?, text?}}] }
+    var doneSteps = {}; // step id -> true; sticky, so undo/dropping never un-completes a step
     var nameToRoomId = {};
 
     var currentRoomId = null;
     var heldItems = new Set();
-
-    // Shadow of GlkOte's own win.history/win.historypos (see the big
-    // comment on the keydown handler below for why this has to be a
-    // best-effort mirror rather than a real read of GlkOte's internal
-    // state, which isn't exposed to us).
-    var shadowHistory = [];
-    var shadowHistoryPos = 0;
 
     var suggestions = [];
     var suggestionIndex = -1; // -1 = not currently browsing a suggestion
@@ -70,21 +62,133 @@
         return (line.textContent || '').replace(/\s*Score:.*$/i, '').trim();
     }
 
-    // The list to cycle through for right now: whatever's tagged for this
-    // room (filtered to only the item-gated ones we're confident about --
-    // no item tag at all means always show it), then the general pool.
-    // Capped well short of exhausting; this is meant to be a quick handful
-    // of ideas, not a walkthrough.
+    // --- Walkthrough ----------------------------------------------------
+    //
+    // data/walkthrough.json is an ordered list of steps. The "next" step is
+    // the first one not yet done; it's offered first in the Tab cycle (and
+    // named in the input's placeholder). There's no way to read the game's
+    // own state, so each step declares how to recognize it's done from
+    // what this file can already see: standing in a room, holding an item,
+    // or distinctive text in the game's output (see stepDone).
+
+    function nextStep() {
+        if (!walkthroughData) {
+            return null;
+        }
+        var steps = walkthroughData.steps;
+        for (var i = 0; i < steps.length; i++) {
+            if (!doneSteps[steps[i].id]) {
+                return steps[i];
+            }
+        }
+        return null;
+    }
+
+    // First move of the shortest route from one room to another, using
+    // only unconditional exits (an exit with a "note" depends on some game
+    // state we can't see, so it's never trusted). null if no such route.
+    function firstMoveToward(fromId, toId) {
+        if (!mapData || !fromId || fromId === toId || !mapData.rooms[fromId]) {
+            return null;
+        }
+        var firstMove = {};
+        firstMove[fromId] = null;
+        var queue = [fromId];
+        while (queue.length) {
+            var id = queue.shift();
+            var exits = mapData.rooms[id].exits || [];
+            for (var i = 0; i < exits.length; i++) {
+                var exit = exits[i];
+                if (exit.note || !mapData.rooms[exit.target] || exit.target in firstMove) {
+                    continue;
+                }
+                firstMove[exit.target] = id === fromId ? exit.dir.toLowerCase() : firstMove[id];
+                if (exit.target === toId) {
+                    return firstMove[toId];
+                }
+                queue.push(exit.target);
+            }
+        }
+        return null;
+    }
+
+    // What to actually type for a step right now, plus the placeholder
+    // text describing it: the step's own command if we're in the right
+    // room, otherwise the first move toward it.
+    function guidance(step) {
+        if (!currentRoomId || step.at === currentRoomId) {
+            return { cmd: step.cmd, hint: step.why };
+        }
+        var move = firstMoveToward(currentRoomId, step.at);
+        if (!move) {
+            return { cmd: step.cmd, hint: step.why };
+        }
+        return { cmd: move, hint: 'head to ' + mapData.rooms[step.at].name + ' (' + step.why + ')' };
+    }
+
+    function stepDone(step, freshText) {
+        var done = step.done;
+        if (done.arrive && done.arrive === currentRoomId) {
+            return true;
+        }
+        if (done.item && heldItems.has(done.item)) {
+            return true;
+        }
+        if (done.text && freshText) {
+            var lower = freshText.toLowerCase();
+            return done.text.some(function (t) { return lower.indexOf(t.toLowerCase()) !== -1; });
+        }
+        return false;
+    }
+
+    function updateWalkthrough(freshText) {
+        if (!walkthroughData) {
+            return;
+        }
+        var steps = walkthroughData.steps;
+        var changed = false;
+        steps.forEach(function (step, i) {
+            if (doneSteps[step.id] || !stepDone(step, freshText)) {
+                return;
+            }
+            doneSteps[step.id] = true;
+            changed = true;
+            if (step.gate) {
+                // A gate proves everything before it is moot (e.g. you
+                // can't be in the kitchen without having opened the
+                // window), even if we never saw those steps happen.
+                for (var j = 0; j < i; j++) {
+                    doneSteps[steps[j].id] = true;
+                }
+            }
+        });
+        if (changed) {
+            refreshSuggestions();
+            refreshInputHint();
+        }
+    }
+
+    // The list to cycle through for right now: the walkthrough's next step
+    // first, then whatever's tagged for this room (filtered to only the
+    // item-gated ones we're confident about -- no item tag at all means
+    // always show it), then the general pool. Capped well short of
+    // exhausting; this is a quick handful of ideas.
     var MAX_SUGGESTIONS = 8;
 
     function computeSuggestions() {
         var list = [];
+        var step = nextStep();
+        if (step) {
+            list.push(guidance(step).cmd);
+        }
         var roomEntries = (currentRoomId && commandsData.byRoom[currentRoomId]) || [];
         roomEntries.forEach(function (entry) {
             if (entry.item && !heldItems.has(entry.item)) {
                 return;
             }
-            list.push(entry.cmd);
+            if (list.indexOf(entry.cmd) === -1) {
+                list.push(entry.cmd);
+            }
         });
         commandsData.general.forEach(function (entry) {
             if (list.length >= MAX_SUGGESTIONS) {
@@ -137,10 +241,15 @@
 
     // --- Inventory tracking -------------------------------------------
 
+    function itemWords(id) {
+        var item = commandsData.items[id];
+        return [item.match].concat(item.aliases || []);
+    }
+
     function matchItem(word) {
         var ids = Object.keys(commandsData.items);
         for (var i = 0; i < ids.length; i++) {
-            if (commandsData.items[ids[i]].match === word) {
+            if (itemWords(ids[i]).indexOf(word) !== -1) {
                 return ids[i];
             }
         }
@@ -236,9 +345,12 @@
                     return false;
                 } else if (newText.indexOf('You are carrying') !== -1) {
                     var ids = Object.keys(commandsData.items);
+                    var lowerText = newText.toLowerCase();
                     ids.forEach(function (id) {
-                        var word = commandsData.items[id].match;
-                        if (newText.toLowerCase().indexOf(word) !== -1) {
+                        var found = itemWords(id).some(function (word) {
+                            return lowerText.indexOf(word) !== -1;
+                        });
+                        if (found) {
                             heldItems.add(id);
                         }
                     });
@@ -278,11 +390,13 @@
         checkTimer = setTimeout(function () {
             checkTimer = null;
             var fullText = getAllBufferText();
-            if (fullText.length > lastSeenTextLength) {
-                checkPendingAction(fullText.slice(lastSeenTextLength));
+            var freshText = fullText.slice(lastSeenTextLength);
+            if (freshText) {
+                checkPendingAction(freshText);
             }
             lastSeenTextLength = fullText.length;
             recheckRoom();
+            updateWalkthrough(freshText);
         }, 90);
     }
 
@@ -315,17 +429,9 @@
     // below -- before GlkOte's own handler ever gets a turn.
     //
     // Capture phase, ahead of GlkOte's own keydown handler on the input
-    // itself (vendor/glkote.js, evhan_input_keydown), so this always gets
-    // first look at Up/Down. shadowHistoryPos mirrors GlkOte's own
-    // win.historypos as best it can from the outside -- there's no public
-    // API into GlkOte's internal window state, so this is rebuilt from the
-    // same submitted-command events this file already needs to watch for
-    // inventory tracking. It won't always match perfectly (typing "undo",
-    // or Save/Load's synthetic submission, don't go through the same path
-    // GlkOte's own history bookkeeping does -- see the Enter handler below)
-    // but those are rare, self-correcting edge cases, not a functional
-    // problem: worst case Up recalls one extra/fewer blank history step
-    // before switching over to suggestions.
+    // itself (vendor/glkote.js, evhan_input_keydown). Up/Down are left
+    // entirely to GlkOte's command history; Tab / Shift+Tab are the only
+    // keys this file claims.
     function onKeyDown(ev) {
         if (!isGameInput(ev.target)) {
             return;
@@ -333,67 +439,44 @@
         var input = ev.target;
 
         if (ev.key === 'Enter') {
-            var raw = input.value;
-            var trimmed = raw.trim();
+            var trimmed = input.value.trim();
             if (trimmed && trimmed.toLowerCase() !== 'undo') {
-                var last = shadowHistory[shadowHistory.length - 1];
-                if (trimmed !== last) {
-                    shadowHistory.push(trimmed);
-                    if (shadowHistory.length > 20) {
-                        shadowHistory.shift();
-                    }
-                }
-                shadowHistoryPos = shadowHistory.length;
                 recordPendingAction(trimmed);
             }
             suggestionIndex = -1;
             return;
         }
 
-        if (ev.key === 'ArrowUp') {
-            if (suggestionIndex === -1 && shadowHistoryPos > 0) {
-                // GlkOte's own history will handle this one -- just stay in
-                // sync with what it's about to do to its own position.
-                shadowHistoryPos -= 1;
+        if (ev.key === 'Tab') {
+            if (ev.shiftKey) {
+                if (suggestionIndex === -1) {
+                    // Not browsing suggestions -- leave Shift+Tab alone so
+                    // normal keyboard focus movement still works.
+                    return;
+                }
+                ev.preventDefault();
+                ev.stopPropagation();
+                cycleBackward(input);
                 return;
             }
             // LEARNING NOTE: preventDefault() cancels whatever the browser
-            // would normally do for this key (here, that matters less --
-            // Up in a text field has no default browser behavior to
-            // block, but it's included for safety/clarity). stopPropagation()
-            // is the important one: it stops the event from continuing on
-            // to the next phase/listener at all, which is what actually
-            // keeps GlkOte's own bubble-phase handler on the input from
-            // ever seeing this keystroke and doing its own (wrong, in this
-            // moment) thing with it.
+            // would normally do for this key (for Tab, moving keyboard focus
+            // to the next element). stopPropagation() stops the event from
+            // continuing on to the next phase/listener at all, which keeps
+            // GlkOte's own bubble-phase handler on the input from also
+            // seeing this keystroke.
             ev.preventDefault();
             ev.stopPropagation();
             if (suggestions.length === 0) {
                 refreshSuggestions();
             }
             cycleForward(input);
-            return;
-        }
-
-        if (ev.key === 'ArrowDown') {
-            if (suggestionIndex === -1) {
-                // Not browsing suggestions -- let GlkOte's own forward-
-                // history handling proceed untouched, just mirroring
-                // whatever it's about to do to its own position.
-                if (shadowHistoryPos < shadowHistory.length) {
-                    shadowHistoryPos += 1;
-                }
-                return;
-            }
-            ev.preventDefault();
-            ev.stopPropagation();
-            cycleBackward(input);
         }
     }
 
     // A real user keystroke landing in the input (not our own programmatic
     // fill) means they've deviated from whatever suggestion was showing --
-    // drop out of browsing mode so the next Up starts a fresh cycle rather
+    // drop out of browsing mode so the next Tab starts a fresh cycle rather
     // than continuing from a now-stale index. Setting .value via script
     // never fires a native "input" event, so this only ever sees genuine
     // typing/paste/cut, never our own cycleForward/cycleBackward calls.
@@ -459,9 +542,13 @@
     // stick from a one-time setup.
     function refreshInputHint() {
         var input = document.querySelector('#windowport input.Input');
-        if (input && !input.placeholder) {
-            input.placeholder = '↑ or double-tap for suggestions';
+        if (!input) {
+            return;
         }
+        var step = nextStep();
+        input.placeholder = step
+            ? 'Tab: ' + guidance(step).hint
+            : 'Tab or double-tap for suggestions';
     }
 
     // LEARNING NOTE: this needs two separate files before it can do
@@ -476,10 +563,12 @@
     // first.
     Promise.all([
         fetch('data/map.json').then(function (r) { return r.json(); }),
-        fetch('data/commands.json').then(function (r) { return r.json(); })
+        fetch('data/commands.json').then(function (r) { return r.json(); }),
+        fetch('data/walkthrough.json').then(function (r) { return r.json(); })
     ]).then(function (results) {
         mapData = results[0];
         commandsData = results[1];
+        walkthroughData = results[2];
         Object.keys(mapData.rooms).forEach(function (id) {
             nameToRoomId[mapData.rooms[id].name] = id;
         });

@@ -1,0 +1,20 @@
+{
+  "_comment": "Ordered walkthrough steps for the guided suggestions in command-suggestions.js. 'at' = room id the command has to be typed in (the player is routed there first); 'done' = ANY of: arrive (standing in that room), item (holding that item id from commands.json), text (any substring, case-insensitive, in newly printed game output). 'gate' = reaching this step proves everything before it is moot, so earlier steps are marked done too.",
+  "steps": [
+    { "id": "open-mailbox", "cmd": "open mailbox", "at": "WEST-OF-HOUSE", "why": "Check the mailbox", "done": { "text": ["Opening the small mailbox"], "item": "leaflet" } },
+    { "id": "take-leaflet", "cmd": "take leaflet", "at": "WEST-OF-HOUSE", "why": "Grab the leaflet (the game's own intro)", "done": { "item": "leaflet" } },
+    { "id": "go-south", "cmd": "south", "at": "WEST-OF-HOUSE", "why": "Walk around the house", "done": { "arrive": "SOUTH-OF-HOUSE" } },
+    { "id": "go-behind", "cmd": "east", "at": "SOUTH-OF-HOUSE", "why": "Keep going around to the back", "gate": true, "done": { "arrive": "EAST-OF-HOUSE" } },
+    { "id": "open-window", "cmd": "open window", "at": "EAST-OF-HOUSE", "why": "Open the kitchen window", "done": { "text": ["open the window far enough to allow entry"] } },
+    { "id": "enter-kitchen", "cmd": "west", "at": "EAST-OF-HOUSE", "why": "Climb in through the window", "gate": true, "done": { "arrive": "KITCHEN" } },
+    { "id": "enter-living-room", "cmd": "west", "at": "KITCHEN", "why": "Head into the living room", "gate": true, "done": { "arrive": "LIVING-ROOM" } },
+    { "id": "take-lamp", "cmd": "take lamp", "at": "LIVING-ROOM", "why": "Take the brass lantern -- you'll need light below", "done": { "item": "lamp" } },
+    { "id": "take-sword", "cmd": "take sword", "at": "LIVING-ROOM", "why": "Take the elvish sword for the troll", "done": { "item": "sword" } },
+    { "id": "move-rug", "cmd": "move rug", "at": "LIVING-ROOM", "why": "Look under the rug", "done": { "text": ["the rug is moved to one side"] } },
+    { "id": "open-trap-door", "cmd": "open trap door", "at": "LIVING-ROOM", "why": "Open the trap door", "done": { "text": ["reluctantly opens to reveal a rickety staircase"] } },
+    { "id": "lamp-on", "cmd": "turn on lamp", "at": "LIVING-ROOM", "why": "Light the lantern before going down", "done": { "text": ["lantern is now on"] } },
+    { "id": "go-cellar", "cmd": "down", "at": "LIVING-ROOM", "why": "Descend into the cellar", "gate": true, "done": { "arrive": "CELLAR" } },
+    { "id": "go-troll-room", "cmd": "north", "at": "CELLAR", "why": "Find the troll", "gate": true, "done": { "arrive": "TROLL-ROOM" } },
+    { "id": "kill-troll", "cmd": "kill troll with sword", "at": "TROLL-ROOM", "why": "Fight the troll (may take several swings -- repeat it)", "gate": true, "done": { "text": ["breathes his last breath"] } }
+  ]
+}

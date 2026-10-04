@@ -1,5 +1,7 @@
 {
   "items": {
+    "leaflet": { "match": "leaflet" },
+    "lamp": { "match": "lamp", "aliases": ["lantern"] },
     "sword": { "match": "sword" },
     "knife": { "match": "knife" },
     "wrench": { "match": "wrench" },
