@@ -53,6 +53,12 @@
         return (line.textContent || '').replace(/\s*Score:.*$/i, '').trim();
     }
 
+    function getStatusScore() {
+        var line = document.querySelector('.GridWindow .GridLine');
+        var match = line && /Score:\s*(-?\d+)/i.exec(line.textContent || '');
+        return match ? parseInt(match[1], 10) : null;
+    }
+
     // --- Persistence -----------------------------------------------------
 
     // Which steps are done survives a page reload (the game itself already
@@ -190,6 +196,38 @@
         refreshWalkthroughButtons();
     }
 
+    // For a player who went off and played on their own for a while: works
+    // out which step they've most likely got to from the room they're in and
+    // their score (see findResyncIndex), after asking first, since it can
+    // mark a lot of steps done at once.
+    function resyncWalkthrough() {
+        var score = getStatusScore();
+        var index = currentRoomId === null || score === null ? -1 : Walkthrough.findResyncIndex(steps, currentRoomId, score);
+        if (index === -1) {
+            window.alert("Couldn't match your room and score to a step in the walkthrough. Try Skip, or head back toward somewhere on the route.");
+            return;
+        }
+        var first = Walkthrough.nextStepIndex(steps, doneSteps);
+        if (index === first) {
+            window.alert('The walkthrough is already on the right step for where you are.');
+            return;
+        }
+        var effect = index > first
+            ? 'The steps before it will count as done.'
+            : 'Steps from there on will count as not done yet.';
+        var ok = window.confirm('Pick the walkthrough up at step ' + (index + 1) + ' of ' + steps.length + ' ("' + steps[index].why + '")? ' + effect);
+        if (!ok) {
+            return;
+        }
+        doneSteps = {};
+        for (var i = 0; i < index; i++) {
+            doneSteps[steps[i].id] = true;
+        }
+        saveProgress();
+        refreshSuggestions();
+        refreshInputHint();
+    }
+
     function setMode(newMode) {
         mode = newMode;
         saveMode();
@@ -216,9 +254,9 @@
                 status.textContent = 'You have reached the end of the walkthrough.';
             }
         }
-        var skipButton = document.getElementById('walkthrough-skip');
-        if (skipButton) {
-            skipButton.hidden = !step;
+        var actions = document.getElementById('walkthrough-actions');
+        if (actions) {
+            actions.hidden = mode !== 'walkthrough';
         }
     }
 
@@ -234,6 +272,10 @@
         var skipButton = document.getElementById('walkthrough-skip');
         if (skipButton) {
             skipButton.addEventListener('click', skipStep);
+        }
+        var resyncButton = document.getElementById('walkthrough-resync');
+        if (resyncButton) {
+            resyncButton.addEventListener('click', resyncWalkthrough);
         }
         refreshWalkthroughButtons();
     }

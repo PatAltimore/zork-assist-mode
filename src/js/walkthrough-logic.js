@@ -308,6 +308,26 @@
         return { held: held, placed: placed, justTaken: justTaken, justPlaced: justPlaced, record: record, observe: observe };
     }
 
+    // For a player who went off on their own: the step they've most likely
+    // got to, judged by the room they're standing in and their score (each
+    // step records the score at the moment it becomes next). Picks, among
+    // the steps typed in this room that the player's score has already
+    // reached, those with the highest such score, and the earliest of them
+    // -- so it can land a few steps before the true position (a step or two
+    // to repeat or skip) but never past it. -1 if nothing fits.
+    function findResyncIndex(steps, roomId, score) {
+        var best = -1;
+        var bestScore = -1;
+        for (var i = 0; i < steps.length; i++) {
+            var step = steps[i];
+            if (step.at === roomId && typeof step.score === 'number' && step.score <= score && step.score > bestScore) {
+                best = i;
+                bestScore = step.score;
+            }
+        }
+        return best;
+    }
+
     // Status-line room name -> map.json room id. The status line truncates
     // long names, so a unique prefix match counts too.
     function createRoomResolver(rooms) {
@@ -330,6 +350,7 @@
     }
 
     return {
+        findResyncIndex: findResyncIndex,
         createRoomResolver: createRoomResolver,
         createTracker: createTracker,
         WINDOW: WINDOW,

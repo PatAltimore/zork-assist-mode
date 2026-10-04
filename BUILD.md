@@ -99,7 +99,13 @@ with all 350 points:
 ```bash
 node tools/verify-walkthrough.js --seed 22      # one run, step by step
 node tools/verify-walkthrough.js --seeds 1-100  # which seeds play clean
+node tools/verify-walkthrough.js --resync 1     # check the page's Resync button
 ```
+
+`build-walkthrough.js` also replays the route on the first clean seed to
+record the game score at each step (`score` in the JSON), which the Resync
+button matches against the player's room and score; the `--resync` check
+confirms it never lands past the player's true position.
 
 Zork's thief and combat are random, so only some seeds play clean (roughly
 one in five), and the hints can't promise more than that: the thief may

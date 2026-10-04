@@ -1082,7 +1082,8 @@ body.theme-modern .code-links a {
 }
 
 #suggest-mode button,
-#walkthrough-skip {
+#walkthrough-skip,
+#walkthrough-resync {
   background: transparent;
   color: var(--fg-bright);
   border: 1px solid var(--border);
@@ -1102,8 +1103,15 @@ body.theme-modern .code-links a {
 }
 
 #walkthrough-skip:hover,
+#walkthrough-resync:hover,
 #suggest-mode button:hover {
   background: var(--fg-dim);
   color: var(--bg);
   text-shadow: none;
+}
+
+#walkthrough-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
 }

@@ -23,7 +23,9 @@ Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red
   (`src/data/walkthrough.json`) comes first, with a spoiler-light nudge in
   the input's placeholder text; the page works out which steps you've
   finished from the room name, what you've picked up and what the game says
-  back, and walks you back toward the right room if you wander off. **Skip**
+  back, and walks you back toward the right room if you wander off. **Resync to where I am**
+  picks the walkthrough back up if you went off on your own (it matches your
+  room and score to the route), and **Skip**
   marks a stuck step done (the thief may have stolen what it needed -- he
   is random, so no route is guaranteed). In *Suggestions* mode Tab just
   offers ideas for the current room. Progress is kept in `localStorage`.
