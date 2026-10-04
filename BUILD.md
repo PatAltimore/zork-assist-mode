@@ -77,3 +77,35 @@ One connection — the Frigid River — is entered by launching a boat (an
 action routine, not a room exit), so it has no `TO` reference in the ZIL
 source; `build-map.js` adds that one connection manually. If future edits add
 similar action-driven room changes, they'll need the same manual treatment.
+
+## The walkthrough
+
+`src/data/walkthrough.json` (the Walkthrough mode of the Tab suggestions) is
+generated from the hand-written `tools/walkthrough.src` -- one step per line,
+with the room each command is typed in, a spoiler-light hint, and how the
+page can tell the step is done (see the header of that file):
+
+```bash
+node tools/build-walkthrough.js
+```
+
+`tools/verify-walkthrough.js` replays every step against the real game --
+headlessly, through the same ifvms/Glk code the page uses (`tools/play.js`)
+-- and checks that each step becomes the "next step" at the right moment and
+is marked done by the game's reply, using the very same tracking code as the
+page (`src/js/walkthrough-logic.js`). A passing run ends on the win screen
+with all 350 points:
+
+```bash
+node tools/verify-walkthrough.js --seed 22      # one run, step by step
+node tools/verify-walkthrough.js --seeds 1-100  # which seeds play clean
+```
+
+Zork's thief and combat are random, so only some seeds play clean (roughly
+one in five), and the hints can't promise more than that: the thief may
+steal something a later step needs, which is what the **Skip** button is
+for. Anything *other* than that showing up in the verifier's output -- a
+step that isn't recognised as done, or one that's still pending when the
+next is typed -- is a bug in the data or the tracking code. `tools/play.js`
+also works on its own (`node tools/play.js "open mailbox" north`) for
+checking what the game actually says.

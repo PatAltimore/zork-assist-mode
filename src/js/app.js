@@ -4,6 +4,7 @@
     var NEW_GAME_FLAG_KEY = 'zork-assist-new-game-requested';
     var MAP_VISITED_KEY = 'zork-assist-map-visited-v1';
     var MAP_CURRENT_KEY = 'zork-assist-map-current-v1';
+    var WALKTHROUGH_KEY = 'zork-assist-walkthrough-v1';
     var FONT_SIZE_KEY = 'zork-assist-font-size-px';
     var THEME_KEY = 'zork-assist-theme';
 
@@ -456,6 +457,7 @@
                 localStorage.setItem(NEW_GAME_FLAG_KEY, '1');
                 localStorage.removeItem(MAP_VISITED_KEY);
                 localStorage.removeItem(MAP_CURRENT_KEY);
+                localStorage.removeItem(WALKTHROUGH_KEY);
             } catch (e) {
                 // Ignore -- the reload will still restart the VM fresh
                 // even if we couldn't persist the "clear autosave" flag,

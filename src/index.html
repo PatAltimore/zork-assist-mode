@@ -37,6 +37,8 @@
         <button id="font-size-increase" type="button" aria-label="Increase font size">A+</button>
       </div>
       <button id="theme-toggle" type="button">Modern</button>
+      <button id="suggest-mode-toggle" type="button" aria-pressed="true" title="What the Tab key suggests: the next walkthrough step, or just ideas for the current room">Walkthrough</button>
+      <button id="walkthrough-skip" type="button" hidden title="Mark the current walkthrough step as done">Skip</button>
       <button id="hint-toggle" type="button" aria-expanded="true" aria-controls="assist-panel">Hide Hints</button>
       <button id="keyboard-toggle" type="button" aria-pressed="false">Hide Keyboard</button>
     </div>
@@ -128,6 +130,7 @@
 <script src="js/map.js"></script>
 <script src="js/codemuseum.js"></script>
 <script src="js/tab-indicators.js"></script>
+<script src="js/walkthrough-logic.js"></script>
 <script src="js/command-suggestions.js"></script>
 <script src="js/action-log.js"></script>
 <script src="js/custom-select.js"></script>

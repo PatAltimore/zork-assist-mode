@@ -1,0 +1,387 @@
+# Source for src/data/walkthrough.json -- run `node tools/build-walkthrough.js`
+# to regenerate it, and `node tools/verify-walkthrough.js` to replay it
+# against the real game (tools/play.js) and check every step's "done"
+# condition fires.
+#
+# One step per line:   at | cmd | why | done | opts
+#   at    map.json room id the command is typed in (also used to route the
+#         player back when they wander off)
+#   cmd   exact command to type
+#   why   short, spoiler-light hint shown in the input placeholder
+#   done  alternatives separated by " || ":  arrive=ROOM  item=ID
+#         placed=ID  text=PHRASE  cmd   (see src/js/walkthrough-logic.js)
+#   opts  space separated:  gate  until=PHRASE  fight=PHRASE  (the last two
+#         only tell tools/verify-walkthrough.js to repeat the command)
+# Blank lines and lines starting with # are ignored; "## Title" lines start
+# a new chapter (used only for readability of this file).
+
+## Around the house
+WEST-OF-HOUSE | open mailbox | Start with the obvious | text=Opening the small mailbox
+WEST-OF-HOUSE | north | Take a look around the house | arrive=NORTH-OF-HOUSE
+NORTH-OF-HOUSE | north | A path leads into the trees | arrive=PATH
+PATH | up | That big tree looks climbable | arrive=UP-A-TREE
+UP-A-TREE | take egg | Something shiny up here | item=egg
+UP-A-TREE | down | Back to the ground | arrive=PATH
+PATH | south | Back toward the house | arrive=NORTH-OF-HOUSE
+NORTH-OF-HOUSE | east | Keep circling the house | arrive=EAST-OF-HOUSE
+EAST-OF-HOUSE | open window | One window is slightly ajar | text=open the window far enough
+EAST-OF-HOUSE | west | Climb in | arrive=KITCHEN | gate
+KITCHEN | take sack | The table has been used recently | cmd
+KITCHEN | open sack | See what's inside | text=Opening the brown sack
+KITCHEN | take garlic | Hold on to this for later | item=garlic
+KITCHEN | drop sack | No need to carry the rest | cmd
+KITCHEN | west | Head for the living room | arrive=LIVING-ROOM | gate
+LIVING-ROOM | take lamp | You'll want a light | item=lamp
+LIVING-ROOM | take sword | Take the sword. It might be dangerous down there. | item=sword
+LIVING-ROOM | open case | The trophy case looks expectant | text=Opened. || cmd
+LIVING-ROOM | put egg in case | Start your collection | placed=egg
+LIVING-ROOM | turn on lamp | Better light it before going somewhere dark | text=lantern is now on
+LIVING-ROOM | move rug | That rug looks out of place | text=the rug is moved to one side
+LIVING-ROOM | open trap door | What was it hiding? | text=reluctantly opens to reveal
+LIVING-ROOM | down | Time to explore below | arrive=CELLAR | gate
+CELLAR | north | Follow the passage | arrive=TROLL-ROOM | gate
+TROLL-ROOM | kill troll with sword | Something is blocking the way -- be persistent | text=troll breathes his last | until=troll breathes his last
+
+## The maze and the Cyclops
+TROLL-ROOM | west | A forbidding hole to the west | cmd
+GROUP-MAZE | south | Twisty little passages... | cmd
+GROUP-MAZE | east | Keep moving | cmd
+GROUP-MAZE | up | Something is lying about | text=A skeleton, probably the remains
+GROUP-MAZE | take coins | Only the coins -- don't be greedy | item=coins
+GROUP-MAZE | southwest | Onward | cmd
+GROUP-MAZE | east | Onward | cmd
+GROUP-MAZE | south | Onward | cmd
+GROUP-MAZE | southeast | Something big lives nearby | arrive=CYCLOPS-ROOM
+CYCLOPS-ROOM | odysseus | A good story might scare him off | text=flees the room
+CYCLOPS-ROOM | east | A new opening | arrive=STRANGE-PASSAGE
+STRANGE-PASSAGE | east | Home again | arrive=LIVING-ROOM
+LIVING-ROOM | put coins in case | Add to the collection | placed=coins
+LIVING-ROOM | open trap door | Reopen the way down | text=reluctantly opens to reveal
+LIVING-ROOM | down | Back below | arrive=CELLAR
+
+## The gallery
+CELLAR | south | There is a crawlway to the south | arrive=EAST-OF-CHASM
+EAST-OF-CHASM | east | Follow the path | arrive=GALLERY
+GALLERY | take painting | A rare chance to be a vandal | item=painting
+GALLERY | west | Back the way you came | arrive=EAST-OF-CHASM
+EAST-OF-CHASM | north | Back to the cellar | arrive=CELLAR
+CELLAR | up | Up the stairs | arrive=LIVING-ROOM
+LIVING-ROOM | put painting in case | Another one for the case | placed=painting
+LIVING-ROOM | drop sword | Travel lighter for a while | cmd
+LIVING-ROOM | drop garlic | Travel lighter for a while | cmd
+
+## The dam
+LIVING-ROOM | down | Down again | arrive=CELLAR
+CELLAR | north | North | arrive=TROLL-ROOM
+TROLL-ROOM | east | The troll no longer blocks this way | arrive=EW-PASSAGE
+EW-PASSAGE | north | Follow the stairway | arrive=CHASM-ROOM
+CHASM-ROOM | northeast | Along the chasm | arrive=RESERVOIR-SOUTH
+RESERVOIR-SOUTH | east | Toward the sound of water | arrive=DAM-ROOM
+DAM-ROOM | north | Visit the dam's offices | arrive=DAM-LOBBY
+DAM-LOBBY | take matchbook | Small things can matter later | item=matchbook
+DAM-LOBBY | north | Poke around the back rooms | arrive=MAINTENANCE-ROOM
+MAINTENANCE-ROOM | take wrench | Tools might come in handy | item=wrench
+MAINTENANCE-ROOM | take screwdriver | Another tool | item=screwdriver
+MAINTENANCE-ROOM | push yellow button | Colored buttons are tempting | text=Click.
+MAINTENANCE-ROOM | south | Back out | arrive=DAM-LOBBY
+DAM-LOBBY | south | Back to the dam | arrive=DAM-ROOM
+DAM-ROOM | south | A canyon to the south | arrive=DEEP-CANYON
+DEEP-CANYON | down | A stairway leads down | arrive=LOUD-ROOM
+LOUD-ROOM | echo | Try raising your voice | text=acoustics of the room change
+LOUD-ROOM | take bar | Something heavy and valuable | item=bar
+LOUD-ROOM | up | Back up the stairs | arrive=DEEP-CANYON
+DEEP-CANYON | east | Back to the dam | arrive=DAM-ROOM
+DAM-ROOM | turn bolt with wrench | That bolt looks turnable | text=sluice gates open
+DAM-ROOM | drop wrench | You won't need this again | cmd
+DAM-ROOM | west | See what changed | arrive=RESERVOIR-SOUTH
+RESERVOIR-SOUTH | wait | Patience -- water takes time to drain | text=water level is now quite low | until=water level is now quite low
+RESERVOIR-SOUTH | north | Cross the old lakebed | arrive=RESERVOIR
+RESERVOIR | take trunk | Half buried in the mud | item=trunk
+RESERVOIR | south | Time to head home | arrive=RESERVOIR-SOUTH
+RESERVOIR-SOUTH | southwest | Back along the chasm | arrive=CHASM-ROOM
+CHASM-ROOM | southwest | Keep going | arrive=EW-PASSAGE
+EW-PASSAGE | west | Toward the cellar | arrive=TROLL-ROOM
+TROLL-ROOM | south | Almost home | arrive=CELLAR
+CELLAR | up | Up to the house | arrive=LIVING-ROOM
+LIVING-ROOM | put bar in case | More for the case | placed=bar
+LIVING-ROOM | put trunk in case | More for the case | placed=trunk
+LIVING-ROOM | drop screwdriver | Leave the tools here for now | cmd
+
+## The dome, the temple and the gates of Hades
+LIVING-ROOM | east | Fetch something from upstairs | arrive=KITCHEN
+KITCHEN | up | The attic stairs | arrive=ATTIC
+ATTIC | take rope | A coil of rope | item=rope
+ATTIC | down | Back downstairs | arrive=KITCHEN
+KITCHEN | west | Back to the living room | arrive=LIVING-ROOM
+LIVING-ROOM | down | Down again | arrive=CELLAR
+CELLAR | north | North | arrive=TROLL-ROOM
+TROLL-ROOM | east | East | arrive=EW-PASSAGE
+EW-PASSAGE | east | A round room with many exits | arrive=ROUND-ROOM
+ROUND-ROOM | southeast | Try the southeast passage | arrive=ENGRAVINGS-CAVE
+ENGRAVINGS-CAVE | east | Keep going east | arrive=DOME-ROOM
+DOME-ROOM | tie rope to railing | That railing looks sturdy | text=rope drops over the side
+DOME-ROOM | down | See where the rope leads | arrive=TORCH-ROOM
+TORCH-ROOM | take torch | A light that never fails | item=torch
+TORCH-ROOM | south | Find the temple | arrive=NORTH-TEMPLE
+NORTH-TEMPLE | take bell | A brass bell | item=bell
+NORTH-TEMPLE | south | The south end of the temple | arrive=SOUTH-TEMPLE
+SOUTH-TEMPLE | take candles | These might come in handy | item=candles
+SOUTH-TEMPLE | take book | So might this | item=book
+SOUTH-TEMPLE | down | A hole in the floor | arrive=GROUP-CAVE
+GROUP-CAVE | north | A mirror room lies north | arrive=GROUP-MIRROR-ROOM
+GROUP-MIRROR-ROOM | east | Another cave | arrive=GROUP-CAVE
+GROUP-CAVE | down | A dark, forbidding staircase | arrive=ENTRANCE-TO-HADES
+ENTRANCE-TO-HADES | ring bell | Make some noise | text=red hot
+ENTRANCE-TO-HADES | take candles | Quickly -- they dropped | cmd
+ENTRANCE-TO-HADES | light match | You'll need a flame | text=One of the matches starts to burn
+ENTRANCE-TO-HADES | light candles with match | Before the match goes out | text=candles are lit
+ENTRANCE-TO-HADES | read book | Say the right words | text=Begone, fiends
+ENTRANCE-TO-HADES | south | The way is open now | arrive=LAND-OF-LIVING-DEAD
+LAND-OF-LIVING-DEAD | take skull | A grinning prize | item=skull
+LAND-OF-LIVING-DEAD | drop book | No longer needed | cmd
+LAND-OF-LIVING-DEAD | drop candles | No longer needed | cmd
+LAND-OF-LIVING-DEAD | north | Back out | arrive=ENTRANCE-TO-HADES
+ENTRANCE-TO-HADES | up | Back up | arrive=GROUP-CAVE
+GROUP-CAVE | north | North | arrive=GROUP-MIRROR-ROOM
+GROUP-MIRROR-ROOM | north | Another way north | arrive=NARROW-PASSAGE
+NARROW-PASSAGE | north | Back to the round room | arrive=ROUND-ROOM
+ROUND-ROOM | west | Head for home | arrive=EW-PASSAGE
+EW-PASSAGE | west | West | arrive=TROLL-ROOM
+TROLL-ROOM | south | South | arrive=CELLAR
+CELLAR | up | Up to the house | arrive=LIVING-ROOM
+LIVING-ROOM | put skull in case | Now for the skull | placed=skull
+
+## The coffin and the rainbow
+LIVING-ROOM | down | Back below | arrive=CELLAR
+CELLAR | north | North | arrive=TROLL-ROOM
+TROLL-ROOM | east | East | arrive=EW-PASSAGE
+EW-PASSAGE | east | East | arrive=ROUND-ROOM
+ROUND-ROOM | southeast | Southeast | arrive=ENGRAVINGS-CAVE
+ENGRAVINGS-CAVE | east | East | arrive=DOME-ROOM
+DOME-ROOM | down | Down the rope | arrive=TORCH-ROOM
+TORCH-ROOM | south | South | arrive=NORTH-TEMPLE
+NORTH-TEMPLE | east | An Egyptian-looking room | arrive=EGYPT-ROOM
+EGYPT-ROOM | take coffin | Something large and golden | item=coffin
+EGYPT-ROOM | open coffin | Look inside | text=gold coffin opens
+EGYPT-ROOM | take sceptre | A royal accessory | item=sceptre
+EGYPT-ROOM | west | Back to the temple | arrive=NORTH-TEMPLE
+NORTH-TEMPLE | south | To the altar | arrive=SOUTH-TEMPLE
+SOUTH-TEMPLE | pray | An altar is a good place for it | arrive=GROUP-FOREST
+GROUP-FOREST | east | Find your way back to the house | arrive=PATH
+PATH | south | South | arrive=NORTH-OF-HOUSE
+NORTH-OF-HOUSE | east | East | arrive=EAST-OF-HOUSE
+EAST-OF-HOUSE | west | Through the window | arrive=KITCHEN
+KITCHEN | west | Into the living room | arrive=LIVING-ROOM
+LIVING-ROOM | put coffin in case | A big one for the case | placed=coffin
+LIVING-ROOM | turn off lamp | It's daylight outside -- save the battery | text=lantern is now off
+LIVING-ROOM | east | Outdoors again | arrive=KITCHEN
+KITCHEN | east | Out the window | arrive=EAST-OF-HOUSE
+EAST-OF-HOUSE | east | Into the clearing | arrive=GROUP-CLEARING
+GROUP-CLEARING | east | Toward the canyon | arrive=CANYON-VIEW
+CANYON-VIEW | down | Climb down | arrive=CLIFF-MIDDLE
+CLIFF-MIDDLE | down | Keep climbing down | arrive=CANYON-BOTTOM
+CANYON-BOTTOM | north | A colorful sight | arrive=END-OF-RAINBOW
+END-OF-RAINBOW | wave sceptre | Perhaps a royal gesture? | text=rainbow appears to become solid
+END-OF-RAINBOW | take pot of gold | Every rainbow has one | item=gold
+END-OF-RAINBOW | southwest | Back the way you came | arrive=CANYON-BOTTOM
+CANYON-BOTTOM | up | Climb | arrive=CLIFF-MIDDLE
+CLIFF-MIDDLE | up | Climb | arrive=CANYON-VIEW
+CANYON-VIEW | northwest | Back to the clearing | arrive=GROUP-CLEARING
+GROUP-CLEARING | west | Back toward the house | arrive=EAST-OF-HOUSE
+EAST-OF-HOUSE | west | In through the window | arrive=KITCHEN
+KITCHEN | west | Living room | arrive=LIVING-ROOM
+LIVING-ROOM | put pot of gold in case | Deposit it | placed=gold
+LIVING-ROOM | put sceptre in case | Deposit it | placed=sceptre
+LIVING-ROOM | put torch in case | Deposit it | placed=torch
+
+## The river
+LIVING-ROOM | turn on lamp | It's dark below | text=lantern is now on
+LIVING-ROOM | down | Down again | arrive=CELLAR
+CELLAR | north | North | arrive=TROLL-ROOM
+TROLL-ROOM | east | East | arrive=EW-PASSAGE
+EW-PASSAGE | north | North | arrive=CHASM-ROOM
+CHASM-ROOM | northeast | Northeast | arrive=RESERVOIR-SOUTH
+RESERVOIR-SOUTH | north | Across the dry lakebed | arrive=RESERVOIR
+RESERVOIR | north | North shore | arrive=RESERVOIR-NORTH
+RESERVOIR-NORTH | take pump | Something to blow air with | item=pump
+RESERVOIR-NORTH | south | Back south | arrive=RESERVOIR
+RESERVOIR | south | Back south | arrive=RESERVOIR-SOUTH
+RESERVOIR-SOUTH | east | Back to the dam | arrive=DAM-ROOM
+DAM-ROOM | down | A scramble down | arrive=DAM-BASE
+DAM-BASE | inflate plastic with pump | That folded plastic has a valve | text=boat inflates
+DAM-BASE | board boat | All aboard | text=now in the magic boat
+DAM-BASE | launch | Cast off | arrive=GROUP-FRIGID-RIVER
+GROUP-FRIGID-RIVER | wait | Let the river carry you -- stop when something bobs by | text=red buoy | until=red buoy
+GROUP-FRIGID-RIVER | take buoy | Grab it quickly | item=buoy
+GROUP-FRIGID-RIVER | east | Land on the east shore, quickly | arrive=SANDY-BEACH
+SANDY-BEACH | open buoy | What's inside? | text=reveals a large emerald
+SANDY-BEACH | take emerald | Pretty | item=emerald
+SANDY-BEACH | take shovel | Something to dig with | item=shovel
+SANDY-BEACH | get out of boat | Step ashore | text=on your own feet
+SANDY-BEACH | northeast | A passage buried in sand | arrive=SANDY-CAVE
+SANDY-CAVE | dig sand with shovel | Dig -- it may take a few tries | text=scarab here in the sand | until=scarab here
+SANDY-CAVE | take scarab | Found something | item=scarab
+SANDY-CAVE | southwest | Back out | arrive=SANDY-BEACH
+SANDY-BEACH | south | Follow the river path | arrive=SHORE
+SHORE | south | Keep going | arrive=ARAGAIN-FALLS
+ARAGAIN-FALLS | west | Is that solid now? | arrive=ON-RAINBOW
+ON-RAINBOW | west | Cross it | arrive=END-OF-RAINBOW
+END-OF-RAINBOW | southwest | Down the canyon | arrive=CANYON-BOTTOM
+CANYON-BOTTOM | up | Climb | arrive=CLIFF-MIDDLE
+CLIFF-MIDDLE | up | Climb | arrive=CANYON-VIEW
+CANYON-VIEW | northwest | Back to the clearing | arrive=GROUP-CLEARING
+GROUP-CLEARING | west | Toward the house | arrive=EAST-OF-HOUSE
+EAST-OF-HOUSE | west | Through the window | arrive=KITCHEN
+KITCHEN | west | Living room | arrive=LIVING-ROOM
+LIVING-ROOM | put scarab in case | Deposit it | placed=scarab
+LIVING-ROOM | put emerald in case | Deposit it | placed=emerald
+LIVING-ROOM | drop shovel | Done with this | cmd
+LIVING-ROOM | drop buoy | Done with this | cmd
+LIVING-ROOM | drop pump | Done with this | cmd
+
+## The coal mine
+LIVING-ROOM | take screwdriver | You left it here earlier | item=screwdriver
+LIVING-ROOM | take garlic | Pick it up again | item=garlic
+LIVING-ROOM | take torch | Take the torch out of the case for a while | item=torch
+LIVING-ROOM | down | Down | arrive=CELLAR
+CELLAR | north | North | arrive=TROLL-ROOM
+TROLL-ROOM | east | East | arrive=EW-PASSAGE
+EW-PASSAGE | north | North | arrive=CHASM-ROOM
+CHASM-ROOM | northeast | Northeast | arrive=RESERVOIR-SOUTH
+RESERVOIR-SOUTH | north | North | arrive=RESERVOIR
+RESERVOIR | north | North | arrive=RESERVOIR-NORTH
+RESERVOIR-NORTH | north | The ancient room | arrive=ATLANTIS-ROOM
+ATLANTIS-ROOM | take trident | Poseidon won't mind | item=trident
+ATLANTIS-ROOM | up | A staircase leads up | arrive=GROUP-CAVE
+GROUP-CAVE | north | North | arrive=GROUP-MIRROR-ROOM
+GROUP-MIRROR-ROOM | north | North | arrive=COLD-PASSAGE
+COLD-PASSAGE | west | West | arrive=SLIDE-ROOM
+SLIDE-ROOM | north | A small opening | arrive=MINE-ENTRANCE
+MINE-ENTRANCE | in | Into the mine | arrive=SQUEEKY-ROOM
+SQUEEKY-ROOM | north | Something is squeaking | arrive=BAT-ROOM
+BAT-ROOM | drop trident | Safe to leave things in this room for now | cmd
+BAT-ROOM | east | East | arrive=SHAFT-ROOM
+SHAFT-ROOM | put torch in basket | The next room is dangerous with an open flame | cmd
+SHAFT-ROOM | north | North | arrive=SMELLY-ROOM
+SMELLY-ROOM | down | Down the stairs | arrive=GAS-ROOM
+GAS-ROOM | east | A narrow tunnel | arrive=GROUP-COAL-MINE
+GROUP-COAL-MINE | northeast | Wander the mine | cmd
+GROUP-COAL-MINE | southeast | Wander the mine | cmd
+GROUP-COAL-MINE | southwest | Wander the mine | cmd
+GROUP-COAL-MINE | down | Climb down | arrive=LADDER-TOP
+LADDER-TOP | down | Keep climbing | arrive=LADDER-BOTTOM
+LADDER-BOTTOM | south | A dead end | arrive=GROUP-DEAD-END
+GROUP-DEAD-END | take coal | Black and dusty | item=coal
+GROUP-DEAD-END | north | Back | arrive=LADDER-BOTTOM
+LADDER-BOTTOM | up | Climb | arrive=LADDER-TOP
+LADDER-TOP | up | Climb | arrive=GROUP-COAL-MINE
+GROUP-COAL-MINE | north | Retrace your steps | cmd
+GROUP-COAL-MINE | east | Retrace your steps | cmd
+GROUP-COAL-MINE | south | Retrace your steps | cmd
+GROUP-COAL-MINE | north | Back to the gas room | arrive=GAS-ROOM
+GAS-ROOM | up | Up the stairs | arrive=SMELLY-ROOM
+SMELLY-ROOM | south | Back to the shaft room | arrive=SHAFT-ROOM
+SHAFT-ROOM | put coal in basket | That basket goes somewhere | cmd
+SHAFT-ROOM | put screwdriver in basket | That basket goes somewhere | cmd
+SHAFT-ROOM | lower basket | Send it down | text=basket is lowered
+SHAFT-ROOM | north | The long way around | arrive=SMELLY-ROOM
+SMELLY-ROOM | down | Down | arrive=GAS-ROOM
+GAS-ROOM | east | East | arrive=GROUP-COAL-MINE
+GROUP-COAL-MINE | northeast | Through the mine again | cmd
+GROUP-COAL-MINE | southeast | Through the mine again | cmd
+GROUP-COAL-MINE | southwest | Through the mine again | cmd
+GROUP-COAL-MINE | down | Down | arrive=LADDER-TOP
+LADDER-TOP | down | Down | arrive=LADDER-BOTTOM
+LADDER-BOTTOM | west | A narrow, drafty passage | arrive=TIMBER-ROOM
+TIMBER-ROOM | drop lamp | It won't fit through where you're going | cmd
+TIMBER-ROOM | west | Squeeze through | arrive=LOWER-SHAFT
+LOWER-SHAFT | take torch | Look in the basket | item=torch
+LOWER-SHAFT | take coal | Look in the basket | item=coal
+LOWER-SHAFT | take screwdriver | Look in the basket | item=screwdriver
+LOWER-SHAFT | south | The machine room | arrive=MACHINE-ROOM
+MACHINE-ROOM | open lid | A strange machine | text=The lid opens.
+MACHINE-ROOM | put coal in machine | Feed it | cmd
+MACHINE-ROOM | close lid | Shut it | text=The lid closes
+MACHINE-ROOM | turn switch with screwdriver | Flip the tiny switch | text=machine comes to life
+MACHINE-ROOM | open lid | See what came out | text=The lid opens, revealing
+MACHINE-ROOM | take diamond | A beautiful result | item=diamond
+MACHINE-ROOM | north | Back out | arrive=LOWER-SHAFT
+LOWER-SHAFT | put diamond in basket | Send it up | cmd
+LOWER-SHAFT | put torch in basket | Send it up | cmd
+LOWER-SHAFT | put screwdriver in basket | Send it up | cmd
+LOWER-SHAFT | raise basket | Pull the chain | text=raised to the top
+LOWER-SHAFT | east | Back out | arrive=TIMBER-ROOM
+TIMBER-ROOM | take lamp | Pick it back up | item=lamp
+TIMBER-ROOM | east | East | arrive=LADDER-BOTTOM
+LADDER-BOTTOM | up | Climb | arrive=LADDER-TOP
+LADDER-TOP | up | Climb | arrive=GROUP-COAL-MINE
+GROUP-COAL-MINE | north | Retrace your steps | cmd
+GROUP-COAL-MINE | east | Retrace your steps | cmd
+GROUP-COAL-MINE | south | Retrace your steps | cmd
+GROUP-COAL-MINE | north | North | arrive=GAS-ROOM
+GAS-ROOM | take bracelet | Something sparkles here | item=bracelet
+GAS-ROOM | up | Up | arrive=SMELLY-ROOM
+SMELLY-ROOM | south | South | arrive=SHAFT-ROOM
+SHAFT-ROOM | take diamond | Collect everything | item=diamond
+SHAFT-ROOM | take torch | Collect everything | item=torch
+SHAFT-ROOM | west | Back toward daylight | arrive=BAT-ROOM
+BAT-ROOM | take jade | Don't mind the bat | item=jade
+BAT-ROOM | take trident | Pick up what you left | item=trident
+BAT-ROOM | south | South | arrive=SQUEEKY-ROOM
+SQUEEKY-ROOM | east | East | arrive=MINE-ENTRANCE
+MINE-ENTRANCE | south | South | arrive=SLIDE-ROOM
+SLIDE-ROOM | down | Ride the slide | arrive=CELLAR
+CELLAR | up | Up to the house | arrive=LIVING-ROOM
+LIVING-ROOM | put jade in case | Deposit it | placed=jade
+LIVING-ROOM | put bracelet in case | Deposit it | placed=bracelet
+LIVING-ROOM | put trident in case | Deposit it | placed=trident
+LIVING-ROOM | put diamond in case | Deposit it | placed=diamond
+LIVING-ROOM | put torch in case | Deposit it | placed=torch
+
+## The thief
+LIVING-ROOM | take egg | Take back the egg -- someone may want it | item=egg
+LIVING-ROOM | take sword | You may need a fight | item=sword
+LIVING-ROOM | west | West | arrive=STRANGE-PASSAGE
+STRANGE-PASSAGE | west | West | arrive=CYCLOPS-ROOM
+CYCLOPS-ROOM | up | The staircase the cyclops guarded | arrive=TREASURE-ROOM
+TREASURE-ROOM | give egg to thief | A generous gesture | text=stops to admire
+TREASURE-ROOM | down | Step out for a moment | arrive=CYCLOPS-ROOM
+CYCLOPS-ROOM | east | Retreat somewhere safe | arrive=STRANGE-PASSAGE
+STRANGE-PASSAGE | east | Retreat somewhere safe | arrive=LIVING-ROOM
+LIVING-ROOM | wait | Give him a little time | cmd
+LIVING-ROOM | wait | Give him a little time | cmd
+LIVING-ROOM | wait | Give him a little time | cmd
+LIVING-ROOM | west | Go back | arrive=STRANGE-PASSAGE
+STRANGE-PASSAGE | west | Go back | arrive=CYCLOPS-ROOM
+CYCLOPS-ROOM | up | Go back in | arrive=TREASURE-ROOM
+TREASURE-ROOM | kill thief with sword | Time to end this -- retake the sword if he knocks it away | text=thief breathes his last | fight=thief breathes his last
+TREASURE-ROOM | drop sword | You're carrying too much | cmd
+TREASURE-ROOM | take egg | The egg is open now | item=egg
+TREASURE-ROOM | take chalice | Safe to take now | item=chalice
+TREASURE-ROOM | down | Leave | arrive=CYCLOPS-ROOM
+CYCLOPS-ROOM | east | East | arrive=STRANGE-PASSAGE
+STRANGE-PASSAGE | east | East | arrive=LIVING-ROOM
+LIVING-ROOM | put chalice in case | Deposit it | placed=chalice
+LIVING-ROOM | put egg in case | Deposit it | placed=egg
+LIVING-ROOM | take canary | Something was inside the egg | item=canary
+LIVING-ROOM | east | Outdoors one more time | arrive=KITCHEN
+KITCHEN | east | East | arrive=EAST-OF-HOUSE
+EAST-OF-HOUSE | north | North | arrive=NORTH-OF-HOUSE
+NORTH-OF-HOUSE | north | Into the woods | arrive=PATH
+PATH | wind canary | Does it have a song to sing? | text=beautiful brass bauble
+PATH | take bauble | A shiny reward | item=bauble
+PATH | south | South | arrive=NORTH-OF-HOUSE
+NORTH-OF-HOUSE | east | East | arrive=EAST-OF-HOUSE
+EAST-OF-HOUSE | west | West | arrive=KITCHEN
+KITCHEN | west | West | arrive=LIVING-ROOM
+LIVING-ROOM | put canary in case | Deposit it | placed=canary
+LIVING-ROOM | put bauble in case | Deposit it | placed=bauble
+
+## The final secret
+LIVING-ROOM | take map | Something new appeared in the case | item=map
+LIVING-ROOM | east | Outdoors | arrive=KITCHEN
+KITCHEN | east | East | arrive=EAST-OF-HOUSE
+EAST-OF-HOUSE | north | North | arrive=NORTH-OF-HOUSE
+NORTH-OF-HOUSE | west | West | arrive=WEST-OF-HOUSE
+WEST-OF-HOUSE | southwest | A secret path | arrive=STONE-BARROW
+STONE-BARROW | in | The end -- or the beginning | text=completed a great and perilous

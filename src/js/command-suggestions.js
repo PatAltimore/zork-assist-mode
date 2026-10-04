@@ -1,58 +1,49 @@
 (function () {
     'use strict';
 
-    // Suggests commands worth trying right now -- a mix of genuinely useful
-    // ones for whatever puzzle the current room represents, and a few that
-    // just show off the game's own sense of humor -- cycled into the input
-    // box with Tab (Shift+Tab goes back) or a double-tap. Tracks room and
-    // inventory independently via their own passive observation, the same
-    // pattern map.js/codemuseum.js/tab-indicators.js each already use, since
-    // none of these files share a module system to hook into each other
-    // directly.
+    // Suggests commands, cycled into the input box with Tab (Shift+Tab goes
+    // back) or a double-tap. Two modes, switched with the header's
+    // "Tab: ..." button:
+    //
+    //  - Walkthrough: the next step of data/walkthrough.json comes first --
+    //    the game has no on-screen checklist, so progress is worked out from
+    //    what the page can already see (the room name, what's been picked
+    //    up, distinctive text in the game's replies). See walkthrough-logic.js,
+    //    which this file and tools/verify-walkthrough.js share.
+    //  - Hints: just ideas for the current room -- a mix of genuinely useful
+    //    commands for whatever puzzle it holds and a few that show off the
+    //    game's own sense of humor.
+    //
+    // Either way, room and inventory are tracked via passive observation of
+    // the page, the same pattern map.js/codemuseum.js/tab-indicators.js each
+    // already use, since none of these files share a module system to hook
+    // into each other directly.
     //
     // Up/Down are deliberately left alone: they belong to GlkOte's own
     // command history (vendor/glkote.js, win.history/historypos).
 
+    var Walkthrough = window.ZorkWalkthrough;
+
+    var STORAGE_KEY_PROGRESS = 'zork-assist-walkthrough-v1';
+    var STORAGE_KEY_MODE = 'zork-assist-suggest-mode';
+
     var mapData = null;
-    var commandsData = null; // { items: {id: {match, aliases?}}, general: [...], byRoom: {...} }
-    var walkthroughData = null; // { steps: [{id, cmd, at, why, gate?, done: {arrive?, item?, text?}}] }
-    var doneSteps = {}; // step id -> true; sticky, so undo/dropping never un-completes a step
-    var nameToRoomId = {};
+    var commandsData = null; // { items: {id: {match, aliases?, inv?}}, general: [...], byRoom: {...} }
+    var steps = []; // data/walkthrough.json's steps
+    var resolveRoomId = null;
+    var tracker = null; // what's held / put in the trophy case
 
     var currentRoomId = null;
-    var heldItems = new Set();
+    var mode = 'walkthrough'; // or 'hints'
+
+    var doneSteps = {}; // step id -> true; sticky, so undo/dropping never un-completes a step
+    // Commands typed since the last check, for steps that can only be
+    // recognized by what was typed (see walkthrough-logic.js's "cmd").
+    var submitted = [];
 
     var suggestions = [];
     var suggestionIndex = -1; // -1 = not currently browsing a suggestion
     var lastProgrammaticValue = null;
-
-    // What recently-submitted commands were trying to do, so the next bit
-    // of game output can be checked for whether each actually worked --
-    // see recordPendingAction / checkPendingAction. A queue, not a single
-    // slot: checkPendingAction only runs on the debounced MutationObserver
-    // callback, which can lag behind real typing -- most dramatically right
-    // after this tab returns from being backgrounded (browsers throttle a
-    // hidden tab's timers), where a single-slot design was confirmed live
-    // to lose an action entirely (a second command typed before the first
-    // was ever checked silently overwrote it). Capped and aged out in
-    // checkPendingAction so a typo or a command that never succeeds
-    // doesn't sit around ready to falsely match some unrelated later text.
-    var pendingActions = []; // [{ type: 'take'|'drop'|'inventory', item?: id, age }]
-    var MAX_PENDING = 5;
-    var MAX_PENDING_AGE = 3;
-
-    function resolveRoomId(name) {
-        if (!name) {
-            return null;
-        }
-        if (nameToRoomId[name]) {
-            return nameToRoomId[name];
-        }
-        var candidates = Object.keys(nameToRoomId).filter(function (fullName) {
-            return fullName.indexOf(name) === 0;
-        });
-        return candidates.length === 1 ? nameToRoomId[candidates[0]] : null;
-    }
 
     function getStatusRoomName() {
         var line = document.querySelector('.GridWindow .GridLine');
@@ -62,26 +53,59 @@
         return (line.textContent || '').replace(/\s*Score:.*$/i, '').trim();
     }
 
-    // --- Walkthrough ----------------------------------------------------
-    //
-    // data/walkthrough.json is an ordered list of steps. The "next" step is
-    // the first one not yet done; it's offered first in the Tab cycle (and
-    // named in the input's placeholder). There's no way to read the game's
-    // own state, so each step declares how to recognize it's done from
-    // what this file can already see: standing in a room, holding an item,
-    // or distinctive text in the game's output (see stepDone).
+    // --- Persistence -----------------------------------------------------
+
+    // Which steps are done survives a page reload (the game itself already
+    // autosaves, so the walkthrough shouldn't start over from step one).
+    // Cleared by app.js's New Game button.
+    function saveProgress() {
+        try {
+            localStorage.setItem(STORAGE_KEY_PROGRESS, JSON.stringify({ n: steps.length, done: Object.keys(doneSteps) }));
+        } catch (e) {
+            // Storage unavailable (private browsing...) -- progress just
+            // won't outlive this page load.
+        }
+    }
+
+    function loadProgress() {
+        try {
+            var saved = JSON.parse(localStorage.getItem(STORAGE_KEY_PROGRESS));
+            // A different step count means walkthrough.json was edited since
+            // this was saved, so the saved ids no longer line up.
+            if (saved && saved.n === steps.length) {
+                saved.done.forEach(function (id) { doneSteps[id] = true; });
+            }
+        } catch (e) {
+            // Missing or corrupt -- start from the beginning.
+        }
+    }
+
+    function loadMode() {
+        try {
+            if (localStorage.getItem(STORAGE_KEY_MODE) === 'hints') {
+                mode = 'hints';
+            }
+        } catch (e) {
+            // Default stays.
+        }
+    }
+
+    function saveMode() {
+        try {
+            localStorage.setItem(STORAGE_KEY_MODE, mode);
+        } catch (e) {
+            // Not persisted.
+        }
+    }
+
+    // --- Walkthrough -----------------------------------------------------
 
     function nextStep() {
-        if (!walkthroughData) {
+        if (mode !== 'walkthrough') {
             return null;
         }
-        var steps = walkthroughData.steps;
-        for (var i = 0; i < steps.length; i++) {
-            if (!doneSteps[steps[i].id]) {
-                return steps[i];
-            }
-        }
-        return null;
+        var i = Walkthrough.nextStepIndex(steps, doneSteps);
+        return i === -1 ? null : steps[i];
     }
 
     // First move of the shortest route from one room to another, using
@@ -126,52 +150,84 @@
         return { cmd: move, hint: 'head to ' + mapData.rooms[step.at].name + ' (' + step.why + ')' };
     }
 
-    function stepDone(step, freshText) {
-        var done = step.done;
-        if (done.arrive && done.arrive === currentRoomId) {
-            return true;
-        }
-        if (done.item && heldItems.has(done.item)) {
-            return true;
-        }
-        if (done.text && freshText) {
-            var lower = freshText.toLowerCase();
-            return done.text.some(function (t) { return lower.indexOf(t.toLowerCase()) !== -1; });
-        }
-        return false;
-    }
-
-    function updateWalkthrough(freshText) {
-        if (!walkthroughData) {
+    // Called after each debounced check of the page. roomChanged: whether
+    // the room differs from the previous check.
+    function updateWalkthrough(freshText, roomChanged) {
+        var typed = submitted;
+        submitted = [];
+        if (!steps.length) {
             return;
         }
-        var steps = walkthroughData.steps;
-        var changed = false;
-        steps.forEach(function (step, i) {
-            if (doneSteps[step.id] || !stepDone(step, freshText)) {
-                return;
-            }
-            doneSteps[step.id] = true;
-            changed = true;
-            if (step.gate) {
-                // A gate proves everything before it is moot (e.g. you
-                // can't be in the kitchen without having opened the
-                // window), even if we never saw those steps happen.
-                for (var j = 0; j < i; j++) {
-                    doneSteps[steps[j].id] = true;
-                }
-            }
-        });
-        if (changed) {
+        var ctx = {
+            roomId: currentRoomId,
+            roomChanged: roomChanged,
+            heldItems: tracker.held,
+            placedItems: tracker.placed,
+            justTaken: tracker.justTaken,
+            justPlaced: tracker.justPlaced,
+            freshText: freshText,
+            submitted: typed
+        };
+        if (Walkthrough.advance(steps, doneSteps, ctx)) {
+            saveProgress();
             refreshSuggestions();
             refreshInputHint();
+            refreshWalkthroughButtons();
         }
     }
 
-    // The list to cycle through for right now: the walkthrough's next step
-    // first, then whatever's tagged for this room (filtered to only the
-    // item-gated ones we're confident about -- no item tag at all means
-    // always show it), then the general pool. Capped well short of
+    // For when a step can't be recognized as done -- the thief stole the
+    // thing it needed, say -- or the player simply wants to move on.
+    function skipStep() {
+        var i = Walkthrough.nextStepIndex(steps, doneSteps);
+        if (i === -1) {
+            return;
+        }
+        doneSteps[steps[i].id] = true;
+        saveProgress();
+        refreshSuggestions();
+        refreshInputHint();
+        refreshWalkthroughButtons();
+    }
+
+    function setMode(newMode) {
+        mode = newMode;
+        saveMode();
+        refreshSuggestions();
+        refreshInputHint();
+        refreshWalkthroughButtons();
+    }
+
+    function refreshWalkthroughButtons() {
+        var modeButton = document.getElementById('suggest-mode-toggle');
+        if (modeButton) {
+            modeButton.textContent = mode === 'walkthrough' ? 'Walkthrough' : 'Hints';
+            modeButton.setAttribute('aria-pressed', mode === 'walkthrough' ? 'true' : 'false');
+        }
+        var skipButton = document.getElementById('walkthrough-skip');
+        if (skipButton) {
+            skipButton.hidden = !nextStep();
+        }
+    }
+
+    function initWalkthroughButtons() {
+        var modeButton = document.getElementById('suggest-mode-toggle');
+        if (modeButton) {
+            modeButton.addEventListener('click', function () {
+                setMode(mode === 'walkthrough' ? 'hints' : 'walkthrough');
+            });
+        }
+        var skipButton = document.getElementById('walkthrough-skip');
+        if (skipButton) {
+            skipButton.addEventListener('click', skipStep);
+        }
+        refreshWalkthroughButtons();
+    }
+
+    // The list to cycle through for right now: in walkthrough mode, the
+    // next step first; then whatever's tagged for this room (filtered to
+    // only the item-gated ones we're confident about -- no item tag at all
+    // means always show it), then the general pool. Capped well short of
     // exhausting; this is a quick handful of ideas.
     var MAX_SUGGESTIONS = 8;
 
@@ -183,7 +239,7 @@
         }
         var roomEntries = (currentRoomId && commandsData.byRoom[currentRoomId]) || [];
         roomEntries.forEach(function (entry) {
-            if (entry.item && !heldItems.has(entry.item)) {
+            if (entry.item && !tracker.held.has(entry.item)) {
                 return;
             }
             if (list.indexOf(entry.cmd) === -1) {
@@ -239,138 +295,18 @@
         return true;
     }
 
-    // --- Inventory tracking -------------------------------------------
-
-    function itemWords(id) {
-        var item = commandsData.items[id];
-        return [item.match].concat(item.aliases || []);
-    }
-
-    function matchItem(word) {
-        var ids = Object.keys(commandsData.items);
-        for (var i = 0; i < ids.length; i++) {
-            if (itemWords(ids[i]).indexOf(word) !== -1) {
-                return ids[i];
-            }
-        }
-        return null;
-    }
-
-    var TAKE_VERBS = ['take', 'get', 'grab', 'pick up', 'carry'];
-    var DROP_VERBS = ['drop', 'put down', 'discard'];
-
-    // Best-effort parse of a just-submitted command line into "this might
-    // change whether we're holding a tracked item" -- confirmed (or not)
-    // against the game's own next response in checkPendingAction, never
-    // assumed just because the command was typed (it might fail: wrong
-    // room, over capacity, not actually present...).
-    function pushPendingAction(action) {
-        action.age = 0;
-        pendingActions.push(action);
-        if (pendingActions.length > MAX_PENDING) {
-            pendingActions.shift();
-        }
-    }
-
-    function recordPendingAction(raw) {
-        var text = raw.trim().toLowerCase().replace(/[.,!]+$/, '');
-        if (text === 'inventory' || text === 'i') {
-            pushPendingAction({ type: 'inventory' });
-            return;
-        }
-        var words = text.split(/\s+/);
-        var verb = words[0];
-        var rest = words.slice(1).join(' ');
-        // "put down X" / "pick up X" -- two-word verbs.
-        if (words.length > 1 && (verb === 'pick' || verb === 'put') && words[1] === (verb === 'pick' ? 'up' : 'down')) {
-            verb = verb + ' ' + words[1];
-            rest = words.slice(2).join(' ');
-        }
-        var itemId = matchItem(rest.split(/\s+/).pop());
-        if (!itemId) {
-            return;
-        }
-        // LEARNING NOTE: `a ? b : c` is the ternary operator -- a compact
-    // if/else that evaluates to a value: "if a is truthy, the whole
-    // expression is b, otherwise it's c". These can be chained, as here:
-    // read it as "if this verb is a take-verb, 'take'; otherwise, if it's
-    // a drop-verb, 'drop'; otherwise, null" -- equivalent to a longer
-    // if/else-if/else, just written as one assignment.
-    var type = TAKE_VERBS.indexOf(verb) !== -1 ? 'take' : DROP_VERBS.indexOf(verb) !== -1 ? 'drop' : null;
-        if (type) {
-            pushPendingAction({ type: type, item: itemId });
-        }
-    }
-
-    // Checked against the newest text the game just printed, once per
-    // debounced check (not necessarily once per submitted command -- see
-    // pendingActions' own comment). Deliberately simple substring checks
-    // rather than strict line-boundary parsing -- worst case on a false
-    // match is a suggestion's availability is briefly wrong, which
-    // self-corrects the next time the player checks their own inventory.
-    // Can't tell *which* queued attempt a given "Taken." belongs to when
-    // more than one is still pending at once -- an accepted best-effort
-    // limitation, same spirit as the rest of this project's inventory
-    // tracking.
-    function checkPendingAction(newText) {
-        if (pendingActions.length === 0) {
-            return;
-        }
-        // LEARNING NOTE: reassigning `pendingActions = pendingActions.filter(...)`
-        // is a common idiom for "remove some items from an array in place"
-        // -- .filter() itself doesn't modify the original array (arrays
-        // methods like .filter/.map never mutate their input), it builds a
-        // brand new one containing only the elements whose callback
-        // returned true, and here that new array is immediately assigned
-        // back over the old variable. Each action below returns false
-        // (drop it) once it's been resolved one way or another, or true
-        // (keep it for next time) while it's still waiting to be verified.
-        pendingActions = pendingActions.filter(function (action) {
-            if (action.type === 'take') {
-                if (newText.indexOf('Taken.') !== -1) {
-                    heldItems.add(action.item);
-                    refreshSuggestions();
-                    return false;
-                }
-            } else if (action.type === 'drop') {
-                if (newText.indexOf('Dropped.') !== -1) {
-                    heldItems.delete(action.item);
-                    refreshSuggestions();
-                    return false;
-                }
-            } else if (action.type === 'inventory') {
-                if (newText.indexOf('empty-handed') !== -1) {
-                    heldItems.clear();
-                    refreshSuggestions();
-                    return false;
-                } else if (newText.indexOf('You are carrying') !== -1) {
-                    var ids = Object.keys(commandsData.items);
-                    var lowerText = newText.toLowerCase();
-                    ids.forEach(function (id) {
-                        var found = itemWords(id).some(function (word) {
-                            return lowerText.indexOf(word) !== -1;
-                        });
-                        if (found) {
-                            heldItems.add(id);
-                        }
-                    });
-                    refreshSuggestions();
-                    return false;
-                }
-            }
-            action.age += 1;
-            return action.age < MAX_PENDING_AGE;
-        });
-    }
-
     // --- Room tracking ---------------------------------------------------
 
+    // Returns true if the room changed. Suggestions are refreshed here
+    // (not by the caller) since a new room means a new list.
     function recheckRoom() {
         var id = resolveRoomId(getStatusRoomName());
         if (id && id !== currentRoomId) {
             currentRoomId = id;
             refreshSuggestions();
+            return true;
         }
+        return false;
     }
 
     var lastSeenTextLength = 0;
@@ -391,12 +327,15 @@
             checkTimer = null;
             var fullText = getAllBufferText();
             var freshText = fullText.slice(lastSeenTextLength);
-            if (freshText) {
-                checkPendingAction(freshText);
-            }
             lastSeenTextLength = fullText.length;
-            recheckRoom();
-            updateWalkthrough(freshText);
+            // Always called, even with nothing new: it also clears the
+            // "just taken" sets the walkthrough check below relies on.
+            var itemsChanged = tracker.observe(freshText);
+            var roomChanged = recheckRoom();
+            if (itemsChanged) {
+                refreshSuggestions();
+            }
+            updateWalkthrough(freshText, roomChanged);
         }, 90);
     }
 
@@ -441,7 +380,8 @@
         if (ev.key === 'Enter') {
             var trimmed = input.value.trim();
             if (trimmed && trimmed.toLowerCase() !== 'undo') {
-                recordPendingAction(trimmed);
+                tracker.record(trimmed);
+                submitted.push({ cmd: Walkthrough.normalizeCommand(trimmed), roomId: currentRoomId });
             }
             suggestionIndex = -1;
             return;
@@ -551,16 +491,15 @@
             : 'Tab or double-tap for suggestions';
     }
 
-    // LEARNING NOTE: this needs two separate files before it can do
-    // anything, so both fetches are kicked off together (not one, then
-    // the other afterward) and Promise.all() waits for the whole array of
+    // LEARNING NOTE: this needs three separate files before it can do
+    // anything, so all the fetches are kicked off together (not one, then
+    // the next afterward) and Promise.all() waits for the whole array of
     // Promises to finish. Its own result is an array in the same order as
     // the input, which is why results[0] below is map.json's parsed data
     // and results[1] is commands.json's -- even though whichever request
     // actually finishes first over the network isn't guaranteed. This is
-    // faster than awaiting them one at a time, since both downloads
-    // happen in parallel instead of one waiting for the other to finish
-    // first.
+    // faster than awaiting them one at a time, since the downloads
+    // happen in parallel instead of each waiting for the one before it.
     Promise.all([
         fetch('data/map.json').then(function (r) { return r.json(); }),
         fetch('data/commands.json').then(function (r) { return r.json(); }),
@@ -568,12 +507,14 @@
     ]).then(function (results) {
         mapData = results[0];
         commandsData = results[1];
-        walkthroughData = results[2];
-        Object.keys(mapData.rooms).forEach(function (id) {
-            nameToRoomId[mapData.rooms[id].name] = id;
-        });
+        steps = results[2].steps;
+        resolveRoomId = Walkthrough.createRoomResolver(mapData.rooms);
+        tracker = Walkthrough.createTracker(commandsData.items);
+        loadMode();
+        loadProgress();
         initInputHandlers();
         initObserver();
+        initWalkthroughButtons();
         lastSeenTextLength = getAllBufferText().length;
         recheckRoom();
         refreshSuggestions();

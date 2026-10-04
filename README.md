@@ -15,6 +15,18 @@ Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red
 - **Assist Mode**: pick a topic from the dropdown (the troll, the thief, the
   maze, the dam, the endgame, etc.) and reveal hints one tier at a time —
   nudge → stronger hint → answer — instead of a spoiler dump.
+- **Tab suggestions / walkthrough**: press **Tab** in the game console (or
+  double-tap it on a touch screen) to fill in a suggested command;
+  **Shift+Tab** steps back, and Up/Down stay the game's own command history.
+  The header's **Walkthrough**/**Hints** button switches what Tab offers. In
+  *Walkthrough* mode the next step of a full route to 350 points
+  (`src/data/walkthrough.json`) comes first, with a spoiler-light nudge in
+  the input's placeholder text; the page works out which steps you've
+  finished from the room name, what you've picked up and what the game says
+  back, and walks you back toward the right room if you wander off. **Skip**
+  marks a stuck step done (the thief may have stolen what it needed -- he
+  is random, so no route is guaranteed). In *Hints* mode Tab just offers
+  ideas for the current room. Progress is kept in `localStorage`.
 - **Auto-map**: a fog-of-war map fills in as you explore, built from the
   game's real room/exit graph. Areas the game's own text can't distinguish
   (mazes, the river, dark caves) are shown as one fogged region rather than
@@ -71,17 +83,22 @@ src/                     Everything deployed to Azure Static Web Apps
   js/hints.js            Assist-mode hint sidebar logic
   js/map.js              Fog-of-war auto-map: tracks visited rooms, renders grid
   js/codemuseum.js       Code tab: room/topic-contextual links to Code Museum
+  js/command-suggestions.js  Tab suggestions: walkthrough mode + room hints
+  js/walkthrough-logic.js    Step/inventory tracking shared with tools/verify-walkthrough.js
   data/zork1.z3           Compiled Zork I story file
   data/hints.json         Curated hint database
   data/map.json           Room/exit graph, generated from the ZIL source (see tools/)
+  data/walkthrough.json   Walkthrough steps, generated from tools/walkthrough.src
+  data/commands.json      Tab-suggestion ideas per room, plus the items the page tracks
   data/code-museum-links.json  Hand-curated room/topic -> Code Museum bookmark map
   vendor/                 Third-party engine files (see THIRD_PARTY_NOTICES.md)
   vendor/gidispa-zvm.js   Original shim enabling save/restore for the ZVM engine
   staticwebapp.config.json  Azure SWA routing/MIME config
 game-source/             Vendored original ZIL source, kept for reference/rebuilds
-tools/                   Scripts that generate src/data/map.json from game-source/
+tools/                   Scripts that generate src/data/map.json and walkthrough.json,
+                         plus a headless player used to verify the walkthrough
 .github/workflows/       GitHub Actions deploy workflow
-BUILD.md                 How to recompile zork1.z3 / regenerate map.json
+BUILD.md                 How to recompile zork1.z3 / regenerate map.json / the walkthrough
 THIRD_PARTY_NOTICES.md   Licenses for everything bundled here
 ```
 
