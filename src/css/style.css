@@ -201,8 +201,6 @@ html, body {
 #font-size-decrease,
 #font-size-increase,
 #theme-toggle,
-#suggest-mode-toggle,
-#walkthrough-skip,
 #hint-toggle,
 #keyboard-toggle {
   background: transparent;
@@ -223,8 +221,6 @@ html, body {
 #font-size-decrease:hover,
 #font-size-increase:hover,
 #theme-toggle:hover,
-#suggest-mode-toggle:hover,
-#walkthrough-skip:hover,
 #hint-toggle:hover,
 #keyboard-toggle:hover {
   background: var(--fg-dim);
@@ -1073,4 +1069,41 @@ body.theme-modern .code-links a {
     right: 0;
     z-index: 20;
   }
+}
+
+/* Walkthrough vs. suggestions switch at the top of the Hints tab. */
+#suggest-mode-section {
+  margin-bottom: 1em;
+}
+
+#suggest-mode-section > label {
+  display: block;
+  margin-bottom: 0.3em;
+}
+
+#suggest-mode button,
+#walkthrough-skip {
+  background: transparent;
+  color: var(--fg-bright);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0.3em 0.8em;
+  font-family: var(--font);
+  font-size: 1.1em;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-shadow: var(--text-glow);
+}
+
+#suggest-mode button[aria-checked="true"] {
+  background: var(--fg-dim);
+  color: var(--bg);
+  text-shadow: none;
+}
+
+#walkthrough-skip:hover,
+#suggest-mode button:hover {
+  background: var(--fg-dim);
+  color: var(--bg);
+  text-shadow: none;
 }

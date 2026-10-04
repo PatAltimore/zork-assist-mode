@@ -37,8 +37,6 @@
         <button id="font-size-increase" type="button" aria-label="Increase font size">A+</button>
       </div>
       <button id="theme-toggle" type="button">Modern</button>
-      <button id="suggest-mode-toggle" type="button" aria-pressed="true" title="What the Tab key suggests: the next walkthrough step, or just ideas for the current room">Walkthrough</button>
-      <button id="walkthrough-skip" type="button" hidden title="Mark the current walkthrough step as done">Skip</button>
       <button id="hint-toggle" type="button" aria-expanded="true" aria-controls="assist-panel">Hide Hints</button>
       <button id="keyboard-toggle" type="button" aria-pressed="false">Hide Keyboard</button>
     </div>
@@ -70,6 +68,16 @@
 
       <div id="hints-view" role="tabpanel" aria-labelledby="tab-hints">
         <h2>Need a hint?</h2>
+
+        <div id="suggest-mode-section">
+          <label id="suggest-mode-label">When you press Tab, suggest:</label>
+          <div id="suggest-mode" class="button-group" role="radiogroup" aria-labelledby="suggest-mode-label">
+            <button id="suggest-mode-walkthrough" type="button" role="radio" aria-checked="true">Walkthrough</button>
+            <button id="suggest-mode-ideas" type="button" role="radio" aria-checked="false">Suggestions</button>
+          </div>
+          <p id="suggest-mode-status" class="assist-note"></p>
+          <button id="walkthrough-skip" type="button" hidden>Skip this step</button>
+        </div>
 
         <div id="hint-room-section" hidden>
           <label>Room: <span id="hint-room-name"></span></label>

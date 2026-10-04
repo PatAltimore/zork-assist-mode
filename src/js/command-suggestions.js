@@ -2,15 +2,15 @@
     'use strict';
 
     // Suggests commands, cycled into the input box with Tab (Shift+Tab goes
-    // back) or a double-tap. Two modes, switched with the header's
-    // "Tab: ..." button:
+    // back) or a double-tap. Two modes, switched with the Walkthrough /
+    // Suggestions buttons at the top of the Hints tab:
     //
     //  - Walkthrough: the next step of data/walkthrough.json comes first --
     //    the game has no on-screen checklist, so progress is worked out from
     //    what the page can already see (the room name, what's been picked
     //    up, distinctive text in the game's replies). See walkthrough-logic.js,
     //    which this file and tools/verify-walkthrough.js share.
-    //  - Hints: just ideas for the current room -- a mix of genuinely useful
+    //  - Suggestions: just ideas for the current room -- a mix of genuinely useful
     //    commands for whatever puzzle it holds and a few that show off the
     //    game's own sense of humor.
     //
@@ -199,23 +199,37 @@
     }
 
     function refreshWalkthroughButtons() {
-        var modeButton = document.getElementById('suggest-mode-toggle');
-        if (modeButton) {
-            modeButton.textContent = mode === 'walkthrough' ? 'Walkthrough' : 'Hints';
-            modeButton.setAttribute('aria-pressed', mode === 'walkthrough' ? 'true' : 'false');
+        var walkthroughButton = document.getElementById('suggest-mode-walkthrough');
+        var ideasButton = document.getElementById('suggest-mode-ideas');
+        if (walkthroughButton && ideasButton) {
+            walkthroughButton.setAttribute('aria-checked', mode === 'walkthrough' ? 'true' : 'false');
+            ideasButton.setAttribute('aria-checked', mode === 'hints' ? 'true' : 'false');
+        }
+        var step = nextStep();
+        var status = document.getElementById('suggest-mode-status');
+        if (status) {
+            if (mode !== 'walkthrough') {
+                status.textContent = 'Tab offers ideas for the room you are in.';
+            } else if (step) {
+                status.textContent = 'Next: ' + guidance(step).hint + '.';
+            } else {
+                status.textContent = 'You have reached the end of the walkthrough.';
+            }
         }
         var skipButton = document.getElementById('walkthrough-skip');
         if (skipButton) {
-            skipButton.hidden = !nextStep();
+            skipButton.hidden = !step;
         }
     }
 
     function initWalkthroughButtons() {
-        var modeButton = document.getElementById('suggest-mode-toggle');
-        if (modeButton) {
-            modeButton.addEventListener('click', function () {
-                setMode(mode === 'walkthrough' ? 'hints' : 'walkthrough');
-            });
+        var walkthroughButton = document.getElementById('suggest-mode-walkthrough');
+        var ideasButton = document.getElementById('suggest-mode-ideas');
+        if (walkthroughButton) {
+            walkthroughButton.addEventListener('click', function () { setMode('walkthrough'); });
+        }
+        if (ideasButton) {
+            ideasButton.addEventListener('click', function () { setMode('hints'); });
         }
         var skipButton = document.getElementById('walkthrough-skip');
         if (skipButton) {
@@ -489,6 +503,7 @@
         input.placeholder = step
             ? 'Tab: ' + guidance(step).hint
             : 'Tab or double-tap for suggestions';
+        refreshWalkthroughButtons(); // the Hints tab's status line follows the room too
     }
 
     // LEARNING NOTE: this needs three separate files before it can do

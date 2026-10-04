@@ -18,15 +18,15 @@ Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red
 - **Tab suggestions / walkthrough**: press **Tab** in the game console (or
   double-tap it on a touch screen) to fill in a suggested command;
   **Shift+Tab** steps back, and Up/Down stay the game's own command history.
-  The header's **Walkthrough**/**Hints** button switches what Tab offers. In
+  A **Walkthrough / Suggestions** switch at the top of the Hints tab picks what Tab offers. In
   *Walkthrough* mode the next step of a full route to 350 points
   (`src/data/walkthrough.json`) comes first, with a spoiler-light nudge in
   the input's placeholder text; the page works out which steps you've
   finished from the room name, what you've picked up and what the game says
   back, and walks you back toward the right room if you wander off. **Skip**
   marks a stuck step done (the thief may have stolen what it needed -- he
-  is random, so no route is guaranteed). In *Hints* mode Tab just offers
-  ideas for the current room. Progress is kept in `localStorage`.
+  is random, so no route is guaranteed). In *Suggestions* mode Tab just
+  offers ideas for the current room. Progress is kept in `localStorage`.
 - **Auto-map**: a fog-of-war map fills in as you explore, built from the
   game's real room/exit graph. Areas the game's own text can't distinguish
   (mazes, the river, dark caves) are shown as one fogged region rather than
