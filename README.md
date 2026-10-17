@@ -4,7 +4,7 @@ Play the original 1980 Infocom classic **Zork I** in your browser, compiled
 straight from the official open-source ZIL release, with an **Assist Mode**
 sidebar of graduated, multiple-choice hints for when you get stuck.
 
-Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red-tree-0c4e1f210.7.azurestaticapps.net/).
+Play the game at [https://pataltimore.github.io/zork-assist-mode/](https://pataltimore.github.io/zork-assist-mode/).
 
 - **Real game, not a clone.** The historicalsource/zork1 ZIL source is
   compiled with [ZILF](https://foss.heptapod.net/zilf/zilf) into an actual
@@ -72,13 +72,13 @@ Play the game at [https://red-tree-0c4e1f210.7.azurestaticapps.net/](https://red
   rooms and puzzles), so the mapping in `src/data/code-museum-links.json`
   is hand-curated rather than derived automatically; extend it as more
   bookmarks get added on the Code Museum side.
-- **Fully static** — no backend, no database, no API keys. Deploys to Azure
-  Static Web Apps' **Free** tier at no cost.
+- **Fully static** — no backend, no database, no API keys. Deploys to GitHub
+  Pages at no cost.
 
 ## Project layout
 
 ```
-src/                     Everything deployed to Azure Static Web Apps
+src/                     Everything deployed to GitHub Pages
   index.html             Page shell: game console + assist sidebar (Hints/Map/Code tabs)
   css/style.css          Terminal theme (retro CRT / modern), toggleable
   js/app.js              Boots the Z-machine engine, loads the story file
@@ -95,7 +95,6 @@ src/                     Everything deployed to Azure Static Web Apps
   data/code-museum-links.json  Hand-curated room/topic -> Code Museum bookmark map
   vendor/                 Third-party engine files (see THIRD_PARTY_NOTICES.md)
   vendor/gidispa-zvm.js   Original shim enabling save/restore for the ZVM engine
-  staticwebapp.config.json  Azure SWA routing/MIME config
 game-source/             Vendored original ZIL source, kept for reference/rebuilds
 tools/                   Scripts that generate src/data/map.json and walkthrough.json,
                          plus a headless player used to verify the walkthrough
@@ -114,13 +113,6 @@ python -m http.server 8080 --directory src
 
 Then open http://localhost:8080. (Any static file server works — `npx serve src`,
 VS Code's Live Server, etc.)
-
-To emulate the Azure Static Web Apps environment (routing rules, config file)
-more closely, use the [SWA CLI](https://azure.github.io/static-web-apps-cli/):
-
-```bash
-npx @azure/static-web-apps-cli start src
-```
 
 ## Save data
 
@@ -145,43 +137,14 @@ open the site — same browser, same device. A few things worth knowing:
   via the same `Dialog` library, giving you named save slots instead of a
   single auto-continuing session.
 
-## Deploying to Azure Static Web Apps (Free tier)
+## Deploying to GitHub Pages
 
-This repo is already deployed via
-[`.github/workflows/azure-static-web-apps-red-tree-0c4e1f210.yml`](.github/workflows/azure-static-web-apps-red-tree-0c4e1f210.yml),
-committed automatically by the Azure Portal when the Static Web App resource
-was created (Free plan, source GitHub, app location `src`, no API/output
-location). It uses a deployment token stored as the
-`AZURE_STATIC_WEB_APPS_API_TOKEN_RED_TREE_0C4E1F210` repo secret — every push
-to `main` builds and deploys automatically, and pull requests get their own
-free staging environment, cleaned up when the PR closes.
-
-To set this up from scratch on a fork or a new resource:
-
-1. Push the repo to GitHub.
-2. In the [Azure Portal](https://portal.azure.com), create a **Static Web
-   App** resource:
-   - **Plan type: Free** (this app needs nothing beyond what Free offers —
-     no custom API, generous bandwidth for a personal project).
-   - Source: GitHub, pick your repo/branch.
-   - Build presets: **Custom**, with:
-     - App location: `src`
-     - Api location: *(leave blank)*
-     - Output location: *(leave blank)*
-   - The portal commits its own workflow file and adds a matching
-     `AZURE_STATIC_WEB_APPS_API_TOKEN_...` secret automatically — that's the
-     only workflow file you need; delete any other deploy workflow so only
-     one runs per push.
-3. Push to `main` and confirm the run succeeds in the Actions tab.
-
-Alternative: create the resource yourself via the Azure CLI
-(`az staticwebapp create --sku Free ...`) and wire up the deployment token as
-a repo secret. The portal flow above is the easier path if you're doing this
-for the first time.
-
-**Cost:** Static Web Apps Free tier includes 100 GB/month bandwidth and free
-SSL/custom domains — this project has no server-side API, so it comfortably
-fits within Free for personal or small-scale use.
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) publishes the
+`src/` folder to GitHub Pages on every push to `main` (or manually via the
+Actions tab). One-time setup: in the repo's **Settings → Pages**, set
+**Source** to **GitHub Actions**. The site is then served at
+`https://<user>.github.io/zork-assist-mode/`; all asset paths are relative,
+so the project sub-path works without changes.
 
 ## Licensing
 
