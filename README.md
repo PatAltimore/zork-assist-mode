@@ -64,7 +64,7 @@ Play the game at [https://pataltimore.github.io/zork-assist-mode/](https://patal
   counter won't visibly decrease the way you might expect from undo, even
   though room/inventory/flags are genuinely rolled back; see the comments in
   `src/js/undo.js` for the full reasoning.
-- **Code tab**: links out to [Code Museum](https://blue-rock-0e6a0831e.7.azurestaticapps.net/#/zork),
+- **Code tab**: links out to [Code Museum](https://pataltimore.github.io/code-museum/#/zork),
   an annotated-source-code site, contextual to the room you're in and the
   hint topic you've picked, plus a general "how the engine works" list.
   Code Museum documents the *original* 1977 MIT MDL mainframe source (not

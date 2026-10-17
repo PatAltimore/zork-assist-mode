@@ -1,5 +1,5 @@
 {
-  "base": "https://blue-rock-0e6a0831e.7.azurestaticapps.net/#/zork",
+  "base": "https://pataltimore.github.io/code-museum/#/zork",
   "siteLabel": "Code Museum",
   "overviewPath": "",
   "note": "Code Museum documents the original 1977 MIT MDL (Muddle) mainframe source, recovered from MIT's Tapes of Tech Society -- not the ZIL/Infocom port this game runs. The mainframe version was later split into the Zork I/II/III trilogy, so some of its files cover puzzles (the volcano, the bank, the robot, the riddle door) that never made it into Zork I. Every link below was checked against this repo's own ZIL source to confirm it's really Zork I content, not a II/III puzzle.",
