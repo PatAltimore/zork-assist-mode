@@ -1,15 +1,16 @@
-// Parses game-source/1dungeon.zil to extract the authoritative room graph
+// Parses game-source/<game>/<n>dungeon.zil to extract the authoritative room graph
 // (id, display name, exits) used to generate src/data/map.json. This reads
 // directly from the vendored ZIL source, so the map data can never drift
 // from what's actually shipped in the compiled story file.
 //
-// Usage: node tools/extract-rooms.js   (run from repo root)
+// Usage: node tools/extract-rooms.js [--game zork2]   (run from repo root)
 'use strict';
 const fs = require('fs');
 const path = require('path');
 
-const SRC = path.join(__dirname, '..', 'game-source', '1dungeon.zil');
-const OUT = path.join(__dirname, 'rooms-raw.json');
+const cfg = require('./games').config();
+const SRC = cfg.dungeonPath;
+const OUT = cfg.roomsRaw;
 const text = fs.readFileSync(SRC, 'utf8');
 
 function extractRoomBlocks(src) {

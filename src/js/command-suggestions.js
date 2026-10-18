@@ -24,7 +24,7 @@
 
     var Walkthrough = window.ZorkWalkthrough;
 
-    var STORAGE_KEY_PROGRESS = 'zork-assist-walkthrough-v1';
+    var STORAGE_KEY_PROGRESS = ZorkGame.key('zork-assist-walkthrough-v1');
     var STORAGE_KEY_MODE = 'zork-assist-suggest-mode';
 
     var mapData = null;
@@ -558,9 +558,9 @@
     // faster than awaiting them one at a time, since the downloads
     // happen in parallel instead of each waiting for the one before it.
     Promise.all([
-        fetch('data/map.json').then(function (r) { return r.json(); }),
-        fetch('data/commands.json').then(function (r) { return r.json(); }),
-        fetch('data/walkthrough.json').then(function (r) { return r.json(); })
+        ZorkGame.loadData('map.json'),
+        ZorkGame.loadData('commands.json'),
+        ZorkGame.loadData('walkthrough.json')
     ]).then(function (results) {
         mapData = results[0];
         commandsData = results[1];

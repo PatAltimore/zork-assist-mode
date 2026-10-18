@@ -1,10 +1,10 @@
 (function () {
     'use strict';
 
-    var NEW_GAME_FLAG_KEY = 'zork-assist-new-game-requested';
-    var MAP_VISITED_KEY = 'zork-assist-map-visited-v1';
-    var MAP_CURRENT_KEY = 'zork-assist-map-current-v1';
-    var WALKTHROUGH_KEY = 'zork-assist-walkthrough-v1';
+    var NEW_GAME_FLAG_KEY = ZorkGame.key('zork-assist-new-game-requested');
+    var MAP_VISITED_KEY = ZorkGame.key('zork-assist-map-visited-v1');
+    var MAP_CURRENT_KEY = ZorkGame.key('zork-assist-map-current-v1');
+    var WALKTHROUGH_KEY = ZorkGame.key('zork-assist-walkthrough-v1');
     var FONT_SIZE_KEY = 'zork-assist-font-size-px';
     var THEME_KEY = 'zork-assist-theme';
 
@@ -32,7 +32,7 @@
             // localStorage unavailable -- just boot normally each time.
         }
 
-        // LEARNING NOTE: zork1.z3 is a compiled game file, not text --
+        // LEARNING NOTE: story.z3 is a compiled game file, not text --
         // fetch()'s response.json()/.text() helpers used elsewhere in this
         // project won't do here, since those assume the response is
         // JSON/plain text. .arrayBuffer() instead gives back the response
@@ -46,7 +46,7 @@
         // not on a valid HTTP response with an error status like 404, so
         // checking response.ok and throwing explicitly is what makes a bad
         // status also end up in this promise chain's .catch() below.
-        fetch('data/zork1.z3')
+        fetch(ZorkGame.dataUrl('story.z3'))
             .then(function (response) {
                 if (!response.ok) {
                     throw new Error('HTTP ' + response.status);
@@ -443,6 +443,20 @@
         }
     }
 
+    function initGamePicker() {
+        var picker = document.getElementById('game-picker');
+        if (!picker) {
+            return;
+        }
+        Array.prototype.slice.call(picker.querySelectorAll('button')).forEach(function (button) {
+            var id = button.getAttribute('data-game');
+            button.setAttribute('aria-checked', String(id === ZorkGame.id));
+            button.addEventListener('click', function () {
+                ZorkGame.switchTo(id);
+            });
+        });
+    }
+
     function initNewGameButton() {
         var button = document.getElementById('new-game');
         if (!button) {
@@ -475,6 +489,7 @@
             initFontSizeButtons();
             initThemeToggle();
             initNewGameButton();
+            initGamePicker();
             initKeyboardToggle();
             initGameportKeyboardSafetyNet();
         });
@@ -485,6 +500,7 @@
         initFontSizeButtons();
         initThemeToggle();
         initNewGameButton();
+        initGamePicker();
         initKeyboardToggle();
         initGameportKeyboardSafetyNet();
     }

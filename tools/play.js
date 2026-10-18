@@ -1,10 +1,10 @@
-// Headless Zork runner: plays the real zork1.z3 through the same vendored
+// Headless Zork runner: plays the real story file (src/data/<game>/story.z3) through the same vendored
 // Z-machine (zvm.min.js) and Glk layer (glkapi.js) the web app uses, with a
 // fake GlkOte that just collects text. Used to verify the walkthrough in
-// src/data/walkthrough.json against the game's actual output.
+// src/data/<game>/walkthrough.json against the game's actual output.
 //
 // Usage:
-//   node tools/play.js "open mailbox" "take leaflet" ...      (commands as args)
+//   node tools/play.js [--game zork2] "open mailbox" ...       (commands as args)
 //   node tools/play.js --file cmds.txt                        (one command per line)
 //   SEED=7 node tools/play.js ...     (the game's randomness -- combat, the
 //                                      thief -- is reproducible per seed)
@@ -18,6 +18,7 @@ const path = require('path');
 const vm = require('vm');
 
 const SRC = path.join(__dirname, '..', 'src');
+const games = require('./games');
 
 // Seeded PRNG (mulberry32) so combat/thief randomness is reproducible.
 function seededMath(seed) {
@@ -33,7 +34,8 @@ function seededMath(seed) {
     return m;
 }
 
-function createGame(seed) {
+function createGame(seed, gameId) {
+    const cfg = games.config(gameId);
     let acceptFn = null;
     let lineInput = null; // { id, gen }
     let pendingText = [];
@@ -117,7 +119,7 @@ function createGame(seed) {
         vm: game, Glk: sandbox.Glk, Dialog: { }, GlkOte,
         GiDispa: new sandbox.GiDispaZVM(),
     };
-    game.prepare(new Uint8Array(fs.readFileSync(path.join(SRC, 'data', 'zork1.z3'))), options);
+    game.prepare(new Uint8Array(fs.readFileSync(cfg.storyPath)), options);
     sandbox.Glk.init(options);
 
     function drain() {
@@ -149,7 +151,7 @@ function createGame(seed) {
 module.exports = { createGame };
 
 if (require.main === module) {
-    let cmds = process.argv.slice(2);
+    let cmds = games.stripGameArg(process.argv.slice(2));
     if (cmds[0] === '--file') {
         cmds = fs.readFileSync(cmds[1], 'utf8').split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
     }

@@ -1,7 +1,7 @@
 {
-  "name": "Zork I — Assist Mode",
-  "short_name": "Zork I",
-  "description": "Play Zork I with an integrated hints, map, and code-exploration sidebar.",
+  "name": "Zork — Assist Mode",
+  "short_name": "Zork",
+  "description": "Play Zork I or II with an integrated hints, map, and code-exploration sidebar.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

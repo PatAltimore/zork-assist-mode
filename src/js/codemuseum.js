@@ -136,9 +136,9 @@
     }
 
     Promise.all([
-        fetch('data/code-museum-links.json').then(function (r) { return r.json(); }),
-        fetch('data/map.json').then(function (r) { return r.json(); }),
-        fetch('data/hints.json').then(function (r) { return r.json(); })
+        ZorkGame.loadData('code-museum-links.json'),
+        ZorkGame.loadData('map.json'),
+        ZorkGame.loadData('hints.json')
     ]).then(function (results) {
         linksData = results[0];
         var mapData = results[1];

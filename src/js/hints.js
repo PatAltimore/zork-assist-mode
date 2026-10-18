@@ -100,10 +100,7 @@
     // it was given with one argument (the parsed JSON) -- but passing the
     // reference directly is shorter whenever you don't need to do
     // anything extra with the argument first.
-    fetch('data/hints.json')
-        .then(function (response) {
-            return response.json();
-        })
+    ZorkGame.loadData('hints.json')
         .then(populateTopics)
         .catch(function (err) {
             levelsContainer.textContent = 'Could not load hints (' + err.message + ').';

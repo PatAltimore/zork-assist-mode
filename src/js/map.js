@@ -11,8 +11,8 @@
 (function () {
     'use strict';
 
-    var VISITED_KEY = 'zork-assist-map-visited-v1';
-    var CURRENT_KEY = 'zork-assist-map-current-v1';
+    var VISITED_KEY = ZorkGame.key('zork-assist-map-visited-v1');
+    var CURRENT_KEY = ZorkGame.key('zork-assist-map-current-v1');
     var TREE_DEPTH = 3;
 
     // LEARNING NOTE: mapData, nameToId, visited, currentId (and the other
@@ -828,8 +828,7 @@
     // pending Promise object itself). .catch() at the end catches an error
     // from the fetch or from either .then() -- e.g. no network, or the file
     // being missing.
-    fetch('data/map.json')
-        .then(function (response) { return response.json(); })
+    ZorkGame.loadData('map.json')
         .then(function (data) {
             mapData = data;
             Object.keys(data.rooms).forEach(function (id) {

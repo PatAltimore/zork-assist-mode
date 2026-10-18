@@ -448,8 +448,8 @@
     setInterval(render, 30000);
 
     Promise.all([
-        fetch('data/map.json').then(function (r) { return r.json(); }),
-        fetch('data/code-museum-links.json').then(function (r) { return r.json(); })
+        ZorkGame.loadData('map.json'),
+        ZorkGame.loadData('code-museum-links.json')
     ]).then(function (results) {
         mapData = results[0];
         codeLinksData = results[1];

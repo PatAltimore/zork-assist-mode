@@ -195,6 +195,7 @@ html, body {
   gap: 0.6em;
 }
 
+#game-picker button,
 #save-game,
 #load-game,
 #new-game,
@@ -215,6 +216,7 @@ html, body {
   text-shadow: var(--text-glow);
 }
 
+#game-picker button:hover,
 #save-game:hover,
 #load-game:hover,
 #new-game:hover,
@@ -1096,7 +1098,8 @@ body.theme-modern .code-links a {
   text-shadow: var(--text-glow);
 }
 
-#suggest-mode button[aria-checked="true"] {
+#suggest-mode button[aria-checked="true"],
+#game-picker button[aria-checked="true"] {
   background: var(--fg-dim);
   color: var(--bg);
   text-shadow: none;
@@ -1114,4 +1117,12 @@ body.theme-modern .code-links a {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5em;
+}
+
+/* Game picker (Zork I / Zork II) in the header. */
+
+/* Games Code Museum doesn't cover have no Code tab. */
+body.no-code-tab #tab-code,
+body.no-code-tab #code-view {
+  display: none !important;
 }

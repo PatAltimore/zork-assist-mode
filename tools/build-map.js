@@ -4,45 +4,26 @@
 // coordinates for the assist-mode map. Reads rooms-raw.json (produced by
 // extract-rooms.js), writes src/data/map.json.
 //
-// Usage: node tools/extract-rooms.js && node tools/build-map.js
+// Usage: node tools/extract-rooms.js && node tools/build-map.js   (add --game zork2 to both)
 'use strict';
 const fs = require('fs');
 const path = require('path');
 
-const rooms = JSON.parse(fs.readFileSync(path.join(__dirname, 'rooms-raw.json'), 'utf8'));
-const OUT = path.join(__dirname, '..', 'src', 'data', 'map.json');
+const cfg = require('./games').config();
+const extras = cfg.extras;
+const rooms = JSON.parse(fs.readFileSync(cfg.roomsRaw, 'utf8'));
+const OUT = path.join(cfg.dataDir, 'map.json');
 
-// The Frigid River is entered by launching/inflating a boat, an action
-// routine (RIVER-LAUNCH table in 1actions.zil), not a normal room exit --
-// so it has no "TO" reference anywhere in 1dungeon.zil. Add the real
-// launch points manually so it isn't stranded off-map.
-rooms['DAM-BASE'].exits.push({ dir: 'DOWN', target: 'RIVER-1' });
-rooms['WHITE-CLIFFS-NORTH'].exits.push({ dir: 'DOWN', target: 'RIVER-3' });
-rooms['WHITE-CLIFFS-SOUTH'].exits.push({ dir: 'DOWN', target: 'RIVER-4' });
-
-// Some exits only exist once a specific flag or object state is true --
-// extract-rooms.js captures that as e.condition (the raw ZIL "IF ..."
-// text). FALSE-FLAG is a permanently-false joke global (Kitchen's chimney:
-// "Only Santa Claus climbs down chimneys."), so that one exit is not just
-// conditional, it's flat-out impossible -- drop it before it goes anywhere
-// near the map. Every other condition below really is achievable through
-// normal play, so those exits are kept, just annotated with a plain-
-// English requirement (see CONDITION_NOTES) instead of pretending they're
-// always open.
+// Game-specific fix-ups (exits added by action routines, impossible exits,
+// plain-English notes for conditional exits) live in tools/games/<id>.js.
+// An exit guarded by an "IF ..." condition is kept, annotated with a note
+// instead of pretending it's always open; impossible ones are dropped.
+extras.patchRooms(rooms);
 for (const r of Object.values(rooms)) {
-    r.exits = r.exits.filter((e) => e.condition !== 'FALSE-FLAG');
+    r.exits = r.exits.filter((e) => !(extras.impossibleConditions || []).includes(e.condition));
 }
 
-const CONDITION_NOTES = {
-    'WON-FLAG': "only after you've already won the game",
-    'KITCHEN-WINDOW IS OPEN': 'only with the kitchen window open',
-    'MAGIC-FLAG': "only after saying \"Odysseus\" or \"Ulysses\" to scare off the cyclops",
-    'CYCLOPS-FLAG': "only after saying \"Odysseus\" or \"Ulysses\" to scare off the cyclops",
-    'LLD-FLAG': 'only after completing the exorcism ritual (bell, candles, book)',
-    'TRAP-DOOR IS OPEN': 'only if the trap door is propped open',
-    'DEFLATE': 'only with the boat deflated',
-    'RAINBOW-FLAG': 'only after waving the sceptre at the rainbow',
-};
+const CONDITION_NOTES = extras.conditionNotes || {};
 function noteFor(condition) {
     if (!condition) return undefined;
     return CONDITION_NOTES[condition] || 'only under a specific condition';
@@ -137,7 +118,7 @@ const DELTA = {
 // a same-level diagonal/cardinal shortcut instead.
 const PRIMARY_DIR = new Set(['NORTH', 'SOUTH', 'EAST', 'WEST', 'UP', 'DOWN']);
 
-const START = canonicalOf['WEST-OF-HOUSE'];
+const START = canonicalOf[extras.start];
 const pos = {};
 const occupied = new Set();
 

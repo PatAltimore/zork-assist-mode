@@ -1,7 +1,8 @@
-// Replays src/data/walkthrough.json against the real game (tools/play.js) and
+// Replays src/data/<game>/walkthrough.json against the real game (tools/play.js) and
 // checks that every step's "done" condition actually fires -- using the very
 // same tracking code the page uses (src/js/walkthrough-logic.js).
 //
+//   (add --game zork2 to any of these; default zork1)
 //   node tools/verify-walkthrough.js --seed 13       (verbose, one run)
 //   node tools/verify-walkthrough.js --seeds 1-200   (which seeds play clean)
 //   node tools/verify-walkthrough.js --resync 1      (check the page's Resync button)
@@ -11,7 +12,8 @@
 //   1. the step is the walkthrough's *next* step when it is about to be
 //      typed (nothing earlier is left hanging), and
 //   2. it is marked done by the game's reply to that command.
-// A passing run also ends on the win screen with all 350 points.
+// A passing run also ends with the game's full score (and its win text,
+// where the game has one).
 
 'use strict';
 const fs = require('fs');
@@ -19,7 +21,8 @@ const path = require('path');
 const { createGame } = require('./play');
 const W = require('../src/js/walkthrough-logic.js');
 
-const DATA = path.join(__dirname, '..', 'src', 'data');
+const cfg = require('./games').config();
+const DATA = cfg.dataDir;
 function loadSteps() {
     return JSON.parse(fs.readFileSync(path.join(DATA, 'walkthrough.json'), 'utf8')).steps;
 }
@@ -32,7 +35,7 @@ const resolveRoom = W.createRoomResolver(rooms);
 // score and the room id just before step i is typed.
 function run(seed, verbose, stepList) {
     const steps = stepList || loadSteps();
-    const game = createGame(seed);
+    const game = createGame(seed, cfg.id);
     const scoreBefore = [];
     const roomBeforeStep = [];
     const tracker = W.createTracker(items);
@@ -98,14 +101,14 @@ function run(seed, verbose, stepList) {
         }
         if (game.isFinished()) { break; }
     }
-    const won = /completed a great and perilous/i.test(last.text) && last.score === 350;
+    const won = (!cfg.winText || cfg.winText.test(last.text)) && last.score === cfg.maxScore;
     return { seed: seed, problems: problems, won: won, score: last.score, room: last.room, scoreBefore: scoreBefore, roomBefore: roomBeforeStep };
 }
 
 module.exports = { run, loadSteps };
 
 if (require.main === module) {
-    const args = process.argv.slice(2);
+    const args = require('./games').stripGameArg(process.argv.slice(2));
     if (args[0] === '--seeds') {
         const [from, to] = args[1].split('-').map((n) => parseInt(n, 10));
         const good = [];
@@ -132,7 +135,7 @@ if (require.main === module) {
         const seed = args[0] === '--seed' ? parseInt(args[1], 10) : 13;
         const r = run(seed, true);
         console.log(r.problems.length ? r.problems.join('\n') : 'no step problems');
-        console.log('seed ' + seed + ': ' + (r.won ? 'WON with 350' : 'did not win') + ' (score ' + r.score + ', ending in ' + r.room + ')');
+        console.log('seed ' + seed + ': ' + (r.won ? 'WON with ' + cfg.maxScore : 'did not win') + ' (score ' + r.score + ', ending in ' + r.room + ')');
         process.exitCode = r.problems.length || !r.won ? 1 : 0;
     }
 }
