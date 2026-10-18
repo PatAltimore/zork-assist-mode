@@ -1,16 +1,23 @@
-# Zork I — Assist Mode
+# Zork — Assist Mode
 
-Play the original 1980 Infocom classic **Zork I** in your browser, compiled
-straight from the official open-source ZIL release, with an **Assist Mode**
-sidebar of graduated, multiple-choice hints for when you get stuck.
+Play the original Infocom classics **Zork I** and **Zork II** in your browser,
+built from the official open-source ZIL releases, with an **Assist Mode**
+sidebar of graduated, multiple-choice hints, an auto-map and a full
+walkthrough for when you get stuck. Pick the game with the **Zork I / Zork II**
+switch at the top of the page (or link straight to one with `?game=zork2`);
+each game keeps its own autosave, map and walkthrough progress.
 
 Play the game at [https://pataltimore.github.io/zork-assist-mode/](https://pataltimore.github.io/zork-assist-mode/).
 
-- **Real game, not a clone.** The historicalsource/zork1 ZIL source is
-  compiled with [ZILF](https://foss.heptapod.net/zilf/zilf) into an actual
-  Z-machine story file and played with the same engine family
+- **Real games, not clones.** Zork I is the historicalsource/zork1 ZIL source
+  compiled with [ZILF](https://foss.heptapod.net/zilf/zilf); Zork II is the
+  compiled story file Infocom's own build produced, shipped in the
+  historicalsource/zork2 repository. Both are real Z-machine story files played with
+  the same engine family
   ([ifvms.js](https://github.com/curiousdannii/ifvms.js) +
   [GlkOte](https://github.com/erkyrath/glkote)) used by Parchment/Lectrote.
+  (One tiny fix is applied to Zork II's story file as it loads -- see
+  `src/js/story-patches.js` for the original game bug it works around.)
 - **Type your own commands** in the game console, exactly like the original.
 - **Assist Mode**: pick a topic from the dropdown (the troll, the thief, the
   maze, the dam, the endgame, etc.) and reveal hints one tier at a time —
@@ -19,8 +26,8 @@ Play the game at [https://pataltimore.github.io/zork-assist-mode/](https://patal
   double-tap it on a touch screen) to fill in a suggested command;
   **Shift+Tab** steps back, and Up/Down stay the game's own command history.
   A **Walkthrough / Suggestions** switch at the top of the Hints tab picks what Tab offers. In
-  *Walkthrough* mode the next step of a full route to 350 points
-  (`src/data/walkthrough.json`) comes first, with a spoiler-light nudge in
+  *Walkthrough* mode the next step of a full route to the game's top score
+  (350 in Zork I, 400 in Zork II; `src/data/<game>/walkthrough.json`) comes first, with a spoiler-light nudge in
   the input's placeholder text; the page works out which steps you've
   finished from the room name, what you've picked up and what the game says
   back, and walks you back toward the right room if you wander off. **Resync to where I am**
@@ -64,14 +71,20 @@ Play the game at [https://pataltimore.github.io/zork-assist-mode/](https://patal
   counter won't visibly decrease the way you might expect from undo, even
   though room/inventory/flags are genuinely rolled back; see the comments in
   `src/js/undo.js` for the full reasoning.
-- **Code tab**: links out to [Code Museum](https://pataltimore.github.io/code-museum/#/zork),
+- **Code tab** (Zork I only): links out to [Code Museum](https://pataltimore.github.io/code-museum/#/zork),
   an annotated-source-code site, contextual to the room you're in and the
   hint topic you've picked, plus a general "how the engine works" list.
   Code Museum documents the *original* 1977 MIT MDL mainframe source (not
   the ZIL/Infocom port this game runs — different routine names, same
-  rooms and puzzles), so the mapping in `src/data/code-museum-links.json`
+  rooms and puzzles), so the mapping in `src/data/zork1/code-museum-links.json`
   is hand-curated rather than derived automatically; extend it as more
-  bookmarks get added on the Code Museum side.
+  bookmarks get added on the Code Museum side. Zork II, which isn't part of
+  that source, has no Code tab.
+- **Zork II's own quirks are covered too**: the Wizard's random spells (waited
+  out or recovered from -- the Hints tab explains them), the spinning Carousel
+  Room (the walkthrough walks you back and has you try again), the carry
+  limits, the balloon, the bank, the genie and the maze of oddly-angled rooms
+  all have hints, map entries and walkthrough steps.
 - **Fully static** — no backend, no database, no API keys. Deploys to GitHub
   Pages at no cost.
 
@@ -84,22 +97,26 @@ src/                     Everything deployed to GitHub Pages
   js/app.js              Boots the Z-machine engine, loads the story file
   js/hints.js            Assist-mode hint sidebar logic
   js/map.js              Fog-of-war auto-map: tracks visited rooms, renders grid
+  js/game.js             Which Zork is being played; its data paths and storage keys
+  js/story-patches.js    Fixes applied to a story file's bytes as it loads
   js/codemuseum.js       Code tab: room/topic-contextual links to Code Museum
   js/command-suggestions.js  Tab suggestions: walkthrough mode + room hints
   js/walkthrough-logic.js    Step/inventory tracking shared with tools/verify-walkthrough.js
-  data/zork1.z3           Compiled Zork I story file
-  data/hints.json         Curated hint database
-  data/map.json           Room/exit graph, generated from the ZIL source (see tools/)
-  data/walkthrough.json   Walkthrough steps, generated from tools/walkthrough.src
-  data/commands.json      Tab-suggestion ideas per room, plus the items the page tracks
-  data/code-museum-links.json  Hand-curated room/topic -> Code Museum bookmark map
+  data/<game>/            One folder per game (zork1, zork2), each holding:
+    story.z3              The compiled story file
+    hints.json            Curated hint database
+    map.json              Room/exit graph, generated from the ZIL source (see tools/)
+    walkthrough.json      Walkthrough steps, generated from tools/walkthroughs/<game>.src
+    commands.json         Tab-suggestion ideas per room, plus the items the page tracks
+    code-museum-links.json  (zork1) Hand-curated room/topic -> Code Museum bookmark map
   vendor/                 Third-party engine files (see THIRD_PARTY_NOTICES.md)
   vendor/gidispa-zvm.js   Original shim enabling save/restore for the ZVM engine
-game-source/             Vendored original ZIL source, kept for reference/rebuilds
-tools/                   Scripts that generate src/data/map.json and walkthrough.json,
-                         plus a headless player used to verify the walkthrough
+game-source/<game>/      Vendored original ZIL source, kept for reference/rebuilds
+tools/                   Scripts that generate each game's map.json and walkthrough.json
+                         (add --game zork2), plus a headless player used to verify the
+                         walkthroughs; tools/games/ holds the per-game settings
 .github/workflows/       GitHub Actions deploy workflow
-BUILD.md                 How to recompile zork1.z3 / regenerate map.json / the walkthrough
+BUILD.md                 How to recompile a story file / regenerate map.json / the walkthrough
 THIRD_PARTY_NOTICES.md   Licenses for everything bundled here
 ```
 
@@ -125,14 +142,15 @@ open the site — same browser, same device. A few things worth knowing:
   — there's no cloud save.
 - Clearing site data/cookies for this site (or a private/incognito window)
   wipes it, same as any other `localStorage`-backed app.
-- **New Game** (top right) clears both the autosave and the explored map and
-  starts over from West of House.
+- **New Game** (top right) clears both the autosave and the explored map of
+  the game you're playing and starts it over. The other game's progress is
+  left alone.
 - The header's **Save** and **Load** buttons are shortcuts for the game's own
-  `save`/`load` commands (see below) — they just type the command for you
+  `save`/`restore` commands (see below) — they just type the command for you
   and open the same file-naming dialog, for named save slots alongside the
   automatic per-turn autosave.
-- This is separate from the autosave above: the in-game `save`/`load`
-  (originally `restore`, aliased — see `game-source/gsyntax.zil`) commands
+- This is separate from the autosave above: the in-game `save`/`restore`
+  (Zork I also answers to `load` — see `game-source/zork1/gsyntax.zil`) commands
   still work normally if typed directly too, also backed by `localStorage`
   via the same `Dialog` library, giving you named save slots instead of a
   single auto-continuing session.
@@ -148,10 +166,11 @@ so the project sub-path works without changes.
 
 ## Licensing
 
-- Zork I itself: MIT, released by Microsoft in 2025 (see `game-source/LICENSE`).
+- Zork I and Zork II themselves: MIT, released by Microsoft in 2025 (see
+  `game-source/zork1/LICENSE` and `game-source/zork2/LICENSE`).
 - Third-party engine/display libraries: see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 - This project's own code: MIT (see [LICENSE](LICENSE)).
 
-The hint content in `src/data/hints.json` is original writing describing
+The hint content in `src/data/<game>/hints.json` is original writing describing
 well-known, decades-old puzzle solutions in this project's own words — not
 copied from any specific walkthrough.

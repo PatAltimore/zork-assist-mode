@@ -288,7 +288,9 @@
         }
         if (loadButton) {
             loadButton.addEventListener('click', function () {
-                sendGameCommand('load');
+                // "restore" is the original word: every game understands it
+                // (only Zork I was also taught "load").
+                sendGameCommand('restore');
             });
         }
     }
