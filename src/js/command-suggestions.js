@@ -114,32 +114,8 @@
         return i === -1 ? null : steps[i];
     }
 
-    // First move of the shortest route from one room to another, using
-    // only unconditional exits (an exit with a "note" depends on some game
-    // state we can't see, so it's never trusted). null if no such route.
     function firstMoveToward(fromId, toId) {
-        if (!mapData || !fromId || fromId === toId || !mapData.rooms[fromId]) {
-            return null;
-        }
-        var firstMove = {};
-        firstMove[fromId] = null;
-        var queue = [fromId];
-        while (queue.length) {
-            var id = queue.shift();
-            var exits = mapData.rooms[id].exits || [];
-            for (var i = 0; i < exits.length; i++) {
-                var exit = exits[i];
-                if (exit.note || !mapData.rooms[exit.target] || exit.target in firstMove) {
-                    continue;
-                }
-                firstMove[exit.target] = id === fromId ? exit.dir.toLowerCase() : firstMove[id];
-                if (exit.target === toId) {
-                    return firstMove[toId];
-                }
-                queue.push(exit.target);
-            }
-        }
-        return null;
+        return Walkthrough.firstMoveToward(mapData, fromId, toId);
     }
 
     // What to actually type for a step right now, plus the placeholder

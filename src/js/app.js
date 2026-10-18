@@ -70,7 +70,7 @@
                 // handle rather than restructuring app.js around events.
                 window.ZorkAssistVM = vm;
                 window.ZorkAssistGlk = Glk;
-                vm.prepare(new Uint8Array(buffer), options);
+                vm.prepare(window.ZorkStoryPatches.apply(ZorkGame.id, new Uint8Array(buffer)), options);
                 Glk.init(options);
             })
             .catch(function (err) {

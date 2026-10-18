@@ -27,12 +27,14 @@
 <div id="crt-overlay" aria-hidden="true"></div>
 <div id="app">
   <header id="app-header">
-    <h1><span id="game-title">ZORK I</span> <span class="subtitle">Assist Mode</span></h1>
-    <div id="header-actions">
+    <div id="title-block">
+      <h1><span id="game-title">ZORK I</span> <span class="subtitle">Assist Mode</span></h1>
       <div id="game-picker" class="button-group" role="radiogroup" aria-label="Choose a game">
         <button id="game-zork1" type="button" role="radio" aria-checked="true" data-game="zork1">Zork I</button>
         <button id="game-zork2" type="button" role="radio" aria-checked="false" data-game="zork2">Zork II</button>
       </div>
+    </div>
+    <div id="header-actions">
       <button id="save-game" type="button">Save</button>
       <button id="load-game" type="button">Load</button>
       <button id="new-game" type="button">New Game</button>
@@ -136,6 +138,7 @@
 </div>
 
 <script src="js/game.js"></script>
+<script src="js/story-patches.js"></script>
 <script src="vendor/jquery-1.12.4.min.js"></script>
 <script src="vendor/glkote.js"></script>
 <script src="vendor/glkapi.js"></script>

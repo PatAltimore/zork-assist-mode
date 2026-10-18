@@ -1,0 +1,335 @@
+# Source for src/data/zork2/walkthrough.json -- run
+# `node tools/build-walkthrough.js --game zork2` to regenerate it, and
+# `node tools/verify-walkthrough.js --game zork2` to replay it against the
+# real game (tools/play.js) and check every step's "done" condition fires.
+#
+# Same format as tools/walkthroughs/zork1.src (read its header), plus one
+# more option for the verifier only:
+#   wander   the step's result is random or timed (the Carousel Room, a
+#            balloon that rises when it likes): the verifier walks back to
+#            the step's room and tries again until it works, as a player would.
+#
+# The route collects all 400 points. Zork II's randomness (the Wizard's
+# spells, the Carousel Room's spinning exits) means only some seeds play
+# clean; the Wizard merely freezing or floating you is waited out.
+
+## The barrow and the garden
+INSIDE-BARROW | take lamp | A strangely familiar lantern | item=lamp
+INSIDE-BARROW | take sword | You'll want something sharp too | item=sword
+INSIDE-BARROW | south | The only way out is down the tunnel | arrive=NARROW-TUNNEL
+NARROW-TUNNEL | south | Cross the foot bridge | arrive=FOOT-BRIDGE
+FOOT-BRIDGE | south | Keep going | arrive=GREAT-CAVERN
+GREAT-CAVERN | southwest | A narrow path among the stalagmites | arrive=SHALLOW-FORD
+SHALLOW-FORD | south | Across the ford, into a tunnel | arrive=DARK-TUNNEL
+DARK-TUNNEL | turn on lamp | It's getting dark | text=lamp is now on
+DARK-TUNNEL | southeast | The narrow way leads somewhere pleasant | arrive=GARDEN-NORTH
+GARDEN-NORTH | in | Something small and white in the rosebed | arrive=GAZEBO-ROOM
+GAZEBO-ROOM | take teapot | Tea things on the table. You may need to carry water | cmd
+GAZEBO-ROOM | take mat | A mat might be good for sliding things under things | cmd
+GAZEBO-ROOM | take opener | A thin tool | cmd
+GAZEBO-ROOM | take newspaper | Paper burns | cmd
+GAZEBO-ROOM | take matchbook | And something to light it with | cmd
+GAZEBO-ROOM | out | Back to the garden | arrive=GARDEN-NORTH
+GARDEN-NORTH | south | Down the manicured path | arrive=FORMAL-GARDEN
+FORMAL-GARDEN | south | Past the peculiar bushes | arrive=TOPIARY-ROOM
+TOPIARY-ROOM | west | Through the rose arbor | arrive=CAROUSEL-ROOM
+
+## The ledge and the locked room
+CAROUSEL-ROOM | north | This room spins you around -- keep trying for the marble hall | arrive=MARBLE-HALL | wander
+MARBLE-HALL | take brick | Square, heavy, and clay-like. Keep it safe | cmd
+MARBLE-HALL | north | Wade to the stream | arrive=DEEP-FORD
+DEEP-FORD | fill teapot with water | The water is cold and fresh | text=teapot is now full
+DEEP-FORD | north | A ledge along the ravine wall | arrive=RAVINE-LEDGE
+RAVINE-LEDGE | up | A precarious climb | arrive=TINY-ROOM
+TINY-ROOM | open lid | That keyhole is covered | text=The lid is now open
+TINY-ROOM | put mat under door | Something slides under doors | cmd
+TINY-ROOM | put opener in keyhole | Push whatever is in the lock out the other side | cmd
+TINY-ROOM | take mat | Lift the mat to see what fell on it | text=key falls
+TINY-ROOM | take key | Got it | cmd
+TINY-ROOM | take opener | The keyhole needs to be clear | cmd
+TINY-ROOM | unlock door with key | Turn it in the lock | text=The door is now unlocked
+TINY-ROOM | open door | Swing it wide | text=The door is now open
+TINY-ROOM | drop key | You won't need that again | cmd
+TINY-ROOM | drop opener | Nor that | cmd
+TINY-ROOM | north | What's behind the door? | arrive=DREARY-ROOM
+DREARY-ROOM | take sphere | A crystal sphere on the table, glowing | text=Taken.
+DREARY-ROOM | south | Back out | arrive=TINY-ROOM
+TINY-ROOM | down | Down the climb | arrive=RAVINE-LEDGE
+RAVINE-LEDGE | west | Along the ledge | arrive=LEDGE-TUNNEL
+LEDGE-TUNNEL | north | A smoky tunnel | arrive=DRAGON-ROOM
+
+## The dragon and the glacier
+DRAGON-ROOM | attack dragon with sword | Annoy him -- but not too much at once | cmd
+DRAGON-ROOM | south | He'll follow you if he's cross | arrive=STONE-BRIDGE
+STONE-BRIDGE | attack dragon with sword | Keep him interested | cmd
+STONE-BRIDGE | south | Lead him on | arrive=COOL-ROOM
+COOL-ROOM | attack dragon with sword | Once more | cmd
+COOL-ROOM | west | Somewhere with a nice shiny wall | arrive=GLACIER-ROOM
+
+## The volcano
+GLACIER-ROOM | drop sword | The sword is too heavy to keep | cmd
+GLACIER-ROOM | drop sphere | Leave that here for now | cmd
+GLACIER-ROOM | up | A chimney of lava | arrive=LAVA-TUBE
+LAVA-TUBE | south | Through the crack | arrive=COBWEBBY-CORRIDOR
+COBWEBBY-CORRIDOR | take fuse | A coil of black string | cmd
+COBWEBBY-CORRIDOR | north | Back to the tube | arrive=LAVA-TUBE
+LAVA-TUBE | down | Down again | arrive=GLACIER-ROOM
+GLACIER-ROOM | west | The ice has melted | arrive=LAVA-ROOM
+LAVA-ROOM | take ruby | Shiny, on the floor | cmd
+LAVA-ROOM | south | Into the volcano | arrive=VOLCANO-BOTTOM
+VOLCANO-BOTTOM | board basket | A very large basket | text=You are now in the basket
+VOLCANO-BOTTOM | open receptacle | The metal thing in the middle | text=Opened.
+VOLCANO-BOTTOM | put newspaper in receptacle | Something to burn | cmd
+VOLCANO-BOTTOM | light match | A flame is needed | text=starts to burn
+VOLCANO-BOTTOM | light newspaper with match | Light the paper in the receptacle | text=newspaper burns inside the receptacle
+VOLCANO-BOTTOM | wait | Hot air rises | arrive=VAIR-1 | wander
+VAIR-1 | wait | Up we go | arrive=VAIR-2 | wander
+VAIR-2 | west | Land on the little ledge | arrive=LEDGE-1
+LEDGE-1 | tie wire to hook | Keep the balloon from drifting off | text=fastened to the hook
+LEDGE-1 | get out | Step out | text=on your own feet
+LEDGE-1 | take coin | A valuable collector's item | cmd
+LEDGE-1 | south | Something gnawed in here | arrive=LIBRARY
+LIBRARY | open purple book | Stamps are often kept in books | text=reveals a Flathead stamp
+LIBRARY | take stamp | Collectors love these | cmd
+LIBRARY | north | Back to the balloon | arrive=LEDGE-1
+LEDGE-1 | board basket | Time to go higher | text=You are now in the basket
+LEDGE-1 | untie wire | Cast off | text=wire falls off
+LEDGE-1 | wait | Up and away | arrive=VAIR-2 | wander
+VAIR-2 | wait | Higher | arrive=VAIR-3 | wander
+VAIR-3 | wait | Higher still -- there's a wider ledge | arrive=VAIR-4 | wander
+VAIR-4 | west | Land on the wide ledge | arrive=LEDGE-2
+LEDGE-2 | tie wire to hook | Moor the balloon | text=fastened to the hook
+LEDGE-2 | get out | Step out | text=on your own feet
+LEDGE-2 | south | A small room with a damaged box | arrive=SAFE-ROOM
+SAFE-ROOM | put brick in slot | The hole is just the right size | cmd
+SAFE-ROOM | put fuse in brick | Make a bomb | cmd
+SAFE-ROOM | light match | Flame | text=starts to burn
+SAFE-ROOM | burn fuse with match | Light the string -- then get out of there | text=string starts to burn
+SAFE-ROOM | north | Out, quickly | arrive=LEDGE-2
+LEDGE-2 | south | Back to see what the blast did | arrive=SAFE-ROOM
+SAFE-ROOM | take crown | Grab it and run | cmd
+SAFE-ROOM | north | Out again, before the rock gives | arrive=LEDGE-2
+LEDGE-2 | board basket | This ledge won't last | text=You are now in the basket
+LEDGE-2 | untie wire | Cast off | text=wire falls off
+LEDGE-2 | close receptacle | Hot air rises; cool air sinks | text=Closed.
+LEDGE-2 | wait | Down we go | arrive=VAIR-4 | wander
+VAIR-4 | wait | Down | arrive=VAIR-3 | wander
+VAIR-3 | wait | Down | arrive=VAIR-2 | wander
+VAIR-2 | wait | Down | arrive=VAIR-1 | wander
+VAIR-1 | wait | Nearly there | arrive=VOLCANO-BOTTOM | wander
+VOLCANO-BOTTOM | get out | Land and step out | text=on your own feet
+VOLCANO-BOTTOM | north | Back out of the volcano | arrive=LAVA-ROOM
+LAVA-ROOM | east | Back to the ice room | arrive=GLACIER-ROOM
+GLACIER-ROOM | east | And on | arrive=COOL-ROOM
+COOL-ROOM | north | Over the bridge | arrive=STONE-BRIDGE
+STONE-BRIDGE | north | The dragon is gone | arrive=DRAGON-ROOM
+
+## The lair and the bank
+DRAGON-ROOM | drop ruby | Treasures wait here for now | cmd
+DRAGON-ROOM | drop coin | Treasures wait here for now | cmd
+DRAGON-ROOM | drop stamp | Treasures wait here for now | cmd
+DRAGON-ROOM | north | The dragon's lair | arrive=DRAGON-LAIR
+DRAGON-LAIR | take chest | Lug it out where the light is better | cmd
+DRAGON-LAIR | south | Out of the lair | arrive=DRAGON-ROOM
+DRAGON-ROOM | open chest | Rusty hinges: it may take two tries | text=Nestled in the chest | until=Nestled in the chest
+DRAGON-ROOM | take statuette | A treasure in the chest | cmd
+DRAGON-ROOM | drop chest | Done with it | cmd
+DRAGON-ROOM | west | The path west | arrive=FRESCO-ROOM
+FRESCO-ROOM | west | Into the bank | arrive=BANK-ENTRANCE
+BANK-ENTRANCE | northwest | Either teller will do | arrive=TELLER-WEST
+TELLER-WEST | west | Bank personnel only | arrive=DEPOSITORY
+DEPOSITORY | south | The chairman's office | arrive=OFFICE
+OFFICE | take portrait | Heavy, and valuable | cmd
+OFFICE | north | Back to the depository | arrive=DEPOSITORY
+DEPOSITORY | enter curtain | Light you can walk through -- the way you came in matters | arrive=SMALL-ROOM
+SMALL-ROOM | enter south wall | The walls can be walked through too, for a short while | arrive=DEPOSITORY
+DEPOSITORY | enter curtain | Again, from this side | arrive=VAULT
+VAULT | take bills | The bank's money | cmd
+VAULT | enter north wall | Out, before the vault closes | arrive=DEPOSITORY
+DEPOSITORY | drop bills | An alarm bars the way out while you hold the loot | cmd
+DEPOSITORY | drop portrait | Same here | cmd
+DEPOSITORY | west | Out of the depository, empty-handed | arrive=TELLER-WEST
+TELLER-WEST | west | And back in -- the way you enter sets where the curtain leads | arrive=DEPOSITORY
+DEPOSITORY | take bills | One at a time | cmd
+DEPOSITORY | throw bills through curtain | Send them through the curtain to the other side | text=bills passes through
+DEPOSITORY | west | Out again | arrive=TELLER-WEST
+TELLER-WEST | west | And back in | arrive=DEPOSITORY
+DEPOSITORY | take portrait | Now the portrait | cmd
+DEPOSITORY | throw portrait through curtain | Through the curtain | text=portrait of J. Pierpont Flathead passes through
+DEPOSITORY | west | Out | arrive=TELLER-WEST
+TELLER-WEST | north | Where did they land? | arrive=VIEWING-WEST
+VIEWING-WEST | take portrait | Collect it | cmd
+VIEWING-WEST | take bills | And the money | cmd
+VIEWING-WEST | south | Out of the bank | arrive=BANK-ENTRANCE
+BANK-ENTRANCE | east | The way out is east | arrive=FRESCO-ROOM
+FRESCO-ROOM | east | Back to the dragon room | arrive=DRAGON-ROOM
+DRAGON-ROOM | drop portrait | Stash the loot | cmd
+DRAGON-ROOM | drop bills | Stash the loot | cmd
+DRAGON-ROOM | drop statuette | Stash the loot | cmd
+
+## The princess and the unicorn
+DRAGON-ROOM | north | Someone is asleep in the lair | arrive=DRAGON-LAIR
+DRAGON-LAIR | wake princess | She's been in a trance | text=shakes herself awake
+DRAGON-LAIR | south | She will leave -- get ahead of her | arrive=DRAGON-ROOM
+DRAGON-ROOM | east | Her way home is the way you came | arrive=LEDGE-TUNNEL
+LEDGE-TUNNEL | east | Onward | arrive=RAVINE-LEDGE
+RAVINE-LEDGE | down | To the stream | arrive=DEEP-FORD
+DEEP-FORD | south | Wait for her in the marble hall | arrive=MARBLE-HALL
+MARBLE-HALL | wait | She knows a secret about this hall | text=presses a loose piece of marble | until=presses a loose piece
+MARBLE-HALL | east | Through the secret passage | arrive=STREAM-PATH
+STREAM-PATH | east | On to the garden | arrive=FORMAL-GARDEN
+FORMAL-GARDEN | north | Follow her path | arrive=GARDEN-NORTH
+GARDEN-NORTH | in | Into the gazebo | arrive=GAZEBO-ROOM
+GAZEBO-ROOM | wait | Wait with her a moment | text=Shyly, a unicorn | until=Shyly, a unicorn
+
+## The riddle and the well
+GAZEBO-ROOM | out | Back to the garden | arrive=GARDEN-NORTH
+GARDEN-NORTH | south | Down the path | arrive=FORMAL-GARDEN
+FORMAL-GARDEN | west | The gap in the hedge | arrive=STREAM-PATH
+STREAM-PATH | southwest | The tunnel with the whirring | arrive=CAROUSEL-ROOM
+CAROUSEL-ROOM | southeast | A room with a riddle -- keep trying | arrive=RIDDLE-ROOM | wander
+RIDDLE-ROOM | answer "well" | What is tall as a house, round as a cup...? | text=deafening clap of thunder
+RIDDLE-ROOM | east | The stone door is open | arrive=PEARL-ROOM
+PEARL-ROOM | take pearl | A necklace | cmd
+PEARL-ROOM | east | A damp round room | arrive=WELL-BOTTOM
+WELL-BOTTOM | board bucket | Climb in | text=You are now in the wooden bucket
+WELL-BOTTOM | put water in bucket | Water makes the bucket go | text=bucket rises
+WELL-TOP | get out | Step out at the top | text=on your own feet
+WELL-TOP | east | The tea room | arrive=TEA-ROOM
+
+## The tea party
+TEA-ROOM | drop teapot | Leave it here for the ride down | cmd
+TEA-ROOM | drop rose | You won't need that | cmd
+TEA-ROOM | take red cake | Four cakes with lettered icing | cmd
+TEA-ROOM | take blue cake | Take these three | cmd
+TEA-ROOM | take green cake | The "Eat Me" one | cmd
+TEA-ROOM | eat green cake | Eat Me | arrive=POSTS-ROOM
+POSTS-ROOM | east | The pool room | arrive=POOL-ROOM
+POOL-ROOM | throw red cake in pool | The red one dries things up | text=Most of the pool evaporates
+POOL-ROOM | take candy | Something sweet under the water | cmd
+POOL-ROOM | west | Back | arrive=POSTS-ROOM
+POSTS-ROOM | eat blue cake | And grow again | arrive=TEA-ROOM
+TEA-ROOM | northwest | A low room | arrive=MAGNET-ROOM
+MAGNET-ROOM | robot, east | A robot -- it follows orders | text=robot leaves the room
+MAGNET-ROOM | east | After it | arrive=MACHINE-ROOM
+MACHINE-ROOM | robot, push triangular button | The robot can touch the buttons; you mustn't | text=dull thump
+MACHINE-ROOM | robot, south | Send it ahead | cmd
+MACHINE-ROOM | south | Follow | arrive=CAGE-ROOM
+CAGE-ROOM | take sphere | A sphere in a closet. What could go wrong? | text=steel cage falls
+IN-CAGE | robot, lift cage | The robot is strong | text=hurled across the room
+CAGE-ROOM | take sphere | Now it's safe | text=Taken.
+CAGE-ROOM | north | Out | arrive=MACHINE-ROOM
+MACHINE-ROOM | west | Back through the low room | arrive=MAGNET-ROOM
+MAGNET-ROOM | southeast | Your bearings are scrambled here -- keep trying | arrive=TEA-ROOM | wander
+TEA-ROOM | take teapot | To ride the bucket down | cmd
+TEA-ROOM | west | The well | arrive=WELL-TOP
+WELL-TOP | board bucket | Climb in | text=You are now in the wooden bucket
+WELL-TOP | take water | Empty the bucket into the teapot | text=bucket descends
+WELL-BOTTOM | get out | Out | text=on your own feet
+WELL-BOTTOM | west | Back through the pearl room | arrive=PEARL-ROOM
+PEARL-ROOM | west | Back | arrive=RIDDLE-ROOM
+RIDDLE-ROOM | down | Down to the carousel | arrive=CAROUSEL-ROOM
+CAROUSEL-ROOM | open box | A dented steel box has appeared | text=reveals a fancy violin
+CAROUSEL-ROOM | take violin | Treasure | cmd
+CAROUSEL-ROOM | drop teapot | Done with it | cmd
+CAROUSEL-ROOM | drop matchbook | And this | cmd
+
+## The Wizard's door
+CAROUSEL-ROOM | southwest | A cobwebby corridor | arrive=COBWEBBY-CORRIDOR
+COBWEBBY-CORRIDOR | southwest | A guarded door | arrive=GUARDIAN-ROOM
+GUARDIAN-ROOM | give candy to lizard | Lizards love sweets | text=guardian greedily wolfs down the candy
+GUARDIAN-ROOM | unlock door with gold key | The key from the unicorn | text=bolt clicks
+GUARDIAN-ROOM | open door | Swing it wide | text=The door creaks open
+GUARDIAN-ROOM | south | The Wizard's workshop | arrive=WIZARDS-WORKSHOP
+WIZARDS-WORKSHOP | west | A workroom with three stands | arrive=WORKBENCH-ROOM
+WORKBENCH-ROOM | put red sphere on ruby stand | Match the colors | cmd
+WORKBENCH-ROOM | south | A chalk pentagram | arrive=PENTAGRAM-ROOM
+PENTAGRAM-ROOM | drop pearl | Leave your treasures here for now | cmd
+PENTAGRAM-ROOM | drop violin | Leave your treasures here for now | cmd
+PENTAGRAM-ROOM | drop gold key | Leave your treasures here for now | cmd
+
+## Fetching the rest
+PENTAGRAM-ROOM | north | Back to the workroom | arrive=WORKBENCH-ROOM
+WORKBENCH-ROOM | east | Out of the workshop | arrive=WIZARDS-WORKSHOP
+WIZARDS-WORKSHOP | north | Back | arrive=GUARDIAN-ROOM
+GUARDIAN-ROOM | north | Back | arrive=COBWEBBY-CORRIDOR
+COBWEBBY-CORRIDOR | north | The lava tube | arrive=LAVA-TUBE
+LAVA-TUBE | down | The ice room | arrive=GLACIER-ROOM
+GLACIER-ROOM | take sphere | The one you left here | cmd
+GLACIER-ROOM | east | To the dragon room | arrive=COOL-ROOM
+COOL-ROOM | north | Over the bridge | arrive=STONE-BRIDGE
+STONE-BRIDGE | north | The treasure stash | arrive=DRAGON-ROOM
+DRAGON-ROOM | take portrait | All of it, in one go | cmd
+DRAGON-ROOM | take bills | Heavy | cmd
+DRAGON-ROOM | take statuette | Heavy | cmd
+DRAGON-ROOM | take ruby | Heavy | cmd
+DRAGON-ROOM | take coin | Heavy | cmd
+DRAGON-ROOM | take stamp | Heavy | cmd
+DRAGON-ROOM | south | Back the way you came | arrive=STONE-BRIDGE
+STONE-BRIDGE | south | And on | arrive=COOL-ROOM
+COOL-ROOM | west | To the ice room | arrive=GLACIER-ROOM
+GLACIER-ROOM | up | The lava tube | arrive=LAVA-TUBE
+LAVA-TUBE | south | The cobwebby corridor | arrive=COBWEBBY-CORRIDOR
+COBWEBBY-CORRIDOR | southwest | The guarded room | arrive=GUARDIAN-ROOM
+GUARDIAN-ROOM | south | The workshop | arrive=WIZARDS-WORKSHOP
+WIZARDS-WORKSHOP | west | The workroom | arrive=WORKBENCH-ROOM
+
+## The stands and the aquarium
+WORKBENCH-ROOM | put blue sphere on sapphire stand | Match the colors | cmd
+WORKBENCH-ROOM | west | A dark hallway with a huge aquarium | arrive=AQUARIUM-ROOM
+AQUARIUM-ROOM | throw portrait at aquarium | Something large and heavy would break that glass | text=shatters the glass wall
+AQUARIUM-ROOM | take sphere | It's in the tank. Don't climb in | text=Taken.
+AQUARIUM-ROOM | take portrait | Pick it up again | cmd
+AQUARIUM-ROOM | east | Back to the stands | arrive=WORKBENCH-ROOM
+WORKBENCH-ROOM | put clear sphere on diamond stand | The last stand | text=a low humming noise begins
+WORKBENCH-ROOM | take black sphere | Something new has appeared | cmd
+WORKBENCH-ROOM | south | The pentagram | arrive=PENTAGRAM-ROOM
+
+## The genie
+PENTAGRAM-ROOM | put black sphere on pentagram | Call up something powerful | text=A cold wind blows
+PENTAGRAM-ROOM | give statuette to genie | He wants a fee: ten treasures | cmd
+PENTAGRAM-ROOM | give bills to genie | A treasure | cmd
+PENTAGRAM-ROOM | give portrait to genie | A treasure | cmd
+PENTAGRAM-ROOM | give coin to genie | A treasure | cmd
+PENTAGRAM-ROOM | give ruby to genie | A treasure | cmd
+PENTAGRAM-ROOM | give stamp to genie | A treasure | cmd
+PENTAGRAM-ROOM | give crown to genie | A treasure (the one you're wearing) | cmd
+PENTAGRAM-ROOM | take pearl | From the floor | cmd
+PENTAGRAM-ROOM | give pearl to genie | A treasure | cmd
+PENTAGRAM-ROOM | take violin | From the floor | cmd
+PENTAGRAM-ROOM | give violin to genie | A treasure | cmd
+PENTAGRAM-ROOM | take gold key | From the floor | cmd
+PENTAGRAM-ROOM | give gold key to genie | The tenth treasure | text=This will do for my fee
+PENTAGRAM-ROOM | genie, kill wizard | The genie hates his master | text=Nothing remains of the Wizard
+PENTAGRAM-ROOM | take wand | What the Wizard left | cmd
+
+## The menhir and the collar
+PENTAGRAM-ROOM | north | Out of the workshop | arrive=WORKBENCH-ROOM
+WORKBENCH-ROOM | east | Out | arrive=WIZARDS-WORKSHOP
+WIZARDS-WORKSHOP | north | Out | arrive=GUARDIAN-ROOM
+GUARDIAN-ROOM | north | Out | arrive=COBWEBBY-CORRIDOR
+COBWEBBY-CORRIDOR | northeast | The carousel, which no longer spins | arrive=CAROUSEL-ROOM
+CAROUSEL-ROOM | south | A quarry | arrive=MENHIR-ROOM
+MENHIR-ROOM | wave wand at menhir | Point the wand at what blocks the way | text=glow dimly with magical
+MENHIR-ROOM | incant "float" | Say the right word, quickly | text=menhir floats majestically
+MENHIR-ROOM | southwest | Beneath it | arrive=KENNEL
+KENNEL | take collar | A huge dog collar | cmd
+KENNEL | northeast | Back | arrive=MENHIR-ROOM
+MENHIR-ROOM | south | The stairway | arrive=STAIRWAY-TOP
+
+## The diamond maze and the crypt
+STAIRWAY-TOP | down | Marble stairs into oddly-angled rooms | arrive=GROUP-ODDLY-ANGLED-ROOM
+GROUP-ODDLY-ANGLED-ROOM | east | Any way will do at first -- until the window flickers | text=flickering dimly | wander
+GROUP-ODDLY-ANGLED-ROOM | southeast | Now each move must be right | text=dimly glowing
+GROUP-ODDLY-ANGLED-ROOM | northeast | Right again | text=is glowing.
+GROUP-ODDLY-ANGLED-ROOM | northwest | Nearly | text=glowing brightly
+GROUP-ODDLY-ANGLED-ROOM | southwest | The last turn | text=rusty squeal
+GROUP-ODDLY-ANGLED-ROOM | north | One of north, east, south or west leads back to the middle room | text=stairway leads upward | try=north,east,south,west
+GROUP-ODDLY-ANGLED-ROOM | down | A secret passage has opened | arrive=CERBERUS-ROOM
+CERBERUS-ROOM | put collar on dog | Make a friend | text=The creature whines happily
+CERBERUS-ROOM | east | Past the dog | arrive=CRYPT-ANTEROOM
+CRYPT-ANTEROOM | open door | The huge marble door | text=crypt door squeaks open
+CRYPT-ANTEROOM | in | Into the crypt | arrive=CRYPT-ROOM
+CRYPT-ROOM | turn off lamp | Some things show up only in the dark | text=lamp is now off
+CRYPT-ROOM | open secret door | The letter F | text=secret door opens
+CRYPT-ROOM | south | The Wizard's staircase. Keep hold of the wand | arrive=ZORK3

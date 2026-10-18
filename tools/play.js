@@ -119,7 +119,7 @@ function createGame(seed, gameId) {
         vm: game, Glk: sandbox.Glk, Dialog: { }, GlkOte,
         GiDispa: new sandbox.GiDispaZVM(),
     };
-    game.prepare(new Uint8Array(fs.readFileSync(cfg.storyPath)), options);
+    game.prepare(require('../src/js/story-patches.js').apply(cfg.id, new Uint8Array(fs.readFileSync(cfg.storyPath))), options);
     sandbox.Glk.init(options);
 
     function drain() {

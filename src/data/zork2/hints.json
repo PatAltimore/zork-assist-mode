@@ -1,1 +1,354 @@
-[{"id":"goals","title":"What you are trying to do","hints":["placeholder"]}]
+[
+  {
+    "id": "goals",
+    "title": "What you're actually trying to do",
+    "hints": [
+      "There's no checklist on screen, but the game has a score out of 400 at the top, and a real ending. Exploring for its own sake won't finish it.",
+      "You're after the treasures of the Great Underground Empire -- and, to win outright, something much more dangerous than treasure: the wand of the Wizard of Frobozz. Most treasure is scored just by picking it up; a few puzzles and rooms score on their own.",
+      "The full 400 comes from the 17 treasures, a handful of puzzle bonuses (the riddle, the dragon, the diamond-shaped maze) and visiting a few rooms. You win by getting the Wizard's wand, going to the Cerberus Room and the crypt below it, and stepping through the secret door in the crypt's south wall with the wand in your hand. See 'Scoring' and 'The endgame' for the specifics."
+    ]
+  },
+  {
+    "id": "strategy",
+    "title": "What order to tackle things in",
+    "hints": [
+      "Unlike a lot of adventures, nothing here is a long chain of locks and keys: it's a handful of fairly independent puzzles spread around a hub. A few need something from elsewhere, and a couple of puzzle items can be wasted.",
+      "The Wizard's workshop is the heart of the game, and getting in needs a key that only comes from rescuing the princess and candy that only comes from the tea room. Most treasures should be collected before you try to pay the genie, since he wants ten of them at once.",
+      "A sound order: lamp and sword; the gazebo (teapot, mat, opener, newspaper, matches); the little locked door and the blue sphere; the dragon and the glacier; the volcano; the bank; the princess and the unicorn's key; the riddle, the well, and the tea party; the robot and the cage; the lizard; the stands and the aquarium; the genie; and finally the menhir, the diamond maze and Cerberus."
+    ]
+  },
+  {
+    "id": "essential-items",
+    "title": "Things worth carrying",
+    "hints": [
+      "Some early items matter much later; the Gazebo's table in particular holds more than snacks.",
+      "From the Gazebo you'll want the teapot (to carry water), the place mat, the letter opener, the newspaper and the matchbook. The lamp and the elvish sword are in the barrow itself.",
+      "Take lamp, sword, and from the Gazebo: teapot, mat, opener, newspaper, matchbook. Later: the brick from the Marble Hall, and the black string from the Cobwebby Corridor. They combine into a bomb."
+    ]
+  },
+  {
+    "id": "inventory",
+    "title": "You can't carry everything",
+    "hints": [
+      "There are two limits: how much you can carry in total weight, and how many separate things you can hold. Go over the second and picking things up starts to fail at random.",
+      "A lot of the route involves dropping things you're finished with, and stashing treasure in a safe place to come back for later. Worn items (like the crown) don't count against the number you can hold.",
+      "About eight things and about 100 pounds. The portrait of J. Pierpont Flathead is the real heavyweight (25), then the sword (30). A sensible stash for treasures is the Dragon Room, which nothing ever disturbs. Dropped things stay put unless you die."
+    ]
+  },
+  {
+    "id": "wizard",
+    "title": "The Wizard keeps turning up",
+    "hints": [
+      "Every so often a little man in a pointed hat appears, waves a wand and says a word beginning with F. It's random; you can't prevent it, but it isn't usually fatal.",
+      "Most of his spells are a nuisance rather than a threat: Freeze, Fence and Float just stop you moving for a while (wait them out), Fear and Ferment make you stumble away from where you meant to go, Feeble and Fumble make you drop things (pick them back up), Fireproof, Fantasize and Fluoresce do nothing much. The ones to worry about are Filch (steals a treasure you're carrying) and Fall or Float while you're on a bridge, in the balloon or on the well bucket.",
+      "Carrying one of the red, blue or white spheres makes him less likely to cast. Once you carry the black sphere he vanishes the moment he appears -- and once the genie is out, the Wizard stops appearing at all. Don't hold treasures you can stash. If a spell traps you in the balloon, you can still close the receptacle and come down."
+    ]
+  },
+  {
+    "id": "lamp",
+    "title": "Light and the lamp",
+    "hints": [
+      "Parts of the dungeon are dark, and the dark is dangerous. The lamp runs down as you use it.",
+      "Turn the lamp on when the game says it's dark and keep it on in the dark parts. It's fine to turn it off in the lit caverns and gardens, but the saving is small. It lasts roughly 650 turns -- more than a careful route needs.",
+      "You'll need it on from the Dark Tunnel onward. The Crypt is the one place you must turn it OFF, to see something. If it ever dies after you have 200 points or more, the Wizard sometimes takes pity on you."
+    ]
+  },
+  {
+    "id": "scoring",
+    "title": "Where the points come from",
+    "hints": [
+      "Most treasure scores the moment you first pick it up, not when you put it anywhere in particular. A few rooms and puzzles score on their own too.",
+      "There are 17 treasures (statuette, ruby, coin, stamp, crown, pearl, violin, bills, portrait, gold key, candy, four crystal spheres and the black one, collar, wand) worth between 10 and 30 each, plus 5 points each for the riddle, the dragon and the diamond maze, and points for entering the well top, the Wizard's workshop, the Cerberus Room, the anteroom and the crypt. The genie gives 2 more for each of ten treasures you hand over.",
+      "Don't hand your treasures to the wrong people: the genie wants ten (statuette, bills, portrait, coin, ruby, stamp, crown, pearl, violin, gold key). The gnome in the volcano and the gnome of Zurich will also take a treasure if you offer, which you can avoid."
+    ]
+  },
+  {
+    "id": "start",
+    "title": "The barrow and the way out",
+    "rooms": ["INSIDE-BARROW", "NARROW-TUNNEL", "FOOT-BRIDGE", "GREAT-CAVERN", "SHALLOW-FORD"],
+    "hints": [
+      "You begin inside a barrow with a way out in only one direction. Items from your last adventure aren't automatically with you.",
+      "A strangely familiar lantern and an Elvish sword are lying right here. Take both before leaving.",
+      "Take the lamp and the sword, then go south four times and southwest -- a tunnel, a bridge, a great cavern, a ford -- and into the Dark Tunnel, where you'll turn the lamp on. The ford is also where fresh water is."
+    ]
+  },
+  {
+    "id": "gazebo",
+    "title": "The gazebo",
+    "rooms": ["GARDEN-NORTH", "GAZEBO-ROOM", "FORMAL-GARDEN", "TOPIARY-ROOM"],
+    "hints": [
+      "The small white building in the rosebed has a table. Take a good look at what's on it.",
+      "The table holds a teapot, a place mat, a newspaper, a letter opener and a matchbook. All of them are worth having; the unicorn nearby is not something you can simply walk up to yet.",
+      "Take teapot, mat, opener, newspaper, matchbook. The topiary animals to the south are creepy but, if you don't dawdle, harmless. The unicorn, and its key, are only for later, after the princess."
+    ]
+  },
+  {
+    "id": "carousel",
+    "title": "The Carousel Room",
+    "rooms": ["CAROUSEL-ROOM"],
+    "hints": [
+      "A whirring noise, eight identical exits, and you can't tell which way you're going. That's the point.",
+      "Until something is switched off, whichever way you walk, you'll mostly go somewhere else. Keep trying -- you do get where you wanted eventually, and the map will tell you where you ended up. Don't worry about it: the room is a puzzle you'll solve for good later, with a little help from a mechanical servant.",
+      "It's the magnetic fields making the carousel spin. Pressing the triangular button in the Machine Room (by the robot, not you!) turns it off: after that the exits go where they say, and a dented steel box appears in this room with a violin inside."
+    ]
+  },
+  {
+    "id": "tiny-door",
+    "title": "The locked door in the little room",
+    "rooms": ["TINY-ROOM", "RAVINE-LEDGE", "DREARY-ROOM"],
+    "hints": [
+      "A locked door, a keyhole with a lid, and you want what's behind it. You can see more than you'd think through the barred window -- look through it.",
+      "Something is already sitting in the lock from the other side. If you could push it out in a way that doesn't lose it, you'd have a key. What's flat enough to slide under a door, and what's thin enough to poke a key out?",
+      "Open the lid, put the mat under the door, put the letter opener in the keyhole, then take the mat -- the key falls out. Take the key and the opener back, unlock the door with the key, open it and go north. The blue crystal sphere on the table is the treasure."
+    ]
+  },
+  {
+    "id": "dragon",
+    "title": "The dragon",
+    "rooms": ["DRAGON-ROOM", "LEDGE-TUNNEL", "STONE-BRIDGE", "COOL-ROOM", "GLACIER-ROOM"],
+    "hints": [
+      "A huge red dragon is blocking the way north. You can't fight him, sneak past, or bribe him. But dragons are not very bright.",
+      "He'll follow you if he's interested in you, and he's interested if you annoy him (a little, not a lot -- too much and he incinerates you). What would a dragon do in a room with a big shiny wall?",
+      "Attack him with the sword, then walk south, attacking again each time he catches up: Dragon Room, Stone Bridge, Cool Room, then west into the Ice Room. He sees his reflection in the glacier, flames it, and the water carries him off. That melts the ice and opens a passage west."
+    ]
+  },
+  {
+    "id": "lair-chest",
+    "title": "The lair, the chest and the princess",
+    "rooms": ["DRAGON-LAIR"],
+    "hints": [
+      "Past where the dragon was, there's a chest and a young woman who seems to be in a trance. Opening the chest noisily might change that.",
+      "The princess leaves as soon as she wakes, and she'll walk home along a particular route. If you'd rather not wake her while you're busy with the chest, you can move the chest elsewhere first. It's too heavy with a full pack, and its rusty lid sometimes needs two attempts.",
+      "Drop most of your gear in the Dragon Room, take the chest (it's heavy), carry it out to the Dragon Room, open it (twice if needed) and take the statuette. Wake the princess later with 'wake princess' -- see the next topic."
+    ]
+  },
+  {
+    "id": "princess",
+    "title": "Following the princess",
+    "rooms": ["DRAGON-LAIR", "MARBLE-HALL", "STREAM-PATH", "GAZEBO-ROOM"],
+    "hints": [
+      "The princess knows her way home and will lead you through a hidden door. You'd better be where she can show you it.",
+      "Her route is the ledge, the ford, the marble hall, the stream path, the garden and finally the gazebo. She'll only reveal the secret door in the marble wall if you're standing in the Marble Hall when she gets to the Stream Path. And a unicorn will only come out if you're in the garden or gazebo when she arrives.",
+      "Wake her ('wake princess'), then leave the lair and go east, east, down, south to the Marble Hall ahead of her and wait there. Once the wall slides open, go east, east, north, in, and wait in the gazebo: the unicorn comes and the princess gives you its gold key and a rose."
+    ]
+  },
+  {
+    "id": "volcano",
+    "title": "The volcano and the balloon",
+    "rooms": ["VOLCANO-BOTTOM", "VAIR-1", "VAIR-2", "VAIR-3", "VAIR-4", "LAVA-ROOM"],
+    "hints": [
+      "A big wicker basket with a bag and a metal pot in the middle, at the bottom of a deep volcano. It's a balloon, and the way up is hot air.",
+      "Climb in, open the receptacle, and put something flammable in it -- the newspaper you carried from the gazebo -- then light it with a match. Hot air rises; no hot air, it comes down. The wire can be tied to a hook to hold the balloon at a ledge.",
+      "Board the basket, open the receptacle, put the newspaper in, light a match and light the newspaper. Wait: one wait goes up one level. You can land west on the narrow ledge (from the second level) or the wide ledge (the fourth). Tie the wire to the hook before getting out, and untie it when you board again. To go down, close the receptacle."
+    ]
+  },
+  {
+    "id": "ledges",
+    "title": "What's on the two ledges",
+    "rooms": ["LEDGE-1", "LIBRARY", "LEDGE-2"],
+    "hints": [
+      "Both ledges have something worth landing for. One has an old library; the other, a small room with a damaged box.",
+      "The narrow ledge has a gold zorkmid and a library whose books are mostly junk -- but one of them has something stuck in it. The wide ledge has the safe.",
+      "On the narrow ledge take the coin and, in the library, open the purple book to find the Flathead stamp. For the wide ledge see 'The safe'."
+    ]
+  },
+  {
+    "id": "safe",
+    "title": "The safe on the wide ledge",
+    "rooms": ["SAFE-ROOM", "LEDGE-2", "COBWEBBY-CORRIDOR", "MARBLE-HALL"],
+    "hints": [
+      "A rusty box in the wall has an oblong hole chipped in it, and the instructions on the card inside (if you've seen it) are a hint in reverse.",
+      "You need something that makes a very big bang, and enough time to get out of the way. Two things you may have passed -- a brick and a piece of string -- are more useful together than apart. Burning the brick itself is fatal.",
+      "Put the clay brick in the slot, put the black string in the brick (as a fuse), light a match and burn the string, then leave the room at once. After the explosion, go back in for the crown, then out again and into the balloon before the ledge collapses. Don't be in the room for the blast, or five turns after it."
+    ]
+  },
+  {
+    "id": "gnome",
+    "title": "The volcano gnome",
+    "rooms": ["LEDGE-1", "LEDGE-2"],
+    "hints": [
+      "Sometimes a gnome appears on a ledge and asks for a fee. You don't have to deal with him.",
+      "He only turns up if you leave the balloon to drift away without you. If you keep hold of it, you can fly down.",
+      "If you let the balloon go and stay on the ledge, he'll show you a way down the chimney to the volcano floor -- for a treasure. Better to fly down with the receptacle closed."
+    ]
+  },
+  {
+    "id": "bank",
+    "title": "The Bank of Zork",
+    "rooms": ["BANK-ENTRANCE", "TELLER-WEST", "TELLER-EAST", "VIEWING-WEST", "VIEWING-EAST", "DEPOSITORY", "OFFICE", "VAULT", "SMALL-ROOM"],
+    "hints": [
+      "The bank's valuables are completely safe, according to the brochure -- except from a customer who understands the walls. The depository is the hub. Where you came in from matters.",
+      "The shimmering curtain and the walls are doors, for a short while, to rooms you can't normally reach: which one depends on how you entered the depository. An alarm stops you leaving with the bank's loot, so you'll need to get it out another way.",
+      "Take the portrait from the office, go north into the depository (that sets the curtain to the Small Room), and 'enter curtain'. Then 'enter south wall' from there, and 'enter curtain' again for the Vault: take the bills. 'Enter north wall' to get out, drop both treasures, go west and west again (which sets the curtain to the West Viewing Room), pick one up and 'throw X through curtain', go out west and back in west to do the other. Collect both in the West Viewing Room."
+    ]
+  },
+  {
+    "id": "riddle",
+    "title": "The stone door and its riddle",
+    "rooms": ["RIDDLE-ROOM", "PEARL-ROOM"],
+    "hints": [
+      "A great stone door, and writing above it. It's asking a question, not telling you.",
+      "'Tall as a house, round as a cup, and all the king's horses can't draw it up.' Think of something deep that horses might try to draw something up from.",
+      "Say it out loud, in quotes: answer \"well\". The door opens onto the Pearl Room, with a pearl necklace, and a passage on to the well."
+    ]
+  },
+  {
+    "id": "well",
+    "title": "The well and the bucket",
+    "rooms": ["WELL-BOTTOM", "WELL-TOP"],
+    "hints": [
+      "There's a wooden bucket in a deep round room. The etchings on the wall are a clue, as is the thing the bucket is hanging from.",
+      "'Water makes the bucket go.' Get in the bucket, then do something that adds water. You will need to bring some. And to come down again you'll need to take the water back out of the bucket without spilling it on the floor.",
+      "Fill the teapot at one of the fords. In the Circular Room, board the bucket and 'put water in bucket'. At the top get out, go east to the Tea Room. To come down again, bring the (empty) teapot back, get in the bucket and 'take water' -- the bucket descends."
+    ]
+  },
+  {
+    "id": "tea-party",
+    "title": "The tea party",
+    "rooms": ["TEA-ROOM", "POSTS-ROOM", "POOL-ROOM"],
+    "hints": [
+      "Four cakes with coloured icing: they're rather like Alice's. A flask in the pool room magnifies what you read through it.",
+      "'Eat me' shrinks you. The blue one grows you back. Orange explodes. Red evaporates -- which you want, but you don't want to eat it. Cakes crumble if you take them out of this part of the dungeon.",
+      "Take the red, blue and green cakes (not the orange one). Eat the green cake to shrink into the Posts Room, go east to the Pool Room and throw the red cake in the pool: the candy appears. Take the candy, go west, and eat the blue cake to grow back."
+    ]
+  },
+  {
+    "id": "robot",
+    "title": "The robot and the buttons",
+    "rooms": ["MAGNET-ROOM", "MACHINE-ROOM"],
+    "hints": [
+      "A robot that does what it's told, in a machine room with three buttons and a stern warning. Giving orders is easy; giving the wrong ones isn't.",
+      "You mustn't touch the buttons yourself: you'd be fried. The robot, though, can push them. Two of them are dangerous in combination with a certain room; one only has an interesting effect somewhere else.",
+      "Start with 'robot, east' in the Low Room, then follow it to the Machine Room. Have it 'robot, push triangular button' (just that one -- the round one and the square one are bad ideas). A dull thump is heard far away: the Carousel Room has stopped spinning, and a box has appeared there."
+    ]
+  },
+  {
+    "id": "cage",
+    "title": "The sphere in the closet",
+    "rooms": ["CAGE-ROOM", "IN-CAGE"],
+    "hints": [
+      "A beautiful sphere, all alone in a closet in a room marked with the name of an alarm company. It looks like a trap because it is one.",
+      "A cage falls on whoever reaches for it, and poison gas starts to fill the room. Something stronger than you could lift the cage off.",
+      "Take the robot with you (send it ahead: 'robot, south'). Then take the sphere yourself, and say 'robot, lift cage'. Don't send the robot for the sphere, it's the one that would be crushed."
+    ]
+  },
+  {
+    "id": "lizard",
+    "title": "The lizard guarding the door",
+    "rooms": ["GUARDIAN-ROOM", "COBWEBBY-CORRIDOR"],
+    "hints": [
+      "A nasty-looking lizard head is mounted on a strong door. It will bite if you reach for the handle.",
+      "Lizards are fond of sweets. And it won't open without a key; you may have one from a friend of the garden.",
+      "Give the candy to the lizard, then 'unlock door with gold key' and 'open door'. South of it is the Wizard's workshop."
+    ]
+  },
+  {
+    "id": "workshop",
+    "title": "The Wizard's workshop",
+    "rooms": ["WIZARDS-WORKSHOP", "WORKBENCH-ROOM", "TROPHY-ROOM", "WIZARDS-QUARTERS"],
+    "hints": [
+      "Several rooms off a hall: a workbench with three stands, a pentagram room, an aquarium, a trophy room, and the Wizard's quarters.",
+      "The trophy room is a trap, so don't touch anything there, and the trophy cabinet is magically protected. The workbench has three stands of different colours, and the pentagram room has a circle. Both want a sphere.",
+      "The workbench: put the red sphere on the ruby stand, the blue on the sapphire, the clear on the diamond. The pentagram: later, with the black sphere. The quarters are only a curiosity, but it's safe to look."
+    ]
+  },
+  {
+    "id": "aquarium",
+    "title": "The aquarium",
+    "rooms": ["AQUARIUM-ROOM", "IN-AQUARIUM"],
+    "hints": [
+      "A huge aquarium with a baby sea serpent in it, and something at the bottom.",
+      "Going into the tank yourself is a mistake -- the serpent eats you, or the glass does. Smashing the glass would let out the water, and the serpent. It needs to be something big.",
+      "Throw something large and heavy at the aquarium: the portrait works (anything heavy and not too precious will; you can pick it up afterwards). The serpent dies; take the clear crystal sphere from the aquarium. Do not climb in."
+    ]
+  },
+  {
+    "id": "palantirs",
+    "title": "The four crystal spheres",
+    "rooms": ["WORKBENCH-ROOM", "DREARY-ROOM", "CAGE-ROOM", "AQUARIUM-ROOM"],
+    "hints": [
+      "There are four glassy spheres, three obvious and a fourth that doesn't exist yet. Each one is guarded differently.",
+      "Blue is behind the little door in the ravine, red is in a closet with a trap, and clear is in the aquarium. Put them on the workbench's stands, matching colours (clear goes on the diamond one).",
+      "Red: ruby stand. Blue: sapphire stand. Clear: diamond stand. When all three are in place, they vanish and a black sphere appears on a black stand. That's the one you take to the pentagram."
+    ]
+  },
+  {
+    "id": "genie",
+    "title": "The genie",
+    "rooms": ["PENTAGRAM-ROOM"],
+    "hints": [
+      "The black sphere in the pentagram calls up something powerful, who wants paying before he'll do anything. He'll also do exactly one thing.",
+      "His fee is ten treasures, all of them from the list of the ones that have no other use: statuette, bills, portrait, coin, ruby, stamp, crown, pearl, violin and the gold key. Each one you give is two more points. Then he does one task -- choose it carefully, because there's something you will need that nothing else gets you.",
+      "'Put black sphere on pentagram', then 'give X to genie' for each of the ten. Then 'genie, kill wizard': the Wizard dies and leaves his wand on the floor. Take it. (The genie could instead move the menhir, but you can do that yourself with the wand.)"
+    ]
+  },
+  {
+    "id": "wand",
+    "title": "Using the wand",
+    "rooms": ["MENHIR-ROOM"],
+    "hints": [
+      "The wand works by pointing it at something and then saying a word. The Wizard's spells all start with F.",
+      "You have to be quick: after you point it, you've only a moment to speak the word. The words are the ones the Wizard used on you.",
+      "'wave wand at <thing>' and then, immediately, 'incant \"<word>\"'. FLOAT lifts an object into the air (it will lift the great menhir); FILCH pulls an object to you; FRY destroys it; FLUORESCE makes it glow; FUDGE smells of chocolate. Many others are useless or dangerous on yourself."
+    ]
+  },
+  {
+    "id": "menhir",
+    "title": "The menhir and the kennel",
+    "rooms": ["MENHIR-ROOM", "KENNEL"],
+    "hints": [
+      "A huge standing stone leans over a dark opening to the southwest. You can't move it by hand.",
+      "It's far too heavy for a person, but a spell could lift it.",
+      "With the wand, 'wave wand at menhir' and then 'incant \"float\"'. The menhir rises and you can go southwest to the kennel, where a gigantic dog collar is waiting. Take it."
+    ]
+  },
+  {
+    "id": "diamond-maze",
+    "title": "The oddly-angled rooms",
+    "rooms": ["STAIRWAY-TOP", "GROUP-ODDLY-ANGLED-ROOM"],
+    "hints": [
+      "Nine rooms that look exactly alike, with a diamond-shaped window in the floor of each. The window's brightness is the clue to how you're doing.",
+      "You can only get anywhere by a specific sequence of moves, learned one move at a time -- but some of those moves will happen to you whether you like it or not. The glowing window brightens each time you get a move right, and resets if you get one wrong. You'll start in the middle room.",
+      "From the middle room, move in any direction until you land in a room whose window is 'flickering dimly'. From there: southeast, northeast, northwest, southwest -- each makes the window glow brighter, and the last gives a rusty squeal. Then try north, east, south or west (only one works) to get back to the middle room, and go down."
+    ]
+  },
+  {
+    "id": "cerberus",
+    "title": "Cerberus",
+    "rooms": ["CERBERUS-ROOM"],
+    "hints": [
+      "A three-headed dog the size of an elephant guards the way to the crypt. It will bite you if you try to go past, and you can't fight it.",
+      "It looks like it wants to be someone's dog. And you may have already found something that would suit a very big dog.",
+      "'Put collar on dog' makes him your friend. Then you can go east. Do not take the collar off again."
+    ]
+  },
+  {
+    "id": "crypt",
+    "title": "The crypt",
+    "rooms": ["CRYPT-ANTEROOM", "CRYPT-ROOM"],
+    "hints": [
+      "A huge marble door. 'Feel Free' is written above it. Inside is a room of heads on poles, which you really shouldn't touch.",
+      "The way on isn't visible while the lamp is lit. Some secrets are only visible in the dark -- and the letter on the wall is a clue to what is hidden.",
+      "'Open door', go in. 'Turn off lamp', and a faint outline of a rectangle with an F shows on the south wall. 'Open secret door', then go south, with the wand in your possession."
+    ]
+  },
+  {
+    "id": "endgame",
+    "title": "The endgame",
+    "rooms": ["CERBERUS-ROOM", "CRYPT-ANTEROOM", "CRYPT-ROOM", "ZORK3"],
+    "hints": [
+      "The way out isn't a door out of the dungeon: it's further in. And it won't let you through unprepared.",
+      "Beyond the crypt is a landing with magical lines that react to what you carry. The only thing that lets you through is the thing you took from the Wizard -- keep it with you.",
+      "Have the wand with you, go through the crypt's secret door, and the game ends with a 400-point score (if you have collected every treasure) and the promise of Zork III. If you haven't, the points are the only thing missing: nothing stops you finishing."
+    ]
+  },
+  {
+    "id": "dangers",
+    "title": "Things that will kill you",
+    "hints": [
+      "A fair number of things in this dungeon are fatal. Most are obviously dangerous; a few are traps that look innocent.",
+      "Pushing the machine room's buttons yourself, taking the sphere in the closet without the robot, climbing into the aquarium, burning the brick, touching the heads in the crypt, opening the flask, standing near the safe when it blows, and trying to sneak past the dragon or Cerberus. Also: taunting the dragon too much, and eating the red cake.",
+      "If you die the game sends you to a strange mist-filled place; keep going west through the mists and the face will let you go once, or twice, back to the barrow. Your belongings are scattered: valuables go to the Wizard's cabinet, key items to the Carousel Room, the rest to the gazebo. It also costs 10 points."
+    ]
+  }
+]

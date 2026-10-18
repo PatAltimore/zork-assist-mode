@@ -1,1 +1,278 @@
-{"items":{},"general":[{"cmd":"inventory","kind":"useful"}],"byRoom":{}}
+{
+  "items": {
+    "lamp": { "match": "lamp", "aliases": ["lantern"], "inv": ["lamp"] },
+    "sword": { "match": "sword", "inv": ["elvish sword"] },
+    "teapot": { "match": "teapot", "inv": ["china teapot"] },
+    "mat": { "match": "mat", "inv": ["place mat"] },
+    "opener": { "match": "opener", "inv": ["letter opener"] },
+    "newspaper": { "match": "newspaper" },
+    "matchbook": { "match": "matchbook", "aliases": ["matches", "match"] },
+    "brick": { "match": "brick" },
+    "key": { "match": "key", "inv": ["iron key", "gold key"] },
+    "fuse": { "match": "fuse", "aliases": ["string"], "inv": ["black string", "string"] },
+    "sphere": { "match": "sphere", "aliases": ["palantir", "ball"], "inv": ["crystal sphere"] },
+    "ruby": { "match": "ruby" },
+    "coin": { "match": "coin", "aliases": ["zorkmid"], "inv": ["zorkmid"] },
+    "stamp": { "match": "stamp" },
+    "crown": { "match": "crown" },
+    "statuette": { "match": "statuette" },
+    "chest": { "match": "chest" },
+    "portrait": { "match": "portrait" },
+    "bills": { "match": "bills" },
+    "pearl": { "match": "pearl", "aliases": ["necklace"], "inv": ["pearl necklace"] },
+    "violin": { "match": "violin" },
+    "candy": { "match": "candy", "inv": ["package of candy"] },
+    "rose": { "match": "rose" },
+    "cake": { "match": "cake", "inv": ["cake frosted"] },
+    "collar": { "match": "collar" },
+    "wand": { "match": "wand", "inv": ["wand"] },
+    "club": { "match": "club", "aliases": ["bat"], "inv": ["wooden club"] }
+  },
+
+  "general": [
+    { "cmd": "inventory", "kind": "useful" },
+    { "cmd": "diagnose", "kind": "useful" },
+    { "cmd": "score", "kind": "useful" },
+    { "cmd": "look", "kind": "useful" },
+    { "cmd": "xyzzy", "kind": "funny" },
+    { "cmd": "plugh", "kind": "funny" },
+    { "cmd": "curse", "kind": "funny" },
+    { "cmd": "yell", "kind": "funny" },
+    { "cmd": "hello", "kind": "funny" },
+    { "cmd": "pray", "kind": "funny" }
+  ],
+
+  "byRoom": {
+    "INSIDE-BARROW": [
+      { "cmd": "take lamp", "kind": "useful" },
+      { "cmd": "take sword", "kind": "useful" },
+      { "cmd": "south", "kind": "useful" }
+    ],
+    "DARK-TUNNEL": [
+      { "cmd": "turn on lamp", "kind": "useful", "item": "lamp" }
+    ],
+    "GARDEN-NORTH": [
+      { "cmd": "in", "kind": "useful" },
+      { "cmd": "smell roses", "kind": "funny" }
+    ],
+    "GAZEBO-ROOM": [
+      { "cmd": "take teapot", "kind": "useful" },
+      { "cmd": "take mat", "kind": "useful" },
+      { "cmd": "take opener", "kind": "useful" },
+      { "cmd": "take newspaper", "kind": "useful" },
+      { "cmd": "take matchbook", "kind": "useful" },
+      { "cmd": "read newspaper", "kind": "funny" }
+    ],
+    "TOPIARY-ROOM": [
+      { "cmd": "examine hedges", "kind": "funny" },
+      { "cmd": "west", "kind": "useful" }
+    ],
+    "CAROUSEL-ROOM": [
+      { "cmd": "north", "kind": "useful" },
+      { "cmd": "open box", "kind": "useful" },
+      { "cmd": "take violin", "kind": "useful" }
+    ],
+    "MARBLE-HALL": [
+      { "cmd": "take brick", "kind": "useful" },
+      { "cmd": "wait", "kind": "useful" }
+    ],
+    "DEEP-FORD": [
+      { "cmd": "fill teapot with water", "kind": "useful", "item": "teapot" }
+    ],
+    "TINY-ROOM": [
+      { "cmd": "open lid", "kind": "useful" },
+      { "cmd": "put mat under door", "kind": "useful", "item": "mat" },
+      { "cmd": "put opener in keyhole", "kind": "useful", "item": "opener" },
+      { "cmd": "take mat", "kind": "useful" },
+      { "cmd": "take key", "kind": "useful" },
+      { "cmd": "unlock door with key", "kind": "useful", "item": "key" },
+      { "cmd": "open door", "kind": "useful" }
+    ],
+    "DREARY-ROOM": [
+      { "cmd": "take sphere", "kind": "useful" },
+      { "cmd": "look through window", "kind": "funny" }
+    ],
+    "DRAGON-ROOM": [
+      { "cmd": "attack dragon with sword", "kind": "useful", "item": "sword" },
+      { "cmd": "open chest", "kind": "useful" },
+      { "cmd": "take statuette", "kind": "useful" }
+    ],
+    "DRAGON-LAIR": [
+      { "cmd": "wake princess", "kind": "useful" },
+      { "cmd": "take chest", "kind": "useful" }
+    ],
+    "GLACIER-ROOM": [
+      { "cmd": "examine ice", "kind": "funny" }
+    ],
+    "COBWEBBY-CORRIDOR": [
+      { "cmd": "take fuse", "kind": "useful" }
+    ],
+    "LAVA-ROOM": [
+      { "cmd": "take ruby", "kind": "useful" }
+    ],
+    "VOLCANO-BOTTOM": [
+      { "cmd": "board basket", "kind": "useful" },
+      { "cmd": "open receptacle", "kind": "useful" },
+      { "cmd": "put newspaper in receptacle", "kind": "useful", "item": "newspaper" },
+      { "cmd": "light match", "kind": "useful", "item": "matchbook" },
+      { "cmd": "light newspaper with match", "kind": "useful", "item": "newspaper" },
+      { "cmd": "close receptacle", "kind": "useful" },
+      { "cmd": "get out", "kind": "useful" }
+    ],
+    "VAIR-1": [
+      { "cmd": "wait", "kind": "useful" },
+      { "cmd": "close receptacle", "kind": "useful" }
+    ],
+    "VAIR-2": [
+      { "cmd": "west", "kind": "useful" },
+      { "cmd": "wait", "kind": "useful" }
+    ],
+    "VAIR-3": [
+      { "cmd": "wait", "kind": "useful" },
+      { "cmd": "close receptacle", "kind": "useful" }
+    ],
+    "VAIR-4": [
+      { "cmd": "west", "kind": "useful" },
+      { "cmd": "close receptacle", "kind": "useful" }
+    ],
+    "LEDGE-1": [
+      { "cmd": "tie wire to hook", "kind": "useful" },
+      { "cmd": "untie wire", "kind": "useful" },
+      { "cmd": "take coin", "kind": "useful" },
+      { "cmd": "south", "kind": "useful" }
+    ],
+    "LEDGE-2": [
+      { "cmd": "tie wire to hook", "kind": "useful" },
+      { "cmd": "untie wire", "kind": "useful" },
+      { "cmd": "south", "kind": "useful" }
+    ],
+    "LIBRARY": [
+      { "cmd": "open purple book", "kind": "useful" },
+      { "cmd": "take stamp", "kind": "useful" },
+      { "cmd": "read white book", "kind": "funny" }
+    ],
+    "SAFE-ROOM": [
+      { "cmd": "put brick in slot", "kind": "useful", "item": "brick" },
+      { "cmd": "put fuse in brick", "kind": "useful", "item": "fuse" },
+      { "cmd": "light match", "kind": "useful", "item": "matchbook" },
+      { "cmd": "burn fuse with match", "kind": "useful", "item": "fuse" },
+      { "cmd": "take crown", "kind": "useful" }
+    ],
+    "OFFICE": [
+      { "cmd": "take portrait", "kind": "useful" }
+    ],
+    "DEPOSITORY": [
+      { "cmd": "enter curtain", "kind": "useful" },
+      { "cmd": "read cube", "kind": "funny" },
+      { "cmd": "read brochure", "kind": "funny" }
+    ],
+    "SMALL-ROOM": [
+      { "cmd": "enter south wall", "kind": "useful" }
+    ],
+    "VAULT": [
+      { "cmd": "take bills", "kind": "useful" },
+      { "cmd": "enter north wall", "kind": "useful" }
+    ],
+    "VIEWING-WEST": [
+      { "cmd": "take portrait", "kind": "useful" },
+      { "cmd": "take bills", "kind": "useful" }
+    ],
+    "RIDDLE-ROOM": [
+      { "cmd": "answer \"well\"", "kind": "useful" }
+    ],
+    "PEARL-ROOM": [
+      { "cmd": "take pearl", "kind": "useful" }
+    ],
+    "WELL-BOTTOM": [
+      { "cmd": "board bucket", "kind": "useful" },
+      { "cmd": "put water in bucket", "kind": "useful" },
+      { "cmd": "read etchings", "kind": "funny" }
+    ],
+    "WELL-TOP": [
+      { "cmd": "take water", "kind": "useful" },
+      { "cmd": "get out", "kind": "useful" },
+      { "cmd": "read etchings", "kind": "funny" }
+    ],
+    "TEA-ROOM": [
+      { "cmd": "take red cake", "kind": "useful" },
+      { "cmd": "take blue cake", "kind": "useful" },
+      { "cmd": "take green cake", "kind": "useful" },
+      { "cmd": "eat green cake", "kind": "useful", "item": "cake" },
+      { "cmd": "read cake", "kind": "funny" }
+    ],
+    "POSTS-ROOM": [
+      { "cmd": "eat blue cake", "kind": "useful", "item": "cake" }
+    ],
+    "POOL-ROOM": [
+      { "cmd": "throw red cake in pool", "kind": "useful", "item": "cake" },
+      { "cmd": "take candy", "kind": "useful" },
+      { "cmd": "read flask", "kind": "funny" }
+    ],
+    "MAGNET-ROOM": [
+      { "cmd": "robot, east", "kind": "useful" },
+      { "cmd": "read paper", "kind": "funny" }
+    ],
+    "MACHINE-ROOM": [
+      { "cmd": "robot, push triangular button", "kind": "useful" },
+      { "cmd": "robot, south", "kind": "useful" }
+    ],
+    "CAGE-ROOM": [
+      { "cmd": "take sphere", "kind": "useful" }
+    ],
+    "IN-CAGE": [
+      { "cmd": "robot, lift cage", "kind": "useful" }
+    ],
+    "GUARDIAN-ROOM": [
+      { "cmd": "give candy to lizard", "kind": "useful", "item": "candy" },
+      { "cmd": "unlock door with gold key", "kind": "useful", "item": "key" },
+      { "cmd": "open door", "kind": "useful" }
+    ],
+    "WIZARDS-WORKSHOP": [
+      { "cmd": "west", "kind": "useful" },
+      { "cmd": "south", "kind": "funny" }
+    ],
+    "WORKBENCH-ROOM": [
+      { "cmd": "put red sphere on ruby stand", "kind": "useful", "item": "sphere" },
+      { "cmd": "put blue sphere on sapphire stand", "kind": "useful", "item": "sphere" },
+      { "cmd": "put clear sphere on diamond stand", "kind": "useful", "item": "sphere" },
+      { "cmd": "take black sphere", "kind": "useful" }
+    ],
+    "AQUARIUM-ROOM": [
+      { "cmd": "throw portrait at aquarium", "kind": "useful", "item": "portrait" },
+      { "cmd": "take sphere", "kind": "useful" }
+    ],
+    "TROPHY-ROOM": [
+      { "cmd": "read label", "kind": "funny" }
+    ],
+    "PENTAGRAM-ROOM": [
+      { "cmd": "put black sphere on pentagram", "kind": "useful", "item": "sphere" },
+      { "cmd": "give statuette to genie", "kind": "useful", "item": "statuette" },
+      { "cmd": "genie, kill wizard", "kind": "useful" },
+      { "cmd": "take wand", "kind": "useful" }
+    ],
+    "MENHIR-ROOM": [
+      { "cmd": "wave wand at menhir", "kind": "useful", "item": "wand" },
+      { "cmd": "incant \"float\"", "kind": "useful", "item": "wand" },
+      { "cmd": "southwest", "kind": "useful" }
+    ],
+    "KENNEL": [
+      { "cmd": "take collar", "kind": "useful" }
+    ],
+    "GROUP-ODDLY-ANGLED-ROOM": [
+      { "cmd": "look", "kind": "useful" },
+      { "cmd": "down", "kind": "useful" }
+    ],
+    "CERBERUS-ROOM": [
+      { "cmd": "put collar on dog", "kind": "useful", "item": "collar" }
+    ],
+    "CRYPT-ANTEROOM": [
+      { "cmd": "open door", "kind": "useful" },
+      { "cmd": "read inscription", "kind": "funny" }
+    ],
+    "CRYPT-ROOM": [
+      { "cmd": "turn off lamp", "kind": "useful", "item": "lamp" },
+      { "cmd": "open secret door", "kind": "useful" },
+      { "cmd": "read crypt", "kind": "funny" }
+    ]
+  }
+}

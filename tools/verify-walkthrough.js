@@ -1,5 +1,5 @@
-// Replays src/data/<game>/walkthrough.json against the real game (tools/play.js) and
-// checks that every step's "done" condition actually fires -- using the very
+// Replays src/data/<game>/walkthrough.json against the real game (tools/play.js)
+// and checks that every step's "done" condition actually fires -- using the very
 // same tracking code the page uses (src/js/walkthrough-logic.js).
 //
 //   (add --game zork2 to any of these; default zork1)
@@ -7,11 +7,14 @@
 //   node tools/verify-walkthrough.js --seeds 1-200   (which seeds play clean)
 //   node tools/verify-walkthrough.js --resync 1      (check the page's Resync button)
 //
-// Zork's thief and combat are random, so a run only passes for some seeds.
-// For each step the verifier checks that
-//   1. the step is the walkthrough's *next* step when it is about to be
-//      typed (nothing earlier is left hanging), and
-//   2. it is marked done by the game's reply to that command.
+// The games' random events (Zork I's thief and combat, Zork II's Wizard and
+// the Carousel Room) mean a run only passes for some seeds. The verifier
+// behaves like a player following the page's suggestions: it always types
+// the walkthrough's *next* step, first walking back to the step's room if
+// something moved it, and it waits out the few Wizard spells that merely
+// freeze or float you. For each step it checks that
+//   1. the step is marked done by the game's reply to that command, and
+//   2. nothing was left hanging when the next step is due.
 // A passing run also ends with the game's full score (and its win text,
 // where the game has one).
 
@@ -27,8 +30,23 @@ function loadSteps() {
     return JSON.parse(fs.readFileSync(path.join(DATA, 'walkthrough.json'), 'utf8')).steps;
 }
 const items = JSON.parse(fs.readFileSync(path.join(DATA, 'commands.json'), 'utf8')).items;
-const rooms = JSON.parse(fs.readFileSync(path.join(DATA, 'map.json'), 'utf8')).rooms;
+const mapData = JSON.parse(fs.readFileSync(path.join(DATA, 'map.json'), 'utf8'));
+const rooms = mapData.rooms;
 const resolveRoom = W.createRoomResolver(rooms);
+
+// Replies that mean "not now, wait a moment" rather than "that didn't work":
+// the Wizard's Float / Freeze / Fence spells (Zork II).
+const SPELL_WAIT_RE = /flapping your arms|frozen solid|invisible fence of magical force|can't reach that/i;
+// Zork II only lets you hold a few things reliably; past that, picking
+// something up fails at random.
+const RETRY_RE = /holding too many things/i;
+// ...and the Wizard's Feeble spell caps what you can carry for a while, then
+// Feeble and Fumble make you drop things; a player just waits and picks them up.
+const WEAK_RE = /your load is too heavy/i;
+// Ferment and Fear send you stumbling off in a random direction; the next
+// step walks you back (routeBack), so just try the step again.
+const STUMBLE_RE = /a little unsteady|screaming in terror|tripped on an invisible cord/i;
+const DROPPED_RE = /(?:you drop|you dropped) the ([a-z ]+?)[.!]/i;
 
 // stepList defaults to the shipped walkthrough.json; tools/build-walkthrough.js
 // passes freshly parsed steps. scoreBefore[i] / roomBefore[i] record the game's
@@ -48,6 +66,7 @@ function run(seed, verbose, stepList) {
         tracker.record(cmd);
         const roomBefore = roomId;
         const r = game.send(cmd);
+        if (process.env.TRACE) { console.log('> ' + cmd + '  [' + r.room + ' ' + r.score + '] ' + r.text.replace(/\s+/g, ' ').slice(0, Number(process.env.TRACE) > 1 ? 900 : 110)); }
         last = r;
         roomId = resolveRoom(r.room);
         tracker.observe(r.text);
@@ -62,35 +81,86 @@ function run(seed, verbose, stepList) {
             submitted: [{ cmd: W.normalizeCommand(cmd), roomId: roomBefore }]
         };
         W.advance(steps, done, ctx);
+        const dropped = DROPPED_RE.exec(r.text);
+        if (dropped && !/^(VAIR|WELL)/.test(roomId || '') && !cmd.startsWith('take ')) {
+            send('take ' + dropped[1].replace(/^(a|an|the) /, ''));
+        }
         return r;
     }
 
-    for (let i = 0; i < steps.length; i++) {
-        const step = steps[i];
-        scoreBefore.push(game.status().score);
-        roomBeforeStep.push(roomId);
-        const expected = W.nextStepIndex(steps, done);
-        if (expected !== i) {
-            problems.push('step ' + (i + 1) + ' (' + step.cmd + ') typed while step ' + (expected + 1) + ' (' + steps[expected].cmd + ') is still pending');
-            // Catch up so one stale step doesn't hide every later problem.
-            for (let j = expected; j < i; j++) { done[steps[j].id] = true; }
-        }
-        let r = send(step.cmd);
-        const v = step.verify;
-        if (v && v.fight && /don't have that|don't have the sword/i.test(r.text)) {
-            send('take sword');
-            r = send(step.cmd);
-        }
-        if (v) {
-            let tries = 1;
-            while (r.text.toLowerCase().indexOf(v.until.toLowerCase()) === -1 && tries < 80) {
-                if (v.fight && /sword goes flying|don't have the sword|don't have that|knocked from your hand/i.test(r.text)) {
-                    send('take sword');
-                }
-                r = send(step.cmd);
-                tries++;
+    // What the page does when something has moved the player off the route:
+    // suggest the first move toward the step's room.
+    function routeBack(step) {
+        for (let n = 0; n < 25 && roomId && roomId !== step.at; n++) {
+            const move = W.firstMoveToward(mapData, roomId, step.at);
+            if (!move) {
+                return;
+            }
+            const before = roomId;
+            send(move);
+            if (roomId === before) {
+                return;
             }
         }
+    }
+
+    function doStep(step) {
+        const v = step.verify;
+        let r;
+        for (let tries = 1; tries <= 120; tries++) {
+            routeBack(step);
+            r = send(step.cmd);
+            if (done[step.id]) {
+                if (v && v.until && r.text.toLowerCase().indexOf(v.until.toLowerCase()) === -1) {
+                    continue; // fight/repeat steps: "done" may fire before the outcome
+                }
+                return r;
+            }
+            if (v && v.fight && /don't have that|don't have the sword|sword goes flying|knocked from your hand/i.test(r.text)) {
+                send('take sword');
+                continue;
+            }
+            if (v && v.try) {
+                // Several commands might be the right one (which way leads
+                // out of a maze room?): try each in turn.
+                for (let k = 0; k < v.try.length && !done[step.id]; k++) {
+                    if (v.try[k] !== step.cmd) {
+                        r = send(v.try[k]);
+                    }
+                }
+                if (done[step.id]) {
+                    return r;
+                }
+            }
+            if (SPELL_WAIT_RE.test(r.text) && !/^VAIR/.test(roomId || '')) {
+                // (Never in the balloon: waiting there would let it drift away.)
+                send('wait');
+                continue;
+            }
+            if (STUMBLE_RE.test(r.text)) {
+                continue;
+            }
+            if (WEAK_RE.test(r.text) && tries < 40) {
+                send('wait');
+                continue;
+            }
+            if (RETRY_RE.test(r.text) || (v && (v.wander || (v.until && r.text.toLowerCase().indexOf(v.until.toLowerCase()) === -1)))) {
+                continue;
+            }
+            return r;
+        }
+        return r;
+    }
+
+    for (let guard = 0; guard < steps.length * 3; guard++) {
+        const i = W.nextStepIndex(steps, done);
+        if (i === -1) {
+            break;
+        }
+        const step = steps[i];
+        scoreBefore[i] = game.status().score;
+        roomBeforeStep[i] = roomId;
+        const r = doStep(step);
         if (!done[step.id]) {
             problems.push('step ' + (i + 1) + ' (' + step.cmd + ' @ ' + step.at + ') not completed; got: ' + r.text.replace(/\s+/g, ' ').slice(0, 160) + ' [' + r.room + ']');
             if (problems.length > 12) { break; }
@@ -100,6 +170,14 @@ function run(seed, verbose, stepList) {
             console.log('step ' + (i + 1) + '/' + steps.length + ' ' + r.room + ' score ' + r.score);
         }
         if (game.isFinished()) { break; }
+    }
+    // Steps that finished early (typed ahead, or by walking back) never
+    // got their own "before" reading: borrow the previous step's.
+    for (let i = 0; i < steps.length; i++) {
+        if (scoreBefore[i] === undefined) {
+            scoreBefore[i] = i ? scoreBefore[i - 1] : 0;
+            roomBeforeStep[i] = i ? roomBeforeStep[i - 1] : roomId;
+        }
     }
     const won = (!cfg.winText || cfg.winText.test(last.text)) && last.score === cfg.maxScore;
     return { seed: seed, problems: problems, won: won, score: last.score, room: last.room, scoreBefore: scoreBefore, roomBefore: roomBeforeStep };

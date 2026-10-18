@@ -10,7 +10,7 @@ const ROOT = path.join(__dirname, '..', '..');
 
 const GAMES = {
     zork1: { dungeon: '1dungeon.zil', maxScore: 350, winText: /completed a great and perilous/i },
-    zork2: { dungeon: '2dungeon.zil', maxScore: 400, winText: null },
+    zork2: { dungeon: '2dungeon.zil', maxScore: 400, winText: /ultimate adventure concludes/i },
 };
 
 function gameId(argv) {

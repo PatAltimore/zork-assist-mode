@@ -20,7 +20,7 @@
 
     // Game replies that mean a typed command did not actually work. Only used
     // for steps with no better completion signal ("done": {"cmd": true}).
-    var FAILURE_RE = /can't go that way|you can't|can't see any|don't have|too heavy|too dark|not here|don't understand|don't know the word|isn't|aren't|nothing happens|no such|you must|that's not|you used the word/i;
+    var FAILURE_RE = /can't go that way|you can't|can't see any|don't have|too heavy|too many things|too dark|not here|don't understand|don't know the word|isn't|aren't|nothing happens|no such|you must|that's not|you used the word/i;
 
     function normalizeCommand(text) {
         return String(text).trim().toLowerCase().replace(/[.,!]+$/, '').replace(/\s+/g, ' ');
@@ -349,7 +349,38 @@
         };
     }
 
+    // First move of the shortest route from one room to another, using
+    // only unconditional exits (an exit with a "note" depends on some game
+    // state we can't see, so it's never trusted). null if no such route.
+    // Shared by the page (what to type to get back on the route) and the
+    // verifier (which does the same when a random event moves it off it).
+    function firstMoveToward(mapData, fromId, toId) {
+        if (!mapData || !fromId || fromId === toId || !mapData.rooms[fromId]) {
+            return null;
+        }
+        var firstMove = {};
+        firstMove[fromId] = null;
+        var queue = [fromId];
+        while (queue.length) {
+            var id = queue.shift();
+            var exits = mapData.rooms[id].exits || [];
+            for (var i = 0; i < exits.length; i++) {
+                var exit = exits[i];
+                if (exit.note || !mapData.rooms[exit.target] || exit.target in firstMove) {
+                    continue;
+                }
+                firstMove[exit.target] = id === fromId ? exit.dir.toLowerCase() : firstMove[id];
+                if (exit.target === toId) {
+                    return firstMove[toId];
+                }
+                queue.push(exit.target);
+            }
+        }
+        return null;
+    }
+
     return {
+        firstMoveToward: firstMoveToward,
         findResyncIndex: findResyncIndex,
         createRoomResolver: createRoomResolver,
         createTracker: createTracker,

@@ -1119,10 +1119,31 @@ body.theme-modern .code-links a {
   gap: 0.5em;
 }
 
-/* Game picker (Zork I / Zork II) in the header. */
+/* Game picker (Zork I / Zork II) in the header, beside the title. */
+#title-block {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4em 1em;
+}
+
+#game-picker {
+  align-self: center;
+}
 
 /* Games Code Museum doesn't cover have no Code tab. */
 body.no-code-tab #tab-code,
 body.no-code-tab #code-view {
   display: none !important;
+}
+
+#game-picker button {
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  #game-picker button {
+    font-size: 0.9em;
+    padding: 0.25em 0.5em;
+  }
 }
