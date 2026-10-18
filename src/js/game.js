@@ -14,7 +14,8 @@
     //                   is what Zork I was ported from)
     var GAMES = {
         zork1: { id: 'zork1', title: 'Zork I', subtitle: 'The Great Underground Empire', maxScore: 350, codeMuseum: true },
-        zork2: { id: 'zork2', title: 'Zork II', subtitle: 'The Wizard of Frobozz', maxScore: 400, codeMuseum: false }
+        zork2: { id: 'zork2', title: 'Zork II', subtitle: 'The Wizard of Frobozz', maxScore: 400, codeMuseum: false },
+        zork3: { id: 'zork3', title: 'Zork III', subtitle: 'The Dungeon Master', maxScore: 7, codeMuseum: false }
     };
     var DEFAULT_GAME = 'zork1';
     var GAME_KEY = 'zork-assist-game';

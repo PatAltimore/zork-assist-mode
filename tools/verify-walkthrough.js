@@ -63,6 +63,7 @@ function run(seed, verbose, stepList) {
     let last = { text: '', score: 0 };
 
     function send(cmd) {
+        if (game.isFinished()) { return last; }
         tracker.record(cmd);
         const roomBefore = roomId;
         const r = game.send(cmd);
@@ -109,6 +110,13 @@ function run(seed, verbose, stepList) {
         let r;
         for (let tries = 1; tries <= 120; tries++) {
             routeBack(step);
+            if (v && v.guard) {
+                // Only do this when the room's indicator reads as wanted.
+                for (let w = 0; w < 30; w++) {
+                    if (send('examine indicator').text.indexOf(v.guard) !== -1) { break; }
+                    send('wait');
+                }
+            }
             r = send(step.cmd);
             if (done[step.id]) {
                 if (v && v.until && r.text.toLowerCase().indexOf(v.until.toLowerCase()) === -1) {

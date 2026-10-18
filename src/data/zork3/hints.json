@@ -1,0 +1,264 @@
+[
+ {
+  "id": "goals",
+  "title": "What you're actually trying to do",
+  "hints": [
+   "There are no treasures here. The score line is a 'potential' out of 7, and the game has a real ending.",
+   "The seven points are the lake, the viewing table, the old man on the cliff, the Royal Puzzle, the time machine, and meeting and fighting the hooded figure. The ending itself is a separate goal.",
+   "To win you must gather everything the Dungeon Master wears -- hood, cloak, amulet, staff, ring, book and key -- then knock on his door and pass his final test. See 'The Dungeon Master' and 'The endgame'."
+  ]
+ },
+ {
+  "id": "strategy",
+  "title": "What order to tackle things in",
+  "hints": [
+   "Zork III is a handful of separate puzzles. Two things are on a clock: the aqueduct is only usable before an earthquake, and the museum only opens after it.",
+   "A sound order: the lake and amulet; the viewing table (for the torch and repellent); the key and the aqueduct; the cliff and the staff; the old man and the secret door; the Royal Puzzle; the time machine; the hooded figure; the mirror box; the Dungeon Master.",
+   "Save before the lake, before each time-machine trip, and before the Guardians' hallway. Several of these puzzles can kill you without much warning."
+  ]
+ },
+ {
+  "id": "dying",
+  "title": "The game is unusually deadly",
+  "rooms": [
+   "ZORK2-STAIR"
+  ],
+  "hints": [
+   "Several things in this game can kill you at random, so save often.",
+   "The lake (fish, roc, drowning), walking in the dark two moves in a row (grues), the guards in the past, and the Guardians' hallway all kill. Death drops you on the Endless Stair, empty-handed.",
+   "Whatever you were carrying stays where you died. Your lamp is lying on the Endless Stair if you start over."
+  ]
+ },
+ {
+  "id": "lamp",
+  "title": "Light",
+  "rooms": [
+   "ZORK2-STAIR",
+   "JUNCTION"
+  ],
+  "hints": [
+   "You begin on the Endless Stair, and the lamp you need is right here. The dungeon beyond is dark.",
+   "Take the lamp and turn it on at the Junction to the south. A grue will get you if you stay in the dark for more than one move.",
+   "take lamp, south, turn on lamp. Keep it with you until the lake shore, where you must leave it (see 'The lake')."
+  ]
+ },
+ {
+  "id": "lake",
+  "title": "The lake and the amulet",
+  "rooms": [
+   "LAKE-SHORE",
+   "ON-LAKE",
+   "IN-LAKE",
+   "FOGGY-ROOM"
+  ],
+  "hints": [
+   "Everything you carry sinks when you swim out onto the lake, so go in empty-handed. A lamp you carry in is ruined, so leave it on the shore first.",
+   "From Lake Shore, 'enter lake', then 'down'. A shiny object lies on the lake floor; take it. It may slip away: go back up and dive again. You only have about eight turns in the water in all.",
+   "drop lamp, enter lake, down, take shiny object (repeat with up/down until you get the golden amulet), up, west to the western shore. A worn amulet survives later swims. Don't linger on the surface -- a roc can snatch you."
+  ]
+ },
+ {
+  "id": "view-room",
+  "title": "The Scenic Vista and the table",
+  "rooms": [
+   "VIEW-ROOM",
+   "ROOM-8",
+   "DAMP-PASSAGE"
+  ],
+  "hints": [
+   "In the small chamber south of the western shore, a table in the wall transports you somewhere depending on the indicator above it. Look at the indicator.",
+   "The indicator cycles I, II, III, IV. Reading II sends you to a room with a can of grue repellent; III sends you to a passage where you can leave the torch for later. Never rub the table at IV. After a few turns you're brought back.",
+   "take torch. Wait until the indicator reads II, rub table, take repellent, wait to return. Wait until III, rub table, drop torch, wait to return. Don't rub at IV."
+  ]
+ },
+ {
+  "id": "repellent",
+  "title": "The repellent",
+  "rooms": [
+   "FAR-SHORE",
+   "SOUTH-SHORE",
+   "GROUP-DARK-PLACE"
+  ],
+  "hints": [
+   "The repellent keeps grues away for only a few turns, and it is how you cross the dark side of the lake.",
+   "Spray it on yourself right before you go in the lake the second time, then hurry: across the lake, south, and through the dark place to the Key Room.",
+   "spray repellent on me, enter lake, south, south, south (the dark place may take more than one try), east to the Key Room."
+  ]
+ },
+ {
+  "id": "key",
+  "title": "The key and the aqueduct",
+  "rooms": [
+   "KEY-ROOM",
+   "AQ-1",
+   "AQ-2",
+   "AQ-3",
+   "AQ-VIEW"
+  ],
+  "hints": [
+   "The room east of the dark place has a key. The manhole cover to one side hides a way down.",
+   "take key, move cover, down. Then north three times along the aqueduct. The torch you left in the Damp Passage is waiting there.",
+   "Do this early: after the earthquake the aqueduct can't be used. It's the only way back to the Damp Passage from here."
+  ]
+ },
+ {
+  "id": "cliff",
+  "title": "The cliff and the staff",
+  "rooms": [
+   "CLEARING",
+   "CLIFF",
+   "CLIFF-LEDGE",
+   "CLIFF-BASE"
+  ],
+  "hints": [
+   "West of the Barren Area is a cliff with a rope tied to a tree. Take the bread that's lying there before you do anything else.",
+   "Climb down the rope. After a short wait a man appears at the top of the cliff and asks you to tie something heavy to the rope.",
+   "take bread, down, wait until the man appears, tie rope to chest, wait for the chest to be lifted, wait again, take rope. You are hauled up and given the wooden staff (a point)."
+  ]
+ },
+ {
+  "id": "old-man",
+  "title": "The old man and the secret door",
+  "rooms": [
+   "MSTAIRS",
+   "DAMP-PASSAGE"
+  ],
+  "hints": [
+   "A hungry old man sleeps in the room northeast of the Damp Passage. He is not always there; if the room is empty, try again.",
+   "Wake him, then feed him the bread. In thanks, he shows you a secret door in the carved wall.",
+   "northeast (repeat from the Damp Passage until the man is there), wake man, give bread to man, open door. The door leads north to the Button Room."
+  ]
+ },
+ {
+  "id": "museum",
+  "title": "The museum",
+  "rooms": [
+   "MUSEUM-ANTE",
+   "GROUP-MUSEUM-ENTRANCE",
+   "WIDE-HALL"
+  ],
+  "hints": [
+   "The museum is reached from the Museum Ante-room, but only after the earthquake that follows the aqueduct. Be patient.",
+   "Wait in the ante-room until the cleft opens (you'll hear the quake), then go through it.",
+   "Wait until the cleft opens, then east to the Museum Entrance."
+  ]
+ },
+ {
+  "id": "royal-puzzle",
+  "title": "The Royal Puzzle",
+  "rooms": [
+   "GROUP-ROYAL-PUZZLE-ENTRANCE",
+   "CP"
+  ],
+  "hints": [
+   "The Royal Puzzle is a sliding-block puzzle in a small room reached by a staircase. Its prize is a book; the way out is up the ladder.",
+   "You have to move walls to make a path, and some walls only move in the right direction. Don't push yourself into a corner you can't get out of.",
+   "A 45-move solution exists; the Tab suggestions walk it step by step. Take the book, then climb out by the ladder."
+  ]
+ },
+ {
+  "id": "time-machine",
+  "title": "The time machine",
+  "rooms": [
+   "GROUP-TECHNOLOGY-MUSEUM",
+   "GROUP-JEWEL-ROOM"
+  ],
+  "hints": [
+   "In the Technology Museum there is a machine with a dial and a button. Nothing you carry survives a trip, but something hidden under the seat does.",
+   "Set the dial to the year the museum was built (776) and press the button outside the machine -- a point -- then move the machine into the jewel room and travel back. A ring waits there.",
+   "drop all, turn dial to 776, push button, push gold machine south, open stone door, push gold machine east, board machine, push button, take ring, wait for the guards, then go back, board, put ring under seat, turn dial to 948, push button, look under seat."
+  ]
+ },
+ {
+  "id": "guards",
+  "title": "The guards in the past",
+  "rooms": [
+   "GROUP-JEWEL-ROOM"
+  ],
+  "hints": [
+   "In the past the guards are right outside. If they see you, you die.",
+   "Stay put, quietly, until you hear them march away, then leave.",
+   "wait until you hear the guards marching away, then open the door and leave. Don't open it earlier."
+  ]
+ },
+ {
+  "id": "hooded-figure",
+  "title": "The hooded figure",
+  "rooms": [
+   "GROUP-LAND-OF-SHADOW",
+   "CREEPY-CRAWL"
+  ],
+  "hints": [
+   "The dark land southwest of the Creepy Crawl isn't empty. Wait there, armed.",
+   "A hooded figure will turn up and fight. Keep attacking until it is badly hurt and defenseless, then take its hood and cloak.",
+   "southwest from the Creepy Crawl, wait until the figure appears, attack figure with sword until it is defenseless, take hood, take cloak. You can lose the fight, so save first."
+  ]
+ },
+ {
+  "id": "mirror-box",
+  "title": "The beam and the mirror box",
+  "rooms": [
+   "MR-ANTE",
+   "MREYE",
+   "GROUP-HALLWAY",
+   "IN-MIRROR"
+  ],
+  "hints": [
+   "Behind the secret door are a button, a beam of light and a mirror that opens only briefly. The beam must be broken before the button works.",
+   "Drop the torch in the Beam Room to break the beam, go back to the Button Room, push the button, then go through the mirror quickly. Inside is a box that slides along a corridor past statues.",
+   "Beam Room: drop torch. South, push red button, north, north, north. Inside: raise short pole, push red panel twice, lower short pole, push mahogany panel three times, raise short pole, push red panel four times, lower short pole, push pine panel, out."
+  ]
+ },
+ {
+  "id": "guardians",
+  "title": "The Guardians",
+  "rooms": [
+   "GROUP-HALLWAY",
+   "IN-MIRROR"
+  ],
+  "hints": [
+   "The Guardians in the middle of the long hallway destroy you if the box isn't just right.",
+   "While you pass them the pole must be lowered in the channel; a raised pole makes the box sway and they notice. Keep the mirrors unbroken and the panels shut.",
+   "Turn the box only at the ends of the corridor. Raise the pole to turn, lower it to slide."
+  ]
+ },
+ {
+  "id": "dungeon-master",
+  "title": "The Dungeon Master",
+  "rooms": [
+   "FRONT-DOOR"
+  ],
+  "hints": [
+   "The old man at the door is the Master of the Dungeon. He lets you in only if you look like him.",
+   "You must be carrying all of: hood, cloak, amulet, staff, ring, book and key. If something is missing, he sends you back and hints at how far along you are.",
+   "Knock on the door at the Dungeon Entrance with all seven items. If you left any behind, go and get them."
+  ]
+ },
+ {
+  "id": "endgame",
+  "title": "The endgame",
+  "rooms": [
+   "BEHIND-DOOR",
+   "SOUTH-CORRIDOR",
+   "EAST-CORRIDOR",
+   "NORTH-CORRIDOR",
+   "PARAPET",
+   "GROUP-PRISON-CELL",
+   "NIRVANA"
+  ],
+  "hints": [
+   "Once inside, the Dungeon Master follows you if you ask, and obeys commands. The last test involves a cell, a dial and a button.",
+   "Tell the Dungeon Master to follow you, then in the north corridor send him ahead to the parapet, where he can work the dial and button for you. The cell you need is number 4.",
+   "master, follow me; north, east, north; master, north; master, turn dial to 4; master, push button; open door; south; master, turn dial to 1; master, push button; unlock bronze door with key; open bronze door; south."
+  ]
+ },
+ {
+  "id": "inventory",
+  "title": "What you carry",
+  "hints": [
+   "Carrying a lot isn't a problem, except at the lake and the time machine.",
+   "Nothing you carry survives the lake or the time machine, except what you hide under the machine's seat. Plan around those two places.",
+   "Drop everything on the shore before the lake, and drop all before the time machine. Pick it up afterwards."
+  ]
+ }
+]

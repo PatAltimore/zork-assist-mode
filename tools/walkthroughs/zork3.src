@@ -1,0 +1,217 @@
+# Source for src/data/zork3/walkthrough.json -- run
+# `node tools/build-walkthrough.js --game zork3` to regenerate it, and
+# `node tools/verify-walkthrough.js --game zork3` to replay it against the
+# real game (tools/play.js) and check every step's "done" condition fires.
+#
+# Same format as tools/walkthroughs/zork1.src, plus the verifier-only options
+# of zork2.src (wander, try=) and one more:
+#   guard=PHRASE   before typing the step, the verifier looks at the
+#                  Scenic Vista's indicator ("examine indicator") and waits
+#                  until the reply contains PHRASE -- the table is only safe
+#                  to rub at certain readings.
+#
+# Zork III's "score" is really a potential out of 7, one point for each of:
+# the lake, the viewing table, the man on the cliff, the Royal Puzzle, the
+# time machine, and meeting and fighting the hooded figure. The route below
+# gets all seven and wins. The game is timed in two places: the aqueduct is
+# only usable before an earthquake (some time after move 70), and the
+# museum only opens after it.
+#
+# Randomness: the roc, the fish, the figure's sword, the guards in the
+# past, and when the earthquake comes. Only some seeds play clean.
+
+## Across the lake (everything you carry sinks, so go with nothing)
+ZORK2-STAIR | take lamp | Your old friend, the lamp | item=lamp
+ZORK2-STAIR | south | A dark trail | arrive=JUNCTION
+JUNCTION | turn on lamp | You'll need light down here | text=lamp is now on
+JUNCTION | south | Cramped passages | arrive=CREEPY-CRAWL
+CREEPY-CRAWL | south | A foggy way | arrive=FOGGY-ROOM
+FOGGY-ROOM | south | A wide path | arrive=LAKE-SHORE
+LAKE-SHORE | drop lamp | Everything you carry will sink if you swim: leave it | cmd
+LAKE-SHORE | enter lake | Your first dip. It's cold: go down fast | arrive=ON-LAKE
+ON-LAKE | down | See what's on the bottom | arrive=IN-LAKE
+IN-LAKE | take shiny object | Something glitters in the sand (it may slip away: try again) | text=simple golden amulet | until=simple golden amulet try=up
+IN-LAKE | up | Back up for air | arrive=ON-LAKE | wander
+ON-LAKE | west | The western shore | arrive=FAR-SHORE
+FAR-SHORE | south | A small chamber | arrive=VIEW-ROOM
+VIEW-ROOM | take torch | A burning torch on the wall | cmd
+VIEW-ROOM | rub table | Wait until the indicator reads II, then rub the table | arrive=ROOM-8 | guard=reads "II"
+ROOM-8 | take repellent | Quick, before you are pulled back | cmd
+ROOM-8 | wait | You'll be pulled back to the chamber in a moment | text=back in the viewing room
+VIEW-ROOM | rub table | Now wait for III, then rub it again | arrive=DAMP-PASSAGE | guard=reads "III"
+DAMP-PASSAGE | drop torch | Leave the light burning here for later | cmd
+DAMP-PASSAGE | wait | You'll be pulled back to the chamber in a moment | text=back in the viewing room
+VIEW-ROOM | north | Out of the chamber | arrive=FAR-SHORE | wander
+FAR-SHORE | spray repellent on me | Something to keep the dark at bay -- for just a few moments | text=old socks
+FAR-SHORE | enter lake | Hurry! Across the lake, quickly | text=drop all your possessions
+ON-LAKE | south | The southern shore | arrive=SOUTH-SHORE
+SOUTH-SHORE | south | Into the dark | arrive=GROUP-DARK-PLACE
+GROUP-DARK-PLACE | south | Keep moving | text=dim light | wander
+GROUP-DARK-PLACE | east | Toward the light | arrive=KEY-ROOM | wander
+KEY-ROOM | take key | The key shifts shape in your hand | cmd
+KEY-ROOM | move cover | A manhole cover to one side | text=small hole
+KEY-ROOM | down | The aqueduct | arrive=AQ-1
+AQ-1 | north | Along the channel | arrive=AQ-2
+AQ-2 | north | Across the arch | arrive=AQ-3
+AQ-3 | north | Down the water slide | arrive=DAMP-PASSAGE
+DAMP-PASSAGE | take torch | Your light is waiting | item=torch
+
+## The cliff, the old man and the secret door
+DAMP-PASSAGE | west | Back to the junction | arrive=JUNCTION
+JUNCTION | west | The wide trail | arrive=CLEARING
+CLEARING | west | Toward the trees | arrive=CLIFF
+CLIFF | take bread | Somebody left a snack | cmd
+CLIFF | down | A rope hangs over the cliff | arrive=CLIFF-LEDGE
+CLIFF-LEDGE | wait | You are not alone for long | text=a man appears | until=a man appears
+CLIFF-LEDGE | tie rope to chest | The man has a suggestion | text=chest is lifted | until=chest is lifted
+CLIFF-LEDGE | wait | He said he'd be back | text=grab onto the rope | until=grab onto the rope
+CLIFF-LEDGE | take rope | Hold on tight | text=wooden staff
+CLIFF | east | Back to the barren area | arrive=CLEARING
+CLEARING | east | And the junction | arrive=JUNCTION
+JUNCTION | east | The damp passage | arrive=DAMP-PASSAGE
+DAMP-PASSAGE | northeast | Keep trying until someone is home | text=wizened man | wander
+MSTAIRS | wake man | A sleeping old man | text=roused to consciousness
+MSTAIRS | give bread to man | He looks hungry | text=secret door
+MSTAIRS | open door | There is a way through | text=massive stone door opens
+
+## The museum and the Royal Puzzle
+MSTAIRS | southwest | Out of the engravings room | arrive=DAMP-PASSAGE
+DAMP-PASSAGE | west | The junction again | arrive=JUNCTION
+JUNCTION | south | Cramped passages | arrive=CREEPY-CRAWL
+CREEPY-CRAWL | east | A very low passage | arrive=TIGHT-SQUEEZE
+TIGHT-SQUEEZE | east | A glittering cave | arrive=ROCKY-ROOM
+ROCKY-ROOM | south | A man-made passage | arrive=WIDE-HALL
+WIDE-HALL | south | A monumental hall | arrive=MUSEUM-ANTE
+MUSEUM-ANTE | wait | The great door is rusted shut -- the earth will shake sooner or later | text=cleft opens up | until=cleft opens up
+MUSEUM-ANTE | east | Through the new cleft | arrive=GROUP-MUSEUM-ENTRANCE
+GROUP-MUSEUM-ENTRANCE | south | Down a few steps to the Royal Puzzle | arrive=GROUP-ROYAL-PUZZLE-ENTRANCE
+GROUP-ROYAL-PUZZLE-ENTRANCE | down | Into the hole. Every wall can be slid; the book is in the middle | arrive=CP
+CP | push south wall | Slide a wall | cmd
+CP | north | Move | cmd
+CP | push east wall | Slide a wall | cmd
+CP | south | Move | cmd
+CP | south | Move | cmd
+CP | east | Move | cmd
+CP | east | Move | cmd
+CP | north | Move | cmd
+CP | north | Move | cmd
+CP | push east wall | Slide a wall | cmd
+CP | west | Move | cmd
+CP | south | Move | cmd
+CP | south | Move | cmd
+CP | push south wall | Slide a wall | cmd
+CP | take book | The book is here | text=Taken.
+CP | push south wall | Slide a wall | cmd
+CP | east | Move | cmd
+CP | east | Move | cmd
+CP | north | Move | cmd
+CP | north | Move | cmd
+CP | north | Move | cmd
+CP | push west wall | Slide a wall | cmd
+CP | north | Move | cmd
+CP | west | Move | cmd
+CP | push south wall | Slide a wall | cmd
+CP | push south wall | Slide a wall | cmd
+CP | push south wall | Slide a wall | cmd
+CP | push east wall | Slide a wall | cmd
+CP | south | Move | cmd
+CP | south | Move | cmd
+CP | push west wall | Slide a wall | cmd
+CP | push north wall | Slide a wall | cmd
+CP | east | Move | cmd
+CP | north | Move | cmd
+CP | push west wall | Slide a wall | cmd
+CP | push west wall | Slide a wall | cmd
+CP | east | Move | cmd
+CP | south | Move | cmd
+CP | push west wall | Slide a wall | cmd
+CP | push west wall | Slide a wall | cmd
+CP | push north wall | Slide a wall | cmd
+CP | push north wall | Slide a wall | cmd
+CP | push north wall | Slide a wall | cmd
+CP | west | Move | cmd
+CP | north | Move | cmd
+CP | up | Climb out by the ladder, keeping the book | arrive=GROUP-ROYAL-PUZZLE-ENTRANCE
+
+## The time machine
+GROUP-ROYAL-PUZZLE-ENTRANCE | north | Back up the steps | arrive=GROUP-MUSEUM-ENTRANCE
+GROUP-MUSEUM-ENTRANCE | north | The Museum of Technology | arrive=GROUP-TECHNOLOGY-MUSEUM
+GROUP-TECHNOLOGY-MUSEUM | turn dial to 776 | A golden machine with a dial: the museum's year of construction | text=dial is set to 776
+GROUP-TECHNOLOGY-MUSEUM | push button | Even out of the machine, the button counts | text=Nothing seems to have happened
+GROUP-TECHNOLOGY-MUSEUM | drop all | Nothing you hold survives the trip | text=ancient book: Dropped || cmd
+GROUP-TECHNOLOGY-MUSEUM | push gold machine south | It can be pushed -- gently | arrive=GROUP-MUSEUM-ENTRANCE
+GROUP-MUSEUM-ENTRANCE | open stone door | The door to the crown jewels | text=door is now open
+GROUP-MUSEUM-ENTRANCE | push gold machine east | Into the jewel room | arrive=GROUP-JEWEL-ROOM
+GROUP-JEWEL-ROOM | board gold machine | Get in quickly | text=now in the gold machine
+GROUP-JEWEL-ROOM | push button | Travel to the year you set | text=surroundings appear to have changed
+GROUP-JEWEL-ROOM | take ring | Where there was a cage, now just a pedestal | text=wearing the golden ring
+GROUP-JEWEL-ROOM | wait | Voices outside: wait for the guards to leave | text=guards marching away | until=guards marching away
+GROUP-JEWEL-ROOM | open door | The way out is locked from the other side only | text=door is now open
+GROUP-JEWEL-ROOM | west | Into the unfinished entrance | arrive=GROUP-MUSEUM-ENTRANCE
+GROUP-MUSEUM-ENTRANCE | open wooden door | To the machine | text=wooden door opens
+GROUP-MUSEUM-ENTRANCE | north | The unfinished technology room | arrive=GROUP-TECHNOLOGY-MUSEUM
+GROUP-TECHNOLOGY-MUSEUM | board gold machine | Get in | text=now in the gold machine
+GROUP-TECHNOLOGY-MUSEUM | put ring under seat | Nothing you hold survives the trip back -- except what you hide | text=concealed underneath the seat
+GROUP-TECHNOLOGY-MUSEUM | turn dial to 948 | Back to the present | text=dial is set to 948
+GROUP-TECHNOLOGY-MUSEUM | push button | Home | text=somewhat altered
+GROUP-TECHNOLOGY-MUSEUM | look under seat | Something is waiting | text=find the ring under the seat
+GROUP-TECHNOLOGY-MUSEUM | get out | Out of the machine | text=own feet
+GROUP-TECHNOLOGY-MUSEUM | take all | Your things are still here | cmd
+GROUP-TECHNOLOGY-MUSEUM | open door | The door has closed again | text=wooden door opens
+GROUP-TECHNOLOGY-MUSEUM | south | Back to the entrance | arrive=GROUP-MUSEUM-ENTRANCE
+
+## The hooded figure
+GROUP-MUSEUM-ENTRANCE | west | Through the cleft | arrive=MUSEUM-ANTE
+MUSEUM-ANTE | north | The royal hall | arrive=WIDE-HALL
+WIDE-HALL | north | The crystal grotto | arrive=ROCKY-ROOM
+ROCKY-ROOM | west | The tight squeeze | arrive=TIGHT-SQUEEZE
+TIGHT-SQUEEZE | west | The creepy crawl | arrive=CREEPY-CRAWL
+CREEPY-CRAWL | southwest | Into the land of shadow | arrive=GROUP-LAND-OF-SHADOW
+GROUP-LAND-OF-SHADOW | wait | Somebody is watching you | text=hooded figure appears | until=hooded figure appears
+GROUP-LAND-OF-SHADOW | attack figure with sword | A fair fight -- until it's nearly beaten | text=badly hurt and defenseless | fight=badly hurt and defenseless
+GROUP-LAND-OF-SHADOW | take hood | Now it can't stop you | text=cloak remains on the ground
+GROUP-LAND-OF-SHADOW | take cloak | The cloak is yours | cmd
+GROUP-LAND-OF-SHADOW | east | Back to the creepy crawl | arrive=CREEPY-CRAWL
+CREEPY-CRAWL | north | The junction | arrive=JUNCTION
+JUNCTION | east | The damp passage | arrive=DAMP-PASSAGE
+DAMP-PASSAGE | northeast | The engravings room | arrive=MSTAIRS
+MSTAIRS | north | Through the secret door | arrive=MR-ANTE
+MR-ANTE | north | The beam room | arrive=MREYE
+MREYE | drop torch | Something to break the red beam | text=block the beam
+MREYE | south | To the button | arrive=MR-ANTE
+MR-ANTE | push red button | The mirror opens for a few moments only | text=Click. Snap!
+MR-ANTE | north | Quickly! | arrive=MREYE
+MREYE | north | Into the hallway | arrive=GROUP-HALLWAY
+GROUP-HALLWAY | north | Into the mirror | arrive=IN-MIRROR
+IN-MIRROR | raise short pole | The structure can only turn with its pole lifted | cmd
+IN-MIRROR | push red panel | Turn the box clockwise until the arrow points north | text=indicates northwest.
+IN-MIRROR | push red panel | Once more | text=indicates north.
+IN-MIRROR | lower short pole | Lock the pole in the channel so the box can slide | cmd
+IN-MIRROR | push mahogany panel | Slide north along the corridor | cmd
+IN-MIRROR | push mahogany panel | Again | cmd
+IN-MIRROR | push mahogany panel | Again: the Guardians' hall is next, and they must not see anything amiss | cmd
+IN-MIRROR | raise short pole | Free the box to turn again | cmd
+IN-MIRROR | push red panel | Clockwise | text=indicates northeast.
+IN-MIRROR | push red panel | Clockwise | text=indicates east.
+IN-MIRROR | push red panel | Clockwise | text=indicates southeast.
+IN-MIRROR | push red panel | Until the arrow points south | text=indicates south.
+IN-MIRROR | lower short pole | Lock it again | cmd
+IN-MIRROR | push pine panel | A way out, facing the door | text=pine wall swings open
+IN-MIRROR | out | Out into the hallway before the door | arrive=FRONT-DOOR
+FRONT-DOOR | knock on door | You look the part: all seven of the old man's things | arrive=BEHIND-DOOR
+
+## The last test
+BEHIND-DOOR | master, follow me | Command the Dungeon Master | text=I will follow
+BEHIND-DOOR | north | To the marble corridors | arrive=SOUTH-CORRIDOR
+SOUTH-CORRIDOR | east | Around to the north | arrive=EAST-CORRIDOR
+EAST-CORRIDOR | north | The corridor with the cell | arrive=NORTH-CORRIDOR
+NORTH-CORRIDOR | master, north | Send him to the parapet, where the dial is | text=I am at the parapet
+NORTH-CORRIDOR | master, turn dial to 4 | He can work the dial for you | cmd
+NORTH-CORRIDOR | master, push button | And the button | cmd
+NORTH-CORRIDOR | open door | The cell is not the one you saw before | text=cell door opens
+NORTH-CORRIDOR | south | Into the cell | arrive=GROUP-PRISON-CELL
+GROUP-PRISON-CELL | master, turn dial to 1 | Now make the cell take you away | cmd
+GROUP-PRISON-CELL | master, push button | Carry the cell, and yourself, off | text=bare prison cell
+GROUP-PRISON-CELL | unlock bronze door with key | The key fits any lock | text=bolt gives way
+GROUP-PRISON-CELL | open bronze door | Open sesame | text=narrow passage
+GROUP-PRISON-CELL | south | Your reward | arrive=NIRVANA

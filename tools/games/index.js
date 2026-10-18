@@ -11,6 +11,7 @@ const ROOT = path.join(__dirname, '..', '..');
 const GAMES = {
     zork1: { dungeon: '1dungeon.zil', maxScore: 350, winText: /completed a great and perilous/i },
     zork2: { dungeon: '2dungeon.zil', maxScore: 400, winText: /ultimate adventure concludes/i },
+    zork3: { dungeon: ['3dungeon.zil', '3actions.zil'], maxScore: 7, winText: /rightly earned place/ },
 };
 
 function gameId(argv) {
@@ -29,7 +30,7 @@ function config(id) {
         id: id,
         dataDir: path.join(ROOT, 'src', 'data', id),
         storyPath: path.join(ROOT, 'src', 'data', id, 'story.z3'),
-        dungeonPath: path.join(ROOT, 'game-source', id, g.dungeon),
+        dungeonPaths: [].concat(g.dungeon).map((f) => path.join(ROOT, 'game-source', id, f)),
         walkthroughSrc: path.join(__dirname, '..', 'walkthroughs', id + '.src'),
         roomsRaw: path.join(__dirname, '..', 'rooms-raw-' + id + '.json'),
         extras: require('./' + id + '.js'),

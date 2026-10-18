@@ -9,9 +9,10 @@ const fs = require('fs');
 const path = require('path');
 
 const cfg = require('./games').config();
-const SRC = cfg.dungeonPath;
+const SRC = cfg.dungeonPaths;
 const OUT = cfg.roomsRaw;
-const text = fs.readFileSync(SRC, 'utf8');
+// Rooms may be spread over several files (Zork III keeps half in 3actions.zil).
+const text = SRC.map((f) => fs.readFileSync(f, 'utf8')).join(String.fromCharCode(10));
 
 function extractRoomBlocks(src) {
     const blocks = [];

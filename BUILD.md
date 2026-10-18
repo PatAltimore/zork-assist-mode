@@ -2,16 +2,19 @@
 
 Each game lives in its own folder: `src/data/<game>/` for the story file and
 the data the page loads, `game-source/<game>/` for the original ZIL source.
-Every tool takes `--game zork1` (the default) or `--game zork2`; adding a
-game (Zork III...) is a new `src/data/<game>/`, a new `game-source/<game>/`,
+Every tool takes `--game zork1` (the default), `--game zork2` or `--game zork3`; adding a
+game is a new `src/data/<game>/`, a new `game-source/<game>/`,
 and one entry each in `src/js/game.js` and `tools/games/`.
 
-**Zork II** needs no compiling: `src/data/zork2/story.z3` is
+**Zork II and III** need no compiling: `src/data/zork2/story.z3` is
 `COMPILED/zork2.z3` straight from the
 [historicalsource/zork2](https://github.com/historicalsource/zork2)
-repository (Infocom's own build, release 63), and `game-source/zork2/` is the
-source beside it for reference and for generating the map. Its one runtime
-fix is described in `src/js/story-patches.js`. The rest of this section is
+repository (Infocom's own build, release 63), and `src/data/zork3/story.z3` is
+`COMPILED/zork3.z3` from
+[historicalsource/zork3](https://github.com/historicalsource/zork3); the
+`game-source/` folders hold the source beside them for reference and for
+generating the maps. Zork II's one runtime fix is described in
+`src/js/story-patches.js`; Zork III needs none. The rest of this section is
 about **Zork I**.
 
 `src/data/zork1/story.z3` is a compiled Z-machine story file, built from the ZIL
@@ -114,11 +117,12 @@ very same tracking code as the page (`src/js/walkthrough-logic.js`). Like a
 player following the page's suggestions it always types the next step, and
 first walks back to the step's room if something moved it off the route.
 A passing run ends on the win screen with the game's full score (350 in
-Zork I, 400 in Zork II):
+Zork I, 400 in Zork II, 7 in Zork III):
 
 ```bash
 node tools/verify-walkthrough.js --seed 22               # one run, step by step (Zork I)
 node tools/verify-walkthrough.js --game zork2 --seed 3   # the same for Zork II
+node tools/verify-walkthrough.js --game zork3 --seed 2   # ...and Zork III
 node tools/verify-walkthrough.js --seeds 1-100           # which seeds play clean
 node tools/verify-walkthrough.js --resync 1              # check the page's Resync button
 ```
@@ -128,9 +132,9 @@ record the game score at each step (`score` in the JSON), which the Resync
 button matches against the player's room and score; the `--resync` check
 confirms it never lands past the player's true position.
 
-Both games are random -- Zork I's thief and combat, Zork II's Wizard (a
+All three games are random -- Zork I's thief and combat, Zork II's Wizard (a
 spell may freeze you for a few turns, send you stumbling, make you drop
-things or steal a treasure) and spinning Carousel Room -- so only some seeds
+things or steal a treasure) and spinning Carousel Room, Zork III's lake, guards and Land of Shadow fight -- so only some seeds
 play clean (roughly one in five), and the hints can't promise more than that:
 the thief may steal something a later step needs, which is what the **Skip**
 button is for. The verifier waits out or recovers from the spells that can be

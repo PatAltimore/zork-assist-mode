@@ -59,7 +59,7 @@ fs.readFileSync(SRC, 'utf8').split(/\r?\n/).forEach((raw, i) => {
     let doneSpec = rest.join(' | ');
     let opts = '';
     const lastIdx = rest.length - 1;
-    if (rest.length > 1 && /^(gate|until=|fight=|wander|try=)/.test(rest[lastIdx].trim())) {
+    if (rest.length > 1 && /^(gate|until=|fight=|guard=|wander|try=)/.test(rest[lastIdx].trim())) {
         opts = rest[lastIdx].trim();
         doneSpec = rest.slice(0, lastIdx).join(' | ');
     }
@@ -71,7 +71,7 @@ fs.readFileSync(SRC, 'utf8').split(/\r?\n/).forEach((raw, i) => {
         throw new Error('line ' + (i + 1) + ': unknown arrive room "' + step.done.arrive + '"');
     }
     const verify = {};
-    opts.split(/\s+(?=gate|until=|fight=|wander|try=)/).filter(Boolean).forEach((o) => {
+    opts.split(/\s+(?=gate|until=|fight=|guard=|wander|try=)/).filter(Boolean).forEach((o) => {
         if (o === 'gate') {
             step.gate = true;
         } else if (o.startsWith('until=')) {
@@ -79,6 +79,8 @@ fs.readFileSync(SRC, 'utf8').split(/\r?\n/).forEach((raw, i) => {
         } else if (o.startsWith('fight=')) {
             verify.until = o.slice(6).trim();
             verify.fight = true;
+        } else if (o.startsWith('guard=')) {
+            verify.guard = o.slice(6).trim();
         } else if (o === 'wander') {
             verify.wander = true;
         } else if (o.startsWith('try=')) {

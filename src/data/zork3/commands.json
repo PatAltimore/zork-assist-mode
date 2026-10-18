@@ -1,0 +1,497 @@
+{
+ "items": {
+  "lamp": {
+   "match": "lamp",
+   "aliases": [
+    "lantern"
+   ],
+   "inv": [
+    "lamp"
+   ]
+  },
+  "torch": {
+   "match": "torch",
+   "inv": [
+    "torch"
+   ]
+  },
+  "amulet": {
+   "match": "amulet",
+   "inv": [
+    "golden amulet"
+   ]
+  },
+  "repellent": {
+   "match": "repellent",
+   "aliases": [
+    "vial"
+   ],
+   "inv": [
+    "repellent"
+   ]
+  },
+  "key": {
+   "match": "key",
+   "inv": [
+    "key"
+   ]
+  },
+  "bread": {
+   "match": "bread",
+   "inv": [
+    "bread"
+   ]
+  },
+  "rope": {
+   "match": "rope",
+   "inv": [
+    "rope"
+   ]
+  },
+  "staff": {
+   "match": "staff",
+   "inv": [
+    "staff"
+   ]
+  },
+  "ring": {
+   "match": "ring",
+   "inv": [
+    "ring"
+   ]
+  },
+  "book": {
+   "match": "book",
+   "inv": [
+    "book"
+   ]
+  },
+  "sword": {
+   "match": "sword",
+   "inv": [
+    "sword"
+   ]
+  },
+  "hood": {
+   "match": "hood"
+  },
+  "cloak": {
+   "match": "cloak",
+   "inv": [
+    "cloak"
+   ]
+  }
+ },
+ "general": [
+  {
+   "cmd": "inventory",
+   "kind": "useful"
+  },
+  {
+   "cmd": "look",
+   "kind": "useful"
+  },
+  {
+   "cmd": "score",
+   "kind": "useful"
+  },
+  {
+   "cmd": "wait",
+   "kind": "useful"
+  },
+  {
+   "cmd": "save",
+   "kind": "useful"
+  },
+  {
+   "cmd": "xyzzy",
+   "kind": "funny"
+  },
+  {
+   "cmd": "plugh",
+   "kind": "funny"
+  },
+  {
+   "cmd": "yell",
+   "kind": "funny"
+  },
+  {
+   "cmd": "hello",
+   "kind": "funny"
+  },
+  {
+   "cmd": "pray",
+   "kind": "funny"
+  },
+  {
+   "cmd": "curse",
+   "kind": "funny"
+  }
+ ],
+ "byRoom": {
+  "ZORK2-STAIR": [
+   {
+    "cmd": "take lamp",
+    "kind": "useful"
+   },
+   {
+    "cmd": "south",
+    "kind": "useful"
+   },
+   {
+    "cmd": "down",
+    "kind": "funny"
+   }
+  ],
+  "JUNCTION": [
+   {
+    "cmd": "turn on lamp",
+    "kind": "useful"
+   },
+   {
+    "cmd": "south",
+    "kind": "useful"
+   },
+   {
+    "cmd": "west",
+    "kind": "useful"
+   },
+   {
+    "cmd": "east",
+    "kind": "useful"
+   }
+  ],
+  "LAKE-SHORE": [
+   {
+    "cmd": "drop lamp",
+    "kind": "useful"
+   },
+   {
+    "cmd": "enter lake",
+    "kind": "useful"
+   }
+  ],
+  "ON-LAKE": [
+   {
+    "cmd": "down",
+    "kind": "useful"
+   },
+   {
+    "cmd": "west",
+    "kind": "useful"
+   },
+   {
+    "cmd": "south",
+    "kind": "useful"
+   }
+  ],
+  "IN-LAKE": [
+   {
+    "cmd": "take shiny object",
+    "kind": "useful"
+   },
+   {
+    "cmd": "up",
+    "kind": "useful"
+   }
+  ],
+  "VIEW-ROOM": [
+   {
+    "cmd": "take torch",
+    "kind": "useful"
+   },
+   {
+    "cmd": "examine indicator",
+    "kind": "useful"
+   },
+   {
+    "cmd": "rub table",
+    "kind": "useful"
+   },
+   {
+    "cmd": "north",
+    "kind": "useful"
+   }
+  ],
+  "ROOM-8": [
+   {
+    "cmd": "take repellent",
+    "kind": "useful"
+   },
+   {
+    "cmd": "wait",
+    "kind": "useful"
+   }
+  ],
+  "FAR-SHORE": [
+   {
+    "cmd": "spray repellent on me",
+    "kind": "useful"
+   },
+   {
+    "cmd": "enter lake",
+    "kind": "useful"
+   },
+   {
+    "cmd": "south",
+    "kind": "useful"
+   }
+  ],
+  "KEY-ROOM": [
+   {
+    "cmd": "take key",
+    "kind": "useful"
+   },
+   {
+    "cmd": "move cover",
+    "kind": "useful"
+   },
+   {
+    "cmd": "down",
+    "kind": "useful"
+   }
+  ],
+  "AQ-1": [
+   {
+    "cmd": "north",
+    "kind": "useful"
+   }
+  ],
+  "AQ-2": [
+   {
+    "cmd": "north",
+    "kind": "useful"
+   }
+  ],
+  "AQ-3": [
+   {
+    "cmd": "north",
+    "kind": "useful"
+   }
+  ],
+  "DAMP-PASSAGE": [
+   {
+    "cmd": "take torch",
+    "kind": "useful"
+   },
+   {
+    "cmd": "west",
+    "kind": "useful"
+   },
+   {
+    "cmd": "northeast",
+    "kind": "useful"
+   }
+  ],
+  "CLIFF": [
+   {
+    "cmd": "take bread",
+    "kind": "useful"
+   },
+   {
+    "cmd": "down",
+    "kind": "useful"
+   },
+   {
+    "cmd": "jump",
+    "kind": "funny"
+   }
+  ],
+  "CLIFF-LEDGE": [
+   {
+    "cmd": "wait",
+    "kind": "useful"
+   },
+   {
+    "cmd": "tie rope to chest",
+    "kind": "useful"
+   },
+   {
+    "cmd": "take rope",
+    "kind": "useful"
+   }
+  ],
+  "MSTAIRS": [
+   {
+    "cmd": "wake man",
+    "kind": "useful"
+   },
+   {
+    "cmd": "give bread to man",
+    "kind": "useful"
+   },
+   {
+    "cmd": "open door",
+    "kind": "useful"
+   },
+   {
+    "cmd": "north",
+    "kind": "useful"
+   }
+  ],
+  "MR-ANTE": [
+   {
+    "cmd": "push red button",
+    "kind": "useful"
+   },
+   {
+    "cmd": "north",
+    "kind": "useful"
+   }
+  ],
+  "MREYE": [
+   {
+    "cmd": "drop torch",
+    "kind": "useful"
+   },
+   {
+    "cmd": "north",
+    "kind": "useful"
+   },
+   {
+    "cmd": "south",
+    "kind": "useful"
+   }
+  ],
+  "GROUP-TECHNOLOGY-MUSEUM": [
+   {
+    "cmd": "drop all",
+    "kind": "useful"
+   },
+   {
+    "cmd": "turn dial to 776",
+    "kind": "useful"
+   },
+   {
+    "cmd": "push button",
+    "kind": "useful"
+   },
+   {
+    "cmd": "board gold machine",
+    "kind": "useful"
+   },
+   {
+    "cmd": "look under seat",
+    "kind": "useful"
+   },
+   {
+    "cmd": "take all",
+    "kind": "useful"
+   }
+  ],
+  "GROUP-JEWEL-ROOM": [
+   {
+    "cmd": "take ring",
+    "kind": "useful"
+   },
+   {
+    "cmd": "wait",
+    "kind": "useful"
+   },
+   {
+    "cmd": "open door",
+    "kind": "useful"
+   }
+  ],
+  "GROUP-LAND-OF-SHADOW": [
+   {
+    "cmd": "wait",
+    "kind": "useful"
+   },
+   {
+    "cmd": "attack figure with sword",
+    "kind": "useful"
+   },
+   {
+    "cmd": "take hood",
+    "kind": "useful"
+   },
+   {
+    "cmd": "take cloak",
+    "kind": "useful"
+   }
+  ],
+  "IN-MIRROR": [
+   {
+    "cmd": "raise short pole",
+    "kind": "useful"
+   },
+   {
+    "cmd": "lower short pole",
+    "kind": "useful"
+   },
+   {
+    "cmd": "push red panel",
+    "kind": "useful"
+   },
+   {
+    "cmd": "push mahogany panel",
+    "kind": "useful"
+   },
+   {
+    "cmd": "push pine panel",
+    "kind": "useful"
+   },
+   {
+    "cmd": "out",
+    "kind": "useful"
+   }
+  ],
+  "FRONT-DOOR": [
+   {
+    "cmd": "knock on door",
+    "kind": "useful"
+   }
+  ],
+  "BEHIND-DOOR": [
+   {
+    "cmd": "master, follow me",
+    "kind": "useful"
+   },
+   {
+    "cmd": "north",
+    "kind": "useful"
+   }
+  ],
+  "NORTH-CORRIDOR": [
+   {
+    "cmd": "master, north",
+    "kind": "useful"
+   },
+   {
+    "cmd": "open door",
+    "kind": "useful"
+   },
+   {
+    "cmd": "south",
+    "kind": "useful"
+   }
+  ],
+  "GROUP-PRISON-CELL": [
+   {
+    "cmd": "master, turn dial to 4",
+    "kind": "useful"
+   },
+   {
+    "cmd": "master, turn dial to 1",
+    "kind": "useful"
+   },
+   {
+    "cmd": "master, push button",
+    "kind": "useful"
+   },
+   {
+    "cmd": "unlock bronze door with key",
+    "kind": "useful"
+   },
+   {
+    "cmd": "open bronze door",
+    "kind": "useful"
+   },
+   {
+    "cmd": "south",
+    "kind": "useful"
+   }
+  ]
+ }
+}
