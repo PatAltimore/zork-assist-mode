@@ -71,15 +71,15 @@ Play the game at [https://pataltimore.github.io/zork-assist-mode/](https://patal
   counter won't visibly decrease the way you might expect from undo, even
   though room/inventory/flags are genuinely rolled back; see the comments in
   `src/js/undo.js` for the full reasoning.
-- **Code tab** (Zork I only): links out to [Code Museum](https://pataltimore.github.io/code-museum/#/zork),
+- **Code tab**: links out to [Code Museum](https://pataltimore.github.io/code-museum/#/zork),
   an annotated-source-code site, contextual to the room you're in and the
   hint topic you've picked, plus a general "how the engine works" list.
   Code Museum documents the *original* 1977 MIT MDL mainframe source (not
   the ZIL/Infocom port this game runs — different routine names, same
   rooms and puzzles), so the mapping in `src/data/zork1/code-museum-links.json`
   is hand-curated rather than derived automatically; extend it as more
-  bookmarks get added on the Code Museum side. Zork II and III, which aren't part of
-  that source, have no Code tab.
+  bookmarks get added on the Code Museum side. Zork II and III link to Code Museum's
+  annotated copies of their own ZIL source (the same code these games run).
 - **Zork II's own quirks are covered too**: the Wizard's random spells (waited
   out or recovered from -- the Hints tab explains them), the spinning Carousel
   Room (the walkthrough walks you back and has you try again), the carry
@@ -113,7 +113,7 @@ src/                     Everything deployed to GitHub Pages
     map.json              Room/exit graph, generated from the ZIL source (see tools/)
     walkthrough.json      Walkthrough steps, generated from tools/walkthroughs/<game>.src
     commands.json         Tab-suggestion ideas per room, plus the items the page tracks
-    code-museum-links.json  (zork1) Hand-curated room/topic -> Code Museum bookmark map
+    code-museum-links.json  Hand-curated room/topic -> Code Museum bookmark map
   vendor/                 Third-party engine files (see THIRD_PARTY_NOTICES.md)
   vendor/gidispa-zvm.js   Original shim enabling save/restore for the ZVM engine
 game-source/<game>/      Vendored original ZIL source, kept for reference/rebuilds

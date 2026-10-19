@@ -79,7 +79,12 @@
 
     function populateTopicSelect() {
         topicSelect.innerHTML = '';
-        hintTopics.forEach(function (topic) {
+        // Only topics that have something to link to.
+        var withLinks = hintTopics.filter(function (t) {
+            var keys = linksData.byHintTopic[t.id];
+            return keys && keys.length > 0;
+        });
+        (withLinks.length ? withLinks : hintTopics).forEach(function (topic) {
             var option = document.createElement('option');
             option.value = topic.id;
             option.textContent = topic.title;
@@ -141,6 +146,12 @@
         ZorkGame.loadData('hints.json')
     ]).then(function (results) {
         linksData = results[0];
+        // Each game's data says what the Code Museum pages cover (Zork I: the
+        // original MDL source; Zork II and III: their own ZIL source).
+        var introEl = document.getElementById('code-intro');
+        var siteLinkEl = document.getElementById('code-site-link');
+        if (introEl && linksData.intro) { introEl.textContent = linksData.intro; }
+        if (siteLinkEl && linksData.base) { siteLinkEl.href = linksData.base; }
         var mapData = results[1];
         // LEARNING NOTE: .map() transforms an array by running a function
         // over every element and collecting the return values into a new

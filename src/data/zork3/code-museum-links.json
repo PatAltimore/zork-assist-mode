@@ -1,0 +1,550 @@
+{
+ "base": "https://pataltimore.github.io/code-museum/#/zork3",
+ "siteLabel": "Code Museum",
+ "intro": "Zork III's ZIL source on",
+ "overviewPath": "",
+ "note": "Code Museum annotates Zork III's own ZIL source -- the same code this game runs -- so these links go straight to the routines behind what you're seeing. (The shared parser and engine files are common to all three Zork games.)",
+ "bookmarks": {
+  "3actions--aqueduct-and-key": {
+   "title": "Arches, a Manhole and a Key That Changes Shape",
+   "path": "/3actions/aqueduct-and-key",
+   "blurb": "The aqueduct objects describe the empire's water supply and the scenery: the channel, the moss, the arches."
+  },
+  "3actions--beam-and-button": {
+   "title": "The Red Beam and the Button",
+   "path": "/3actions/beam-and-button",
+   "blurb": "MREYE-ROOM and BEAM-FUNCTION build a pressure puzzle out of light."
+  },
+  "3actions--cells-and-dial": {
+   "title": "Eight Cells and a Dial",
+   "path": "/3actions/cells-and-dial",
+   "blurb": "A subtitle quotes the line 'The end had come, and this was it; he dropped her in the Flaming Pit.' The parapet holds a sundial..."
+  },
+  "3actions--cells-and-nirvana": {
+   "title": "Cell Descriptions and the Ultimate Winnage",
+   "path": "/3actions/cells-and-nirvana",
+   "blurb": "The cell, corridor and door routines print descriptions that change with the dial and the doors: the view of the parapet through..."
+  },
+  "3actions--cliff-ledge-and-rope": {
+   "title": "Descending, and What the Rope Will Allow",
+   "path": "/3actions/cliff-ledge-and-rope",
+   "blurb": "CLIFF-LEDGE-F stops a walk while the player holds the tied chest, starts the man's appearance timer on the first visit and scores..."
+  },
+  "3actions--cliff-object-and-trees": {
+   "title": "Looking Before Leaping",
+   "path": "/3actions/cliff-object-and-trees",
+   "blurb": "CLIFF-OBJECT-F handles the precipice."
+  },
+  "3actions--cliff-objects": {
+   "title": "Waybread, Rope, Staff and Chest",
+   "path": "/3actions/cliff-objects",
+   "blurb": "The cliff holds the objects of a short con."
+  },
+  "3actions--cp-diagram": {
+   "title": "CPWHERE: The Surroundings as Text Art",
+   "path": "/3actions/cp-diagram",
+   "blurb": "CP-ROOM sets the starting cell when the player enters, cell 1 from above and cell 33 from the door, and prints the first..."
+  },
+  "3actions--cp-enter": {
+   "title": "Getting In, and Getting Out by Ladder",
+   "path": "/3actions/cp-enter",
+   "blurb": "CPENTER lets the player down the round hole only in the present year and only if the entrance has not been blocked by sandstone,..."
+  },
+  "3actions--cp-movement": {
+   "title": "CPEXIT: Walking in Arithmetic",
+   "path": "/3actions/cp-movement",
+   "blurb": "Every exit from the puzzle room calls CPEXIT."
+  },
+  "3actions--cp-push": {
+   "title": "Pushing a Wall and Learning to Read a Diagram",
+   "path": "/3actions/cp-push",
+   "blurb": "CPWALL-OBJECT handles the player pushing a wall."
+  },
+  "3actions--cp-slot": {
+   "title": "The Exit Fee and 'Garbage In, Garbage Out'",
+   "path": "/3actions/cp-slot",
+   "blurb": "At the steel door a small slot takes payment."
+  },
+  "3actions--cp-tables": {
+   "title": "The Royal Puzzle as Thirty-Six Numbers",
+   "path": "/3actions/cp-tables",
+   "blurb": "A section heading credits the Chinese puzzle to Will Weng."
+  },
+  "3actions--diagnose-jigs-up": {
+   "title": "Three Deaths and a Prison Cell",
+   "path": "/3actions/diagnose-jigs-up",
+   "blurb": "V-DIAGNOSE reports the player's strength from a table indexed by P-STRENGTH, the same number the duel with the shadow uses."
+  },
+  "3actions--duel": {
+   "title": "A Duel in Numbers",
+   "path": "/3actions/duel",
+   "blurb": "The fight is a small stochastic game."
+  },
+  "3actions--dungeon-master": {
+   "title": "The Dungeon Master as a Follower",
+   "path": "/3actions/dungeon-master",
+   "blurb": "DUNGEON-MASTER-F handles the old man in two roles."
+  },
+  "3actions--flathead-ocean": {
+   "title": "The Ocean and the Viking Ship",
+   "path": "/3actions/flathead-ocean",
+   "blurb": "VIEW-INDICATOR-F reads the roman numeral on the scenic vista's display."
+  },
+  "3actions--front-door": {
+   "title": "Knocking, and the Seven Things He Wears",
+   "path": "/3actions/front-door",
+   "blurb": "At the door, DUNGEON-DOOR-F answers a knock."
+  },
+  "3actions--guardians": {
+   "title": "The Guardians of Zork",
+   "path": "/3actions/guardians",
+   "blurb": "The hall is guarded by two identical stone warriors holding bludgeons."
+  },
+  "3actions--guards-and-flathead": {
+   "title": "Waffles, Guards and Lord Flathead",
+   "path": "/3actions/guards-and-flathead",
+   "blurb": "Arrive at the wrong time and the game kills the player with comedy."
+  },
+  "3actions--hood-and-cloak": {
+   "title": "Taking Off the Hood",
+   "path": "/3actions/hood-and-cloak",
+   "blurb": "HOOD-F holds the duel's quiet resolution."
+  },
+  "3actions--jewel-room": {
+   "title": "The Jewel Room and the Robot Housekeeper",
+   "path": "/3actions/jewel-room",
+   "blurb": "JEWEL-ROOM-F describes a high-ceilinged chamber with a steel cage, or a bare pedestal if the cage was never built."
+  },
+  "3actions--lake-objects": {
+   "title": "Table, Torch, Lake and Amulet",
+   "path": "/3actions/lake-objects",
+   "blurb": "A batch of objects equips the lake area."
+  },
+  "3actions--lake-rooms": {
+   "title": "The Lake, the Aqueduct and the Scenic Vista",
+   "path": "/3actions/lake-rooms",
+   "blurb": "LAKE-SHORE is a cavern on the north shore of a small lake, with polished stone steps down to AQ-VIEW, a balcony facing a..."
+  },
+  "3actions--lake-verbs": {
+   "title": "Into the Water",
+   "path": "/3actions/lake-verbs",
+   "blurb": "LAKE-F turns 'swim', 'jump in' or 'board' near the shore into a swim and, from the surface, into a dive."
+  },
+  "3actions--lantern": {
+   "title": "The Lamp's Countdown, and a Burnout Check That Misses",
+   "path": "/3actions/lantern",
+   "blurb": "LAMP-TABLE holds the same four tick counts as in Zork II, 300, 100, 50 and 0, each with its message, so with the 200 turns queued..."
+  },
+  "3actions--last-section": {
+   "title": "The South Shore, the Dark and the Key Room",
+   "path": "/3actions/last-section",
+   "blurb": "A comment marks 'Last Section'."
+  },
+  "3actions--lift": {
+   "title": "Hauling Up and the Locked Chest",
+   "path": "/3actions/lift",
+   "blurb": "I-MAN-RETURNS drops the rope again after ten turns with a coarse laugh."
+  },
+  "3actions--magic-mirror": {
+   "title": "The Mirror Box Described in Full",
+   "path": "/3actions/magic-mirror",
+   "blurb": "MAGIC-MIRROR prints the longest room description in the game, an engineer's account of the box: a rectangular wooden room with..."
+  },
+  "3actions--main-geography": {
+   "title": "The Endless Stair, the Junction and the Cliff",
+   "path": "/3actions/main-geography",
+   "blurb": "The main game's map begins at ZORK2-STAIR, the Endless Stair, whose internal name marks it as the stair from the second game,..."
+  },
+  "3actions--man-leaves": {
+   "title": "Friend or Thief",
+   "path": "/3actions/man-leaves",
+   "blurb": "Once the player is up, I-MAN-LEAVES gives the stranger a forty percent chance each turn to slip away behind the trees."
+  },
+  "3actions--man-timers": {
+   "title": "The Stranger Who Wants the Chest",
+   "path": "/3actions/man-timers",
+   "blurb": "I-MAN-APPEARS and I-MAN-PRESENT are the timers behind a social puzzle."
+  },
+  "3actions--mirror-intro": {
+   "title": "'It's All Done with Mirrors': Movement in a Hall",
+   "path": "/3actions/mirror-intro",
+   "blurb": "A comment marks the next section as 'Old end-game stuff' and a subtitle borrows the phrase 'It's All Done with Mirrors'."
+  },
+  "3actions--mirror-motion": {
+   "title": "Sliding the Box Along the Channel",
+   "path": "/3actions/mirror-motion",
+   "blurb": "MENDS handles the two side panels."
+  },
+  "3actions--mirror-objects": {
+   "title": "Mirrors, Panels and the Ways In and Out",
+   "path": "/3actions/mirror-objects",
+   "blurb": "A cluster of routines answers to the mirror and its wooden panel."
+  },
+  "3actions--museum-approach": {
+   "title": "From the Crystal Grotto to the Royal Museum",
+   "path": "/3actions/museum-approach",
+   "blurb": "The text calls this part 'old TM.ZIL', and it opens with a corridor of rooms that lead from the mountain to the museum: a tight..."
+  },
+  "3actions--old-man": {
+   "title": "The Old Man Who Wants Bread",
+   "path": "/3actions/old-man",
+   "blurb": "The old man sleeps in the Engravings Room, appearing there on a thirty percent chance as the player enters."
+  },
+  "3actions--old-museum": {
+   "title": "Hiding in an Unfinished Wing",
+   "path": "/3actions/old-museum",
+   "blurb": "OLD-TECH-MUSEUM-F handles both the unfinished jewel room and the technology hall in the year of construction."
+  },
+  "3actions--props": {
+   "title": "Runes, the Pit, the Book and the Water",
+   "path": "/3actions/props",
+   "blurb": "A string of small routines finishes the final rooms."
+  },
+  "3actions--shadow-land": {
+   "title": "The Land of Shadow",
+   "path": "/3actions/shadow-land",
+   "blurb": "The comment 'old SHADOW.ZIL' introduces the main game's geography."
+  },
+  "3actions--shadow-object": {
+   "title": "The Hooded Figure and Its Blocked Direction",
+   "path": "/3actions/shadow-object",
+   "blurb": "FLATHEAD-OCEAN is a shore room with a quicksand south and sheer exits west, and the three shadow objects live near it."
+  },
+  "3actions--shiny-object": {
+   "title": "The Amulet on the Lake Floor",
+   "path": "/3actions/shiny-object",
+   "blurb": "SHINY-OBJECT-F is how the golden amulet is found."
+  },
+  "3actions--swimming": {
+   "title": "The Cold Takes Everything",
+   "path": "/3actions/swimming",
+   "blurb": "GO-ON-LAKE is the cost of the swim."
+  },
+  "3actions--sword-demon": {
+   "title": "The Sword That Knows the Cliff and the Guardians",
+   "path": "/3actions/sword-demon",
+   "blurb": "I-SWORD runs every turn once the player has taken the elvish sword, and it sets a glow level of 0, 1 or 2."
+  },
+  "3actions--three-eras": {
+   "title": "Each Hall Exists Three Times",
+   "path": "/3actions/three-eras",
+   "blurb": "The museum's rooms are duplicated for the three eras the time machine can reach."
+  },
+  "3actions--time-dial": {
+   "title": "Setting the Year and Pressing the Button",
+   "path": "/3actions/time-dial",
+   "blurb": "TM-DIAL-F turns the year dial with 'turn the dial to 776' and refuses anything above 999."
+  },
+  "3actions--time-machine": {
+   "title": "The Machine Itself",
+   "path": "/3actions/time-machine",
+   "blurb": "TIME-MACHINE-F is object description and object behaviour in one routine."
+  },
+  "3actions--time-travel": {
+   "title": "TGOTO: Rewriting the World When You Travel",
+   "path": "/3actions/time-travel",
+   "blurb": "TGOTO does the travelling."
+  },
+  "3actions--viewing-table": {
+   "title": "The Scenic Vista: Four Windows",
+   "path": "/3actions/viewing-table",
+   "blurb": "The viewing table changes pictures every four turns through I-VIEW-CHANGE, which cycles ACTIVE-VIEW through I, II, III and IV and..."
+  },
+  "3actions--years": {
+   "title": "A Calendar in Constants, and the First Quake",
+   "path": "/3actions/years",
+   "blurb": "The years of the Great Underground Empire are constants and globals: the museum was built in 776, the jewels caged in 777, the..."
+  },
+  "3actions--zork-two-leftovers": {
+   "title": "Room 8 and a Can of Grue Repellent",
+   "path": "/3actions/zork-two-leftovers",
+   "blurb": "Under 'Stuff from ZORK II', ROOM-8 is a small chamber with a chiseled '8' where a fierce wind repels the player from the only..."
+  },
+  "3dungeon--button-and-stairs": {
+   "title": "The Button Room, the Beam and the Secret Stairs",
+   "path": "/3dungeon/button-and-stairs",
+   "blurb": "MR-ANTE, the Button Room, is described in full in the room itself and has a red button on the wall and torches out of reach, with..."
+  },
+  "3dungeon--go": {
+   "title": "GO: The Dream That Starts the Game",
+   "path": "/3dungeon/go",
+   "blurb": "GO is the start-up routine."
+  },
+  "3dungeon--go-and-directions": {
+   "title": "Header and Directions",
+   "path": "/3dungeon/go-and-directions",
+   "blurb": "The header names the game 'Zork III: The Dungeon Master' and 'The Great Underground Empire (Part 3)' with a 1982 copyright, and..."
+  },
+  "gclock--zork3-event-table": {
+   "title": "The Same Table, Many More Events",
+   "path": "/gclock/zork3-event-table",
+   "blurb": "The 180-word table of six-word records is unchanged from Zork II, byte for byte, but Zork III fills it with a different cast."
+  },
+  "gmacros--tell": {
+   "title": "TELL and the Longest Description in the Trilogy",
+   "path": "/gmacros/tell",
+   "blurb": "This file is the same macro layer as the one in Zork II, and TELL is still the macro that turns readable text into print..."
+  },
+  "gmain--main-loop-and-it": {
+   "title": "The Loop, and 'It' After the Time Machine",
+   "path": "/gmain/main-loop-and-it",
+   "blurb": "MAIN-LOOP runs MAIN-LOOP-1 forever, and MAIN-LOOP-1 parses a command, replaces the placeholder IT with the last object mentioned..."
+  },
+  "gparser--gwim": {
+   "title": "GWIM: A Guess in Parentheses",
+   "path": "/gparser/gwim",
+   "blurb": "When a command lacks an object, GWIM searches the visible scope for the one that has the right attribute and announces its choice..."
+  },
+  "gparser--header": {
+   "title": "The Same Library, a Year Later",
+   "path": "/gparser/header",
+   "blurb": "The parser's header names Marc Blank and the date 28 July 1983, the same as in Zork II, because this is the same file."
+  },
+  "gparser--lit": {
+   "title": "LIT?: A Lamp That Can Fry",
+   "path": "/gparser/lit",
+   "blurb": "LIT?"
+  },
+  "gverbs--itake": {
+   "title": "ITAKE and a Game With No Treasure Points",
+   "path": "/gverbs/itake",
+   "blurb": "ITAKE is the one place where taking is decided: the object must be takeable, not inside a closed container, not too heavy for..."
+  },
+  "gverbs--lamp": {
+   "title": "A Lamp Is the Whole Plot of Light",
+   "path": "/gverbs/lamp",
+   "blurb": "V-LAMP-ON and V-LAMP-OFF toggle ONBIT on anything with LIGHTBIT and recompute the global LIT."
+  },
+  "gverbs--shake": {
+   "title": "Shaking the Contents Into a Lake",
+   "path": "/gverbs/shake",
+   "blurb": "V-SHAKE empties an open container and SHAKE-LOOP decides where each object lands."
+  },
+  "shadow--old-repellent": {
+   "title": "SPRAY and PUT-ON",
+   "path": "/shadow/old-repellent",
+   "blurb": "The repellent's action accepts SPRAY or PUT as the verb in this file, where the shipped one accepts SPRAY or PUT-ON."
+  },
+  "zork3--include-list": {
+   "title": "Nine Files and Three Defaults",
+   "path": "/zork3/include-list",
+   "blurb": "INSERT-FILE brings in the generic syntax, macros, clock, main loop and parser first, then 3DUNGEON, then the generic globals and..."
+  },
+  "find-room-and-find-obj": {
+   "title": "GET-OBJECT and the Direction That Is a Noun",
+   "path": "/gparser/get-object",
+   "blurb": "GET-OBJECT searches for objects that match the typed words, and its first branch is a Zork III special."
+  }
+ },
+ "general": [
+  "gmain--main-loop-and-it",
+  "gparser--header",
+  "gparser--gwim",
+  "gclock--zork3-event-table",
+  "gmacros--tell",
+  "3dungeon--go-and-directions",
+  "zork3--include-list"
+ ],
+ "byRoom": {
+  "ZORK2-STAIR": [
+   "3actions--main-geography",
+   "3dungeon--go"
+  ],
+  "JUNCTION": [
+   "3actions--main-geography",
+   "3actions--sword-demon"
+  ],
+  "LAKE-SHORE": [
+   "3actions--lake-rooms",
+   "3actions--lake-verbs"
+  ],
+  "ON-LAKE": [
+   "3actions--swimming",
+   "3actions--lake-rooms"
+  ],
+  "IN-LAKE": [
+   "3actions--shiny-object",
+   "3actions--swimming"
+  ],
+  "VIEW-ROOM": [
+   "3actions--viewing-table"
+  ],
+  "ROOM-8": [
+   "3actions--zork-two-leftovers"
+  ],
+  "FAR-SHORE": [
+   "3actions--lake-rooms"
+  ],
+  "KEY-ROOM": [
+   "3actions--aqueduct-and-key",
+   "3actions--last-section"
+  ],
+  "AQ-1": [
+   "3actions--aqueduct-and-key"
+  ],
+  "CLIFF": [
+   "3actions--cliff-objects",
+   "3actions--cliff-object-and-trees"
+  ],
+  "CLIFF-LEDGE": [
+   "3actions--cliff-ledge-and-rope",
+   "3actions--man-timers"
+  ],
+  "MSTAIRS": [
+   "3actions--old-man",
+   "3dungeon--button-and-stairs"
+  ],
+  "MR-ANTE": [
+   "3actions--beam-and-button"
+  ],
+  "MREYE": [
+   "3actions--beam-and-button"
+  ],
+  "IN-MIRROR": [
+   "3actions--magic-mirror",
+   "3actions--mirror-motion"
+  ],
+  "GROUP-HALLWAY": [
+   "3actions--guardians",
+   "3actions--mirror-intro"
+  ],
+  "GROUP-TECHNOLOGY-MUSEUM": [
+   "3actions--time-machine",
+   "3actions--time-dial"
+  ],
+  "GROUP-JEWEL-ROOM": [
+   "3actions--jewel-room",
+   "3actions--guards-and-flathead"
+  ],
+  "GROUP-LAND-OF-SHADOW": [
+   "3actions--shadow-land",
+   "3actions--duel"
+  ],
+  "CP": [
+   "3actions--cp-diagram",
+   "3actions--cp-push"
+  ],
+  "GROUP-ROYAL-PUZZLE-ENTRANCE": [
+   "3actions--cp-enter",
+   "3actions--cp-slot"
+  ],
+  "MUSEUM-ANTE": [
+   "3actions--museum-approach",
+   "3actions--years"
+  ],
+  "FRONT-DOOR": [
+   "3actions--front-door"
+  ],
+  "BEHIND-DOOR": [
+   "3actions--dungeon-master"
+  ],
+  "PARAPET": [
+   "3actions--cells-and-dial"
+  ],
+  "GROUP-PRISON-CELL": [
+   "3actions--cells-and-dial"
+  ],
+  "NIRVANA": [
+   "3actions--cells-and-nirvana"
+  ],
+  "FLATHEAD-OCEAN": [
+   "3actions--flathead-ocean"
+  ]
+ },
+ "byHintTopic": {
+  "strategy": [
+   "3actions--years",
+   "3dungeon--go"
+  ],
+  "dying": [
+   "3actions--diagnose-jigs-up"
+  ],
+  "lamp": [
+   "3actions--lantern",
+   "gverbs--lamp",
+   "gparser--lit"
+  ],
+  "lake": [
+   "3actions--lake-verbs",
+   "3actions--swimming",
+   "3actions--shiny-object",
+   "3actions--lake-rooms"
+  ],
+  "view-room": [
+   "3actions--viewing-table",
+   "3actions--lake-objects"
+  ],
+  "repellent": [
+   "3actions--zork-two-leftovers",
+   "shadow--old-repellent"
+  ],
+  "key": [
+   "3actions--aqueduct-and-key",
+   "3actions--last-section"
+  ],
+  "cliff": [
+   "3actions--cliff-objects",
+   "3actions--man-timers",
+   "3actions--lift",
+   "3actions--man-leaves",
+   "3actions--cliff-ledge-and-rope"
+  ],
+  "old-man": [
+   "3actions--old-man",
+   "3actions--props"
+  ],
+  "museum": [
+   "3actions--museum-approach",
+   "3actions--years",
+   "3actions--three-eras"
+  ],
+  "royal-puzzle": [
+   "3actions--cp-tables",
+   "3actions--cp-movement",
+   "3actions--cp-enter",
+   "3actions--cp-push",
+   "3actions--cp-diagram",
+   "3actions--cp-slot"
+  ],
+  "time-machine": [
+   "3actions--time-machine",
+   "3actions--time-dial",
+   "3actions--time-travel",
+   "3actions--three-eras"
+  ],
+  "guards": [
+   "3actions--guards-and-flathead",
+   "3actions--old-museum",
+   "3actions--jewel-room"
+  ],
+  "hooded-figure": [
+   "3actions--shadow-land",
+   "3actions--shadow-object",
+   "3actions--duel",
+   "3actions--hood-and-cloak"
+  ],
+  "mirror-box": [
+   "3actions--mirror-intro",
+   "3actions--magic-mirror",
+   "3actions--mirror-motion",
+   "3actions--beam-and-button"
+  ],
+  "guardians": [
+   "3actions--guardians",
+   "3actions--mirror-objects"
+  ],
+  "dungeon-master": [
+   "3actions--dungeon-master",
+   "3actions--front-door"
+  ],
+  "endgame": [
+   "3actions--cells-and-dial",
+   "3actions--cells-and-nirvana",
+   "3actions--dungeon-master"
+  ],
+  "inventory": [
+   "gverbs--itake",
+   "gverbs--shake"
+  ]
+ }
+}

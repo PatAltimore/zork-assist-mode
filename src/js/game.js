@@ -9,13 +9,12 @@
     //
     //   title / roman   shown in the header and page title
     //   maxScore        the game's top score (the walkthrough ends on it)
-    //   codeMuseum      true only where the Code tab has something to link to
-    //                   (Code Museum documents the original MDL Zork, which
-    //                   is what Zork I was ported from)
+    //   codeMuseum      whether the Code tab has links (data/<id>/code-museum-links.json;
+    //                   Code Museum covers Zork I's MDL ancestor and Zork II/III's ZIL)
     var GAMES = {
         zork1: { id: 'zork1', title: 'Zork I', subtitle: 'The Great Underground Empire', maxScore: 350, codeMuseum: true },
-        zork2: { id: 'zork2', title: 'Zork II', subtitle: 'The Wizard of Frobozz', maxScore: 400, codeMuseum: false },
-        zork3: { id: 'zork3', title: 'Zork III', subtitle: 'The Dungeon Master', maxScore: 7, codeMuseum: false }
+        zork2: { id: 'zork2', title: 'Zork II', subtitle: 'The Wizard of Frobozz', maxScore: 400, codeMuseum: true },
+        zork3: { id: 'zork3', title: 'Zork III', subtitle: 'The Dungeon Master', maxScore: 7, codeMuseum: true }
     };
     var DEFAULT_GAME = 'zork1';
     var GAME_KEY = 'zork-assist-game';

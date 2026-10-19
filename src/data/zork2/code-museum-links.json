@@ -1,0 +1,502 @@
+{
+ "base": "https://pataltimore.github.io/code-museum/#/zork2",
+ "siteLabel": "Code Museum",
+ "intro": "Zork II's ZIL source on",
+ "overviewPath": "",
+ "note": "Code Museum annotates Zork II's own ZIL source -- the same code this game runs -- so these links go straight to the routines behind what you're seeing. (The shared parser and engine files are common to all three Zork games.)",
+ "bookmarks": {
+  "2actions--balloon-motion": {
+   "title": "Rising and Falling by Table",
+   "path": "/2actions/balloon-motion",
+   "blurb": "I-BALLOON runs every three turns and decides whether the balloon goes up or down."
+  },
+  "2actions--balloon-object": {
+   "title": "The Balloon as a Small State Machine",
+   "path": "/2actions/balloon-object",
+   "blurb": "The balloon in the volcano is a vehicle with a basket, a cloth bag, a receptacle that holds a burning object, a braided wire and..."
+  },
+  "2actions--bank-curtain": {
+   "title": "The Bank of Zork's Curtain of Light",
+   "path": "/2actions/bank-curtain",
+   "blurb": "The Bank of Zork is a spatial puzzle built on teleportation."
+  },
+  "2actions--brick-and-fuse": {
+   "title": "A Bomb and a Safe",
+   "path": "/2actions/brick-and-fuse",
+   "blurb": "The brick is a bomb with a fuse."
+  },
+  "2actions--carousel": {
+   "title": "The Carousel Room Scrambles Every Move",
+   "path": "/2actions/carousel",
+   "blurb": "The carousel is one of the best-known rooms in Zork II: a circular room with eight identical exits that spins the player."
+  },
+  "2actions--cerberus": {
+   "title": "Cerberus and the Collar",
+   "path": "/2actions/cerberus",
+   "blurb": "The three-headed dog is a guard whose behaviour is a COND on what the player does."
+  },
+  "2actions--diagnose-and-score": {
+   "title": "DIAGNOSE and SCORE",
+   "path": "/2actions/diagnose-and-score",
+   "blurb": "These two verbs are special-cased here because they depend on this game's data."
+  },
+  "2actions--diamond-maze": {
+   "title": "A Baseball Diamond for a Maze",
+   "path": "/2actions/diamond-maze",
+   "blurb": "The 'diamond' maze is a baseball diamond."
+  },
+  "2actions--door-keeper": {
+   "title": "The Lizard That Sleeps After Dinner",
+   "path": "/2actions/door-keeper",
+   "blurb": "The guardian of the Wizard's door is a lizard that can be bribed with food."
+  },
+  "2actions--dragon": {
+   "title": "The Dragon's Mood Meter",
+   "path": "/2actions/dragon",
+   "blurb": "DRAGON-FCN does not decide combat; it keeps a number."
+  },
+  "2actions--dragon-timer": {
+   "title": "I-DRAGON: Anger, Boredom and the Glacier",
+   "path": "/2actions/dragon-timer",
+   "blurb": "Every turn, I-DRAGON turns the anger into behaviour."
+  },
+  "2actions--garden": {
+   "title": "The Garden Is Alive",
+   "path": "/2actions/garden",
+   "blurb": "I-GARDEN is queued with -1 when the player first enters the garden, and from then on it runs every turn while they are in one of..."
+  },
+  "2actions--i-spell": {
+   "title": "I-SPELL: Spells Wear Off",
+   "path": "/2actions/i-spell",
+   "blurb": "When the incantation timer elapses, I-SPELL checks whether the spell has already been handled by its own action routine."
+  },
+  "2actions--i-wizard": {
+   "title": "I-WIZARD: The Wizard Appears at Random",
+   "path": "/2actions/i-wizard",
+   "blurb": "The Wizard is not a fixed enemy."
+  },
+  "2actions--jigs-up": {
+   "title": "JIGS-UP: Death Is a Setback",
+   "path": "/2actions/jigs-up",
+   "blurb": "JIGS-UP is called when the player dies."
+  },
+  "2actions--lantern": {
+   "title": "How Long the Lamp Lasts",
+   "path": "/2actions/lantern",
+   "blurb": "The brass lantern is a countdown."
+  },
+  "2actions--magic-actor": {
+   "title": "Spells Take Over the Player",
+   "path": "/2actions/magic-actor",
+   "blurb": "MAGIC-ACTOR is installed as the ADVENTURER's own ACTION property while a spell is on the player (the FEAR case in WIZARD-FCN..."
+  },
+  "2actions--menhir": {
+   "title": "A Menhir You Cannot Move",
+   "path": "/2actions/menhir",
+   "blurb": "The menhir blocks a passage in the quarry room, and the variable MENHIR-POSITION says where it stands, from false for leaning..."
+  },
+  "2actions--princess": {
+   "title": "The Princess in a Trance",
+   "path": "/2actions/princess",
+   "blurb": "The princess sits entranced in the dragon's lair until the player speaks to her, kisses, rubs or examines her, at which point she..."
+  },
+  "2actions--riddle": {
+   "title": "The Riddle Door",
+   "path": "/2actions/riddle",
+   "blurb": "The riddle room holds a stone door that opens only if the player SAYs or ANSWERs the right word."
+  },
+  "2actions--rob-and-case": {
+   "title": "ROB, RIPOFF and the Wizard's Case",
+   "path": "/2actions/rob-and-case",
+   "blurb": "ROB walks a container's contents and RIPOFF moves each valuable thing, identified by a non-zero VALUE property, to another place,..."
+  },
+  "2actions--spell-table": {
+   "title": "Twelve F-Words",
+   "path": "/2actions/spell-table",
+   "blurb": "The Wizard knows twelve spells, each with a name starting with F: Feeble, Fumble, Fear, Filch, Freeze, Fall, Ferment, Fierce,..."
+  },
+  "2actions--sword-demon": {
+   "title": "The Sword That Warns of Danger",
+   "path": "/2actions/sword-demon",
+   "blurb": "SWORD-FCN does one thing: the first time the player takes the elvish sword, it queues the demon I-SWORD with a tick count of -1,..."
+  },
+  "2actions--wand": {
+   "title": "The Wand and Its Recharge",
+   "path": "/2actions/wand",
+   "blurb": "WAND-FCN governs the wand."
+  },
+  "2actions--water": {
+   "title": "Water That Does Not Behave",
+   "path": "/2actions/water",
+   "blurb": "WATER is one of the busiest objects, because the game treats it as a real substance."
+  },
+  "2actions--wizard": {
+   "title": "WIZARD-FCN: The Wizard in Person",
+   "path": "/2actions/wizard",
+   "blurb": "WIZARD-FCN handles the cases where the player deals directly with the Wizard."
+  },
+  "2dungeon--balloon-objects": {
+   "title": "The Balloon and Its Label",
+   "path": "/2dungeon/balloon-objects",
+   "blurb": "The basket is the vehicle: VEHBIT and OPENBIT make it something the player can enter, CAPACITY 100 and SIZE 70 limit what it..."
+  },
+  "2dungeon--bank": {
+   "title": "The Bank of Zork",
+   "path": "/2dungeon/bank",
+   "blurb": "The Bank of Zork is a ruined institution with a long description that jokes about the Flathead family's histories."
+  },
+  "2dungeon--barrow": {
+   "title": "The Barrow: A Room With No Way Out",
+   "path": "/2dungeon/barrow",
+   "blurb": "The first room is the Barrow, and its structure shows every part of a ROOM form."
+  },
+  "2dungeon--baseball-bat": {
+   "title": "Babe Flathead's Club",
+   "path": "/2dungeon/baseball-bat",
+   "blurb": "The wooden club is invisible until the diamond maze makes it appear."
+  },
+  "2dungeon--carousel-riddle": {
+   "title": "The Carousel and Rooms From Old Zork",
+   "path": "/2dungeon/carousel-riddle",
+   "blurb": "The Carousel Room has eight exits to eight different rooms, and the action routine in 2actions scrambles movement."
+  },
+  "2dungeon--cerberus-crypt": {
+   "title": "Cerberus Guards the Crypt",
+   "path": "/2dungeon/cerberus-crypt",
+   "blurb": "The Cerberus Room has two conditional exits, east and in, that depend on the flag CERBERUS-LEASHED, and a stair up to the maze."
+  },
+  "2dungeon--dead-palantirs": {
+   "title": "The Rooms of Mist",
+   "path": "/2dungeon/dead-palantirs",
+   "blurb": "The four dead-palantir rooms are the afterlife."
+  },
+  "2dungeon--diamond-rooms": {
+   "title": "Nine Rooms That Look Alike",
+   "path": "/2dungeon/diamond-rooms",
+   "blurb": "The diamond maze uses nine rooms with the same short name, the same long description and the same action routine, DIAMOND-MOTION."
+  },
+  "2dungeon--dragon-room-exit": {
+   "title": "A Conditional Exit",
+   "path": "/2dungeon/dragon-room-exit",
+   "blurb": "In the Dragon Room the NORTH and IN exits read 'TO DRAGON-LAIR IF ICE-MELTED ELSE' followed by a message."
+  },
+  "2dungeon--dragon-treasure": {
+   "title": "The Chest, the Statuette and the Princess",
+   "path": "/2dungeon/dragon-treasure",
+   "blurb": "The lair holds a rotten chest, a golden statuette in it, a huge red dragon in the other room and a dead dragon waiting off stage."
+  },
+  "2dungeon--garden-unicorn": {
+   "title": "A Garden Underground and a Twin Unicorn",
+   "path": "/2dungeon/garden-unicorn",
+   "blurb": "The formal garden is an indoor garden in a cavern, lit by glowing moss."
+  },
+  "2dungeon--go-routine": {
+   "title": "GO: Where the Game Begins",
+   "path": "/2dungeon/go-routine",
+   "blurb": "GO is the routine the Z-machine runs at start-up."
+  },
+  "2dungeon--lamp": {
+   "title": "A Strangely Familiar Brass Lantern",
+   "path": "/2dungeon/lamp",
+   "blurb": "The lamp is the player's only reliable light and begins on the floor of the Barrow."
+  },
+  "2dungeon--matchbook": {
+   "title": "A Matchbook Advertising Zork I",
+   "path": "/2dungeon/matchbook",
+   "blurb": "The matchbook on the gazebo table says 'Visit Exotic ZORK I', and its text, readable through the TEXT property, adds that the..."
+  },
+  "2dungeon--palantir-rooms": {
+   "title": "A Dreary Room and a Tiny Room",
+   "path": "/2dungeon/palantir-rooms",
+   "blurb": "The palantir rooms are a self-contained puzzle area built around crystal spheres, palantirs in the Tolkien sense."
+  },
+  "2dungeon--room-anatomy": {
+   "title": "The Great Cavern and Its Neighbours",
+   "path": "/2dungeon/room-anatomy",
+   "blurb": "These five rooms show how exits and scenery combine."
+  },
+  "2dungeon--volcano": {
+   "title": "The Volcano in the Air",
+   "path": "/2dungeon/volcano",
+   "blurb": "The volcano area is a vertical space."
+  },
+  "2dungeon--water-wish-well": {
+   "title": "Water, Wishes and the Well",
+   "path": "/2dungeon/water-wish-well",
+   "blurb": "GLOBAL-WATER is available in any room that lists it and carries DRINKBIT, which lets V-EAT treat it as drinkable."
+  },
+  "2dungeon--wizard-door": {
+   "title": "The Lizard and the Workshop Door",
+   "path": "/2dungeon/wizard-door",
+   "blurb": "The Guarded Room sits between the Cobwebby Corridor and the Wizard's Workshop."
+  },
+  "2dungeon--wizard-objects": {
+   "title": "The Wizard, His Wand and a Sword",
+   "path": "/2dungeon/wizard-objects",
+   "blurb": "The Wizard has ACTORBIT, CONTBIT and OPENBIT, so he can hold things, and he holds the wand."
+  },
+  "2dungeon--zork3-landing": {
+   "title": "The Landing to Zork III",
+   "path": "/2dungeon/zork3-landing",
+   "blurb": "ZORK3 is a room named 'Landing' with a single action routine."
+  },
+  "gclock--queue-and-int": {
+   "title": "QUEUE and INT: Registering an Event",
+   "path": "/gclock/queue-and-int",
+   "blurb": "INT finds or creates the record for a routine."
+  },
+  "gmacros--tell-macro": {
+   "title": "TELL: A Small Language for Printing",
+   "path": "/gmacros/tell-macro",
+   "blurb": "TELL is the macro behind nearly every line of game text."
+  },
+  "gmain--main-loop": {
+   "title": "An Infinite Loop Is the Whole Game",
+   "path": "/gmain/main-loop",
+   "blurb": "MAIN-LOOP is two lines: repeat forever, calling MAIN-LOOP-1 and ignoring its result."
+  },
+  "gparser--gwim": {
+   "title": "GWIM: Get What I Mean",
+   "path": "/gparser/gwim",
+   "blurb": "GWIM guesses a missing object."
+  },
+  "gparser--parser-header": {
+   "title": "A Library for Three Games",
+   "path": "/gparser/parser-header",
+   "blurb": "The header names Marc Blank and the date 28 July 1983 and calls this a 'generic' parser for the Zork trilogy."
+  },
+  "gsyntax--syntax-anatomy": {
+   "title": "Reading a SYNTAX Line",
+   "path": "/gsyntax/syntax-anatomy",
+   "blurb": "A SYNTAX form has the verb, then up to two OBJECT slots, each optionally preceded by a preposition."
+  },
+  "gverbs--itake": {
+   "title": "ITAKE: Everything That Can Stop You Taking Something",
+   "path": "/gverbs/itake",
+   "blurb": "ITAKE is the single place where taking is decided, and the checks run in a careful order."
+  },
+  "gverbs--lamp-switches": {
+   "title": "Lamp On, Lamp Off",
+   "path": "/gverbs/lamp-switches",
+   "blurb": "V-LAMP-ON and V-LAMP-OFF toggle ONBIT on anything with LIGHTBIT."
+  },
+  "gverbs--scoring": {
+   "title": "Scoring by Touching Things",
+   "path": "/gverbs/scoring",
+   "blurb": "SCORE-UPD adds to both SCORE and BASE-SCORE, and in Zork I announces the final secret when the score reaches 350."
+  },
+  "gverbs--weight": {
+   "title": "CCOUNT and WEIGHT",
+   "path": "/gverbs/weight",
+   "blurb": "CCOUNT counts the children of an object that are not worn, which is the number used in the fumble rule."
+  },
+  "zork2--include-order": {
+   "title": "Ten Files Make One Game",
+   "path": "/zork2/include-order",
+   "blurb": "INSERT-FILE pulls each source file into the compilation in order."
+  },
+  "find-room-and-find-obj": {
+   "title": "GET-OBJECT: Searching the World for a Noun",
+   "path": "/gparser/get-object",
+   "blurb": "GET-OBJECT searches for objects that match the typed noun and adjective."
+  }
+ },
+ "general": [
+  "gmain--main-loop",
+  "gparser--parser-header",
+  "gparser--gwim",
+  "gsyntax--syntax-anatomy",
+  "gclock--queue-and-int",
+  "gmacros--tell-macro",
+  "zork2--include-order"
+ ],
+ "byRoom": {
+  "INSIDE-BARROW": [
+   "2dungeon--barrow",
+   "2dungeon--go-routine"
+  ],
+  "GREAT-CAVERN": [
+   "2dungeon--room-anatomy"
+  ],
+  "GAZEBO-ROOM": [
+   "2dungeon--matchbook"
+  ],
+  "GARDEN-NORTH": [
+   "2actions--garden",
+   "2dungeon--garden-unicorn"
+  ],
+  "CAROUSEL-ROOM": [
+   "2actions--carousel",
+   "2dungeon--carousel-riddle"
+  ],
+  "DRAGON-ROOM": [
+   "2actions--dragon",
+   "2actions--dragon-timer",
+   "2dungeon--dragon-room-exit"
+  ],
+  "DRAGON-LAIR": [
+   "2dungeon--dragon-treasure",
+   "2actions--princess"
+  ],
+  "VOLCANO-BOTTOM": [
+   "2actions--balloon-object",
+   "2dungeon--volcano"
+  ],
+  "VAIR-1": [
+   "2actions--balloon-motion",
+   "2dungeon--volcano"
+  ],
+  "SAFE-ROOM": [
+   "2actions--brick-and-fuse"
+  ],
+  "BANK-ENTRANCE": [
+   "2actions--bank-curtain",
+   "2dungeon--bank"
+  ],
+  "RIDDLE-ROOM": [
+   "2actions--riddle"
+  ],
+  "WELL-BOTTOM": [
+   "2dungeon--water-wish-well"
+  ],
+  "GUARDIAN-ROOM": [
+   "2actions--door-keeper"
+  ],
+  "WIZARDS-WORKSHOP": [
+   "2dungeon--wizard-objects",
+   "2actions--wizard"
+  ],
+  "DREARY-ROOM": [
+   "2dungeon--palantir-rooms"
+  ],
+  "MENHIR-ROOM": [
+   "2actions--menhir",
+   "2actions--wand"
+  ],
+  "STAIRWAY-TOP": [
+   "2actions--diamond-maze",
+   "2dungeon--diamond-rooms"
+  ],
+  "CERBERUS-ROOM": [
+   "2actions--cerberus",
+   "2dungeon--cerberus-crypt"
+  ],
+  "CRYPT-ROOM": [
+   "2dungeon--cerberus-crypt",
+   "2dungeon--zork3-landing"
+  ]
+ },
+ "byHintTopic": {
+  "wizard": [
+   "2actions--wizard",
+   "2actions--i-wizard",
+   "2actions--spell-table",
+   "2actions--magic-actor",
+   "2actions--i-spell"
+  ],
+  "lamp": [
+   "2actions--lantern",
+   "gverbs--lamp-switches",
+   "2dungeon--lamp"
+  ],
+  "scoring": [
+   "gverbs--scoring",
+   "2actions--diagnose-and-score"
+  ],
+  "start": [
+   "2dungeon--go-routine",
+   "2dungeon--barrow",
+   "2dungeon--room-anatomy"
+  ],
+  "gazebo": [
+   "2actions--garden",
+   "2dungeon--matchbook",
+   "2dungeon--garden-unicorn"
+  ],
+  "carousel": [
+   "2actions--carousel",
+   "2dungeon--carousel-riddle"
+  ],
+  "dragon": [
+   "2actions--dragon",
+   "2actions--dragon-timer",
+   "2dungeon--dragon-room-exit"
+  ],
+  "lair-chest": [
+   "2dungeon--dragon-treasure"
+  ],
+  "princess": [
+   "2actions--princess",
+   "2dungeon--dragon-treasure"
+  ],
+  "volcano": [
+   "2actions--balloon-object",
+   "2actions--balloon-motion",
+   "2dungeon--volcano",
+   "2dungeon--balloon-objects"
+  ],
+  "safe": [
+   "2actions--brick-and-fuse"
+  ],
+  "bank": [
+   "2actions--bank-curtain",
+   "2dungeon--bank"
+  ],
+  "riddle": [
+   "2actions--riddle",
+   "2dungeon--carousel-riddle"
+  ],
+  "well": [
+   "2dungeon--water-wish-well",
+   "2actions--water"
+  ],
+  "lizard": [
+   "2actions--door-keeper",
+   "2dungeon--wizard-door"
+  ],
+  "cage": [
+   "2actions--door-keeper"
+  ],
+  "workshop": [
+   "2dungeon--wizard-objects",
+   "2dungeon--wizard-door"
+  ],
+  "palantirs": [
+   "2dungeon--palantir-rooms",
+   "2dungeon--dead-palantirs"
+  ],
+  "wand": [
+   "2actions--wand",
+   "2dungeon--wizard-objects",
+   "2actions--rob-and-case"
+  ],
+  "menhir": [
+   "2actions--menhir"
+  ],
+  "diamond-maze": [
+   "2actions--diamond-maze",
+   "2dungeon--diamond-rooms",
+   "2dungeon--baseball-bat"
+  ],
+  "cerberus": [
+   "2actions--cerberus",
+   "2dungeon--cerberus-crypt"
+  ],
+  "crypt": [
+   "2dungeon--cerberus-crypt",
+   "2dungeon--zork3-landing"
+  ],
+  "endgame": [
+   "2dungeon--zork3-landing",
+   "2dungeon--cerberus-crypt"
+  ],
+  "dangers": [
+   "2actions--jigs-up",
+   "2actions--sword-demon"
+  ],
+  "inventory": [
+   "gverbs--weight",
+   "gverbs--itake"
+  ]
+ }
+}
